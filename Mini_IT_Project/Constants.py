@@ -1,0 +1,1 @@
+projectDisplayTitle = "Smart Financial Planner"
