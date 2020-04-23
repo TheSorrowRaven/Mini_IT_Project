@@ -24,4 +24,3 @@ if __name__ == "__main__":
     input()
 
 print("hello naga")
-print("help me")
