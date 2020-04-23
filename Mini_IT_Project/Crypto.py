@@ -1,9 +1,31 @@
 from luno_python.client import Client
 
-#Authorise for crypto usage
-data = Client(api_key_id='mjy945hg9xyyn', api_key_secret='x02-ibaP-mkHPrMLeIeiParg_vCf59LbE-76pkVQiq0')
+#App function
+
+def CryptoBalance():
+    balance = data.get_balances()
+    print(balance)
+
+#Authorization with the Luno API
+user_credentials = {}                  #Allow user prompt only if theres no data
+
+if user_credentials == {} :
+    
+    print('NOTE : If you do not have a Luno API key or API Key Secret, ')
+    print('please signup for a Luno Account and get Luno API credentials from https://www.luno.com/wallet/security/api_keys')
+    input('Press ENTER to continue')
+    api_id = input('Please enter your API key here')
+    api_secret = input('Please enter your API key secret here')
+    user_credentials['api_id'] = api_id
+    user_credentials['api_secret'] = api_secret
+
+data = Client(api_key_id= user_credentials['api_id'] , api_key_secret= user_credentials['api_secret'])
 
 #Permissions
 Perm_R_Balance = 1
 
-#View the balance of crypto
+#Main Screen
+do_something = int(input('Press 1 for crypto balance: '))
+
+if do_something == 1:
+    CryptoBalance()
