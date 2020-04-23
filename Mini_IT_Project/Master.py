@@ -18,8 +18,11 @@ class Master:
 
 
 
+
 # Runs program
 if __name__ == "__main__":
+    print("Fong edit")
     Master = Master()
     input()
 
+print('Hello World')
