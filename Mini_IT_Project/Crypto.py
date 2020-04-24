@@ -14,6 +14,10 @@ def CryptoBalance(picker):
         coin = json_data['balance'][3]['balance']
         print('Your ripple balance is :', coin, 'XRP')
 
+def PriceTicket():
+    json_data = data.get_tickers()
+    print(json_data)
+
 #Authorization with the Luno API
 user_credentials = {}                  #Allow user prompt only if theres no data
 
@@ -43,4 +47,9 @@ if do_something == 1:
             CryptoBalance(picker)
         else:
             break
+
+#Crypto prices
+elif do_something == 2:
+    PriceTicket()
+    
         
