@@ -25,4 +25,3 @@ if __name__ == "__main__":
     Master = Master()
     input()
 
-print('Hello World')
