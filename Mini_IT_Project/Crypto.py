@@ -14,9 +14,17 @@ def CryptoBalance(picker):
         coin = json_data['balance'][3]['balance']
         print('Your ripple balance is :', coin, 'XRP')
 
-def PriceTicket():
+def PriceTicket(picker):
     json_data = data.get_tickers()
-    print(json_data)
+    if picker == 1:        
+        price = json_data['tickers'][1]['ask']
+        print('The current ethereum price is : RM', price)
+    elif picker == 2:
+        price = json_data['tickers'][3]['ask']
+        print('The current bitcoin price is : RM', price)
+    elif picker == 3:
+        price = json_data['tickers'][14]['ask']
+        print('The current ripple price is : RM', price)
 
 #Authorization with the Luno API
 user_credentials = {}                  #Allow user prompt only if theres no data
@@ -37,12 +45,12 @@ data = Client(api_key_id= user_credentials['api_id'] , api_key_secret= user_cred
 Perm_R_Balance = 1
 
 #Main Screen
-do_something = int(input('Press 1 for crypto balance: '))
+do_something = int(input('Press 1 for crypto balance, press 2 for crypto prices: '))
 
 #Balance Checker
 if do_something == 1:
     while True:
-        picker = int(input('Press 1 for Ethereum, Press 2 for Bitcoin , Press 3 for Ripple'))
+        picker = int(input('Press 1 for Ethereum, Press 2 for Bitcoin , Press 3 for Ripple: '))
         if picker < 4:
             CryptoBalance(picker)
         else:
@@ -50,6 +58,11 @@ if do_something == 1:
 
 #Crypto prices
 elif do_something == 2:
-    PriceTicket()
+    while True:
+        picker = int(input('Press 1 for Ethereum, Press 2 for Bitcoin , Press 3 for Ripple: '))
+        if picker < 4:
+            PriceTicket(picker)
+        else:
+            break
     
         
