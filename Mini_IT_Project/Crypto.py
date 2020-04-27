@@ -41,9 +41,6 @@ if user_credentials == {} :
 
 data = Client(api_key_id= user_credentials['api_id'] , api_key_secret= user_credentials['api_secret'])
 
-#Permissions
-Perm_R_Balance = 1
-
 #Main Screen
 do_something = int(input('Press 1 for crypto balance, press 2 for crypto prices: '))
 
