@@ -15,7 +15,7 @@ class Master:
         app = GUI(master = root)
         app.master.mainloop()
 
-
+print('Hello World')
 
 
 
