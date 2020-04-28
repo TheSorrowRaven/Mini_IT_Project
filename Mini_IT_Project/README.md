@@ -7,3 +7,5 @@ Naga : Self created Currency Conversion module is created so that one can import
 CURRENCYCONVERSION.PY IMPORT GUIDELINES:
 Just import and multiply to get the value in foreign or divide to get ringgit :)
 NOTE: Not all currency change are actual to what the user gets , allow user to determine foreign value  
+
+Raven: The above currencyconversion.py guideline is now outdated, use the public functions instead
