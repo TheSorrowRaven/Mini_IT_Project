@@ -29,6 +29,7 @@ def PriceTicket(picker):
 #Authorization with the Luno API
 user_credentials = {}                  #Allow user prompt only if theres no data
 
+
 if user_credentials == {} :
     
     print('NOTE : If you do not have a Luno API key or API Key Secret, ')
