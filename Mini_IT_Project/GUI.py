@@ -1,5 +1,5 @@
 # Raven
-from tkinter import Frame, Label, Button, Canvas, PhotoImage
+from tkinter import Frame, Label, Button, Canvas, PhotoImage, FLAT
 from PIL import Image, ImageTk
 import Constants
 import Functions
@@ -18,9 +18,9 @@ class GUI(Frame):
     currentWindow = None
     currentSubWindow = None
 
-    def __init__(self, Main, master = None, window: str = Constants.mainWindow):
-        super().__init__(master)
-        self.master = master
+    def __init__(self, Main, root = None, window: str = Constants.mainWindow):
+        super().__init__(root)
+        self.root = root
         self.Main = Main
 
         Functions.Switch([Constants.mainWindow, Constants.warningWindow, Constants.queryWindow], 
@@ -37,13 +37,30 @@ class GUI(Frame):
         else:
             return self.currentWindow
 
-    def EmptyWindow(self):
-        for i in self.widgets:
-            i.destroy()
+    def HideLastWindow(self):
+        global container
 
-    def AppendListToWidgets(self, list):
-        for i in list:
-            self.widgets.append(i)
+        def SetContainer(frame: Frame):
+            global container
+            container = frame
+
+        Functions.Switch(
+            [Constants.mainWindow, Constants.warningWindow, Constants.queryWindow],
+            [lambda: Functions.Switch(   
+                [Constants.mainMenuSub, Constants.plannerSub, Constants.accountSub, Constants.investmentSub],
+                [   lambda: SetContainer(self.mainMenuFrame), 
+                    lambda: SetContainer(self.plannerFrame), 
+                    lambda: SetContainer(self.accountFrame), 
+                    lambda: SetContainer(self.investmentFrame), 
+                lambda: SetContainer(None)], self.currentSubWindow
+            ), 
+            lambda: print(None), lambda: print(None), 
+            lambda: print("Non existent")], self.currentWindow
+        )
+
+        if (container is not None):
+            container.pack_forget()
+
 
 
 # Main windows
@@ -52,26 +69,42 @@ class GUI(Frame):
         pass
 
     def InitWarnWindow(self):
-        self.master.title(Constants.warningDisplayTitle)
-        self.master.geometry(Constants.warningWindowSize)
-        self.master.resizable(False, False)
+        self.root.title(Constants.warningDisplayTitle)
+        self.root.geometry(Constants.warningWindowSize)
+        self.root.resizable(False, False)
         self.configure(background = Constants.warningWindowBgColor)
-        self.pack(fill="both", expand = 1)
+        self.pack(fill = "both" , expand = 1)
     
     def InitMainWindow(self):
-        self.master.title(Constants.mainDisplayTitle)
-        self.master.geometry(Constants.mainWindowSize)
-        self.master.resizable(False, False)
+        self.root.title(Constants.mainDisplayTitle)
+        self.root.geometry(Constants.mainWindowSize)
+        self.root.resizable(False, False)
         self.configure(background = Constants.mainWindowBgColor)
-        self.pack(fill="both", expand = 1)
+        self.pack(fill = "both" , expand = 1)
+
+        self.mainWindowFrame = Frame(master = self)
+        self.mainWindowFrame.configure(background = Constants.mainWindowBgColor)
+        self.mainWindowFrame.pack(fill = "both", expand = 1)
+
         self.currentWindow = Constants.mainWindow
-        self.MainMenu()
+
+        self.InitMainMenu  (self.mainWindowFrame)
+        self.InitPlanner   (self.mainWindowFrame)
+        self.InitAccount   (self.mainWindowFrame)
+        self.InitInvestment(self.mainWindowFrame)
+        self.InitNavBar    (self.mainWindowFrame)
+
+        # Boot Main Menu as first page for Main Window as default
+        self.MainMenu(self.mainMenuFrame)
 
 
-# Main window Sub windows
-    def MainMenu(self):
-        self.EmptyWindow()
-        
+    # Main window Sub windows
+
+    def InitMainMenu(self, parent: Frame):
+
+        self.mainMenuFrame = Frame(master = parent)
+        self.mainMenuFrame.configure(background = Constants.mainWindowBgColor)
+
         self.buttonInitial = ImageTk.PhotoImage(Image.open("Assets/Button_Initial.png"))
         self.buttonHover   = ImageTk.PhotoImage(Image.open("Assets/Button_Hover.png"))
         self.buttonDown    = ImageTk.PhotoImage(Image.open("Assets/Button_Down.png"))
@@ -84,17 +117,17 @@ class GUI(Frame):
         self.hoverButtons   = [ImageTk.PhotoImage(Image.open(buttonPaths[i])) for i in range(len(buttonPaths)//3  , len(buttonPaths)//3*2)]
         self.downButtons    = [ImageTk.PhotoImage(Image.open(buttonPaths[i])) for i in range(len(buttonPaths)//3*2, len(buttonPaths))]
         
-        plannerButton = Button(master = self.master, command = lambda: print("Planner"))
-        accountButton = Button(master = self.master, command = lambda: print("Account"))
-        investButton  = Button(master = self.master, command = lambda: print("Investment"))
-        quitButton    = Button(master = self.master, command = lambda: print("Quit"))
+        self.plannerButton = Button(master = parent, command = lambda: self.Planner(self.plannerFrame))
+        self.accountButton = Button(master = parent, command = lambda: self.Account(self.accountFrame))
+        self.investButton  = Button(master = parent, command = lambda: self.Investment(self.investmentFrame))
+        self.quitButton    = Button(master = parent, command = lambda: self.root.quit())
 
-        plannerButton.place(x = 640, y = Constants.firstButtonYVal, anchor = "nw")
-        accountButton.place(x = 700, y = Constants.firstButtonYVal + Constants.nextButtonYDiff, anchor = "nw")
-        investButton.place (x = 760, y = Constants.firstButtonYVal + Constants.nextButtonYDiff * 2, anchor = "nw")
-        quitButton.place   (x = 1060, y = Constants.firstButtonYVal + Constants.nextButtonYDiff * 3, anchor = "nw")
+        self.plannerButton.place(x = 640, y = Constants.firstButtonYVal, anchor = "nw")
+        self.accountButton.place(x = 740, y = Constants.firstButtonYVal + Constants.nextButtonYDiff, anchor = "nw")
+        self.investButton.place (x = 840, y = Constants.firstButtonYVal + Constants.nextButtonYDiff * 2, anchor = "nw")
+        self.quitButton.place   (x = 1060, y = Constants.firstButtonYVal + Constants.nextButtonYDiff * 3, anchor = "nw")
 
-        updatedButtons = [plannerButton, accountButton, investButton, quitButton]
+        updatedButtons = [self.plannerButton, self.accountButton, self.investButton, self.quitButton]
 
         def SetButton(button, targetImage):
             button.configure(image = targetImage, background = Constants.mainWindowBgColor)
@@ -105,24 +138,117 @@ class GUI(Frame):
             butt = updatedButtons[i]
             SetButton(butt, self.initialButtons[i])
 
-            updatedButtons[i].bind("<Leave>",           lambda x, butt = butt, i = i: SetButton(butt, self.initialButtons[i]))
-            updatedButtons[i].bind("<Enter>",           lambda x, butt = butt, i = i: SetButton(butt, self.hoverButtons[i]))
-            updatedButtons[i].bind("<ButtonPress>",     lambda x, butt = butt, i = i: SetButton(butt, self.downButtons[i]))
-            updatedButtons[i].bind("<ButtonRelease>",   lambda x, butt = butt, i = i: SetButton(butt, self.initialButtons[i]))
+            updatedButtons[i].bind("<Leave>",         lambda x, butt = butt, i = i: SetButton(butt, self.initialButtons[i]))
+            updatedButtons[i].bind("<Enter>",         lambda x, butt = butt, i = i: SetButton(butt, self.hoverButtons[i]))
+            updatedButtons[i].bind("<ButtonPress>",   lambda x, butt = butt, i = i: SetButton(butt, self.downButtons[i]))
+            updatedButtons[i].bind("<ButtonRelease>", lambda x, butt = butt, i = i: SetButton(butt, self.initialButtons[i]))
 
-        statusFrame = Frame(master = self.master, width = 460, height = 320, background = "black")
-        statusFrame.place(x = 80, y = 80, anchor = "nw")
+        self.statusFrame = Frame(master = parent, width = 460, height = 320, background = "black")
+        self.statusFrame.place(x = 80, y = 80, anchor = "nw")
+
+    def InitPlanner(self, parent: Frame):
+
+        self.plannerFrame = Frame(master = parent)
+        self.plannerFrame.configure(background = Constants.mainWindowBgColor)
+
+    def InitAccount(self, parent: Frame):
+
+        self.accountFrame = Frame(master = parent)
+        self.accountFrame.configure(background = Constants.mainWindowBgColor)
+        
+    def InitInvestment(self, parent: Frame):
+
+        self.investmentFrame = Frame(master = parent)
+        self.investmentFrame.configure(background = Constants.mainWindowBgColor)
+
+    def InitNavBar(self, parent: Frame):
+        
+        self.navBarFrame = Frame(master = parent)
+        self.navBarFrame.configure(height = 720, width = 54, bg = Constants.navBarColor)
+        self.navBarFrame.pack_propagate(0)
+
+        self.navButtonContainer = Frame(master = self.navBarFrame, bg = Constants.navBarColor)
+        self.navButtonContainer.place(relx = 0, rely = 0, anchor = "nw")
+
+        self.backIcon       = ImageTk.PhotoImage(Image.open("Assets/Icon_Back.png"))
+        self.plannerIcon    = ImageTk.PhotoImage(Image.open("Assets/Icon_Planner.png"))
+        self.accountIcon    = ImageTk.PhotoImage(Image.open("Assets/Icon_Account.png"))
+        self.investmentIcon = ImageTk.PhotoImage(Image.open("Assets/Icon_Investment.png"))
+
+        self.mainMenuNavButton    = Button(master = self.navButtonContainer, command = lambda: self.MainMenu(self.mainMenuFrame), 
+                                          width = 50, bg = Constants.navBarColor, highlightthickness = 0, 
+                                          activeforeground = Constants.navBarColor, activebackground = Constants.navBarColor, image = self.backIcon)
+        self.plannerNavButton    = Button(master = self.navButtonContainer, command = lambda: self.Planner(self.plannerFrame),
+                                          width = 50, bg = Constants.navBarColor,  highlightthickness = 0, 
+                                          activeforeground = Constants.navBarColor, activebackground = Constants.navBarColor, image = self.plannerIcon)
+
+        self.accountNavButton    = Button(master = self.navButtonContainer, command = lambda: self.Account(self.accountFrame), 
+                                          width = 50, bg = Constants.navBarColor, highlightthickness = 0, 
+                                          activeforeground = Constants.navBarColor, activebackground = Constants.navBarColor, image = self.accountIcon)
+
+        self.investmentNavButton = Button(master = self.navButtonContainer, command = lambda: self.Investment(self.investmentFrame), 
+                                          width = 50, bg = Constants.navBarColor, highlightthickness = 0, 
+                                          activeforeground = Constants.navBarColor, activebackground = Constants.navBarColor, image = self.investmentIcon)
 
 
+        self.mainMenuNavButton.grid  (row = 0, column = 0)
+        self.plannerNavButton.grid   (row = 1, column = 0)
+        self.accountNavButton.grid   (row = 2, column = 0)
+        self.investmentNavButton.grid(row = 3, column = 0)
+    
+    def ShowNavBar(self):
+        global navBarIsShown
+        if ("navBarIsShown" in globals()):
+            if (not navBarIsShown):
+                self.navBarFrame.place(relx = 0, rely = 0, anchor = "nw")
+                navBarIsShown = True
+        else:
+            self.navBarFrame.place(relx = 0, rely = 0, anchor = "nw")
+            navBarIsShown = True
 
-        self.AppendListToWidgets(updatedButtons)
-        self.AppendListToWidgets([updatedButtons])
+    def HideNavBar(self):
+        global navBarIsShown
+        if ("navBarIsShown" in globals()):
+            if (navBarIsShown):
+                self.navBarFrame.place(relx = 0, rely = 0, anchor = "se")
+                navBarIsShown = False
+        else:
+            self.navBarFrame.place(relx = 0, rely = 0, anchor = "se")
+            navBarIsShown = False
+
+        pass
+
+    # Sub window Changer
+
+    def MainMenu(self, parent: Frame):
+        self.HideLastWindow()
+        self.mainMenuFrame.pack(fill = "both", expand = 1)
+        self.HideNavBar()
 
         self.currentSubWindow = Constants.mainMenuSub
+
+    def Planner(self, parent: Frame):
+        self.HideLastWindow()
+        parent.pack(fill = "both", expand = 1)
+        self.ShowNavBar()
+
+        self.currentSubWindow = Constants.plannerSub
         pass
 
-    def GoToPlanner(self):
-        self.Main.Warn()
-        self.EmptyWindow()
+    def Account(self, parent: Frame):
+        self.HideLastWindow()
+        parent.pack(fill = "both", expand = 1)
+        self.ShowNavBar()
+
+        self.currentSubWindow = Constants.accountSub
         pass
+
+    def Investment(self, parent: Frame):
+        self.HideLastWindow()
+        parent.pack(fill = "both", expand = 1)
+        self.ShowNavBar()
+
+        self.currentSubWindow = Constants.investmentSub
+        pass
+
 
