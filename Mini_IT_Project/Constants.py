@@ -6,10 +6,9 @@ mainWindow = "Main"
 warningWindow = "Warning"
 queryWindow = "Query"
 
-
 # Main Window Base
 mainDisplayTitle = "Smart Financial Planner"
-mainWindowSize = "750x500"
+mainWindowSize = "1280x720"
 mainWindowBgColor = "white"
 
 # Warning Window Base
@@ -24,6 +23,10 @@ queryWindowBgColor = "gray"
 
 # Subwindow Names
 mainMenuSub = "MainMenuSub"
+
+# MainMenu Sub
+firstButtonYVal = 275
+nextButtonYDiff = 115
 
 # Exceptions
 switchLenException = "Commands List' len() must have +1 default state than Constants List len()"

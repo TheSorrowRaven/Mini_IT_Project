@@ -9,6 +9,7 @@ class Master:
 
     def __init__(self):
         print("Main")
+        
 
     def LaunchApp(self):
         root = Tk()
