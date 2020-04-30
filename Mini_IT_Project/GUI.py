@@ -1,8 +1,12 @@
 # Raven
-from tkinter import Frame, Label, Button, Canvas, PhotoImage, FLAT
+from tkinter import Frame, Label, Button, Canvas, PhotoImage
 from PIL import Image, ImageTk
 import Constants
 import Functions
+
+import Planner
+import Account
+import Investment
 
 
 # GUI
@@ -14,7 +18,6 @@ import Functions
 
 class GUI(Frame):
 
-    widgets = [] # Contains all UI elements
     currentWindow = None
     currentSubWindow = None
 
@@ -23,12 +26,12 @@ class GUI(Frame):
         self.root = root
         self.Main = Main
 
+        def Raise(exception):
+            raise exception
         Functions.Switch([Constants.mainWindow, Constants.warningWindow, Constants.queryWindow], 
         [self.InitMainWindow, self.InitWarnWindow, self.InitQueryWindow, 
-        lambda: self.Raise(Exception("No such window exists")) ], window)
+        lambda: Raise(Exception("No such window exists")) ], window)
     
-    def Raise(self, exception):
-        raise exception
         
 # Window Functions
     def GetCurrentWindow(self) -> str:
@@ -60,7 +63,6 @@ class GUI(Frame):
 
         if (container is not None):
             container.pack_forget()
-
 
 
 # Main windows
@@ -98,12 +100,12 @@ class GUI(Frame):
         self.MainMenu(self.mainMenuFrame)
 
 
-    # Main window Sub windows
-
+# Main window Sub windows
     def InitMainMenu(self, parent: Frame):
 
         self.mainMenuFrame = Frame(master = parent)
         self.mainMenuFrame.configure(background = Constants.mainWindowBgColor)
+        parent = self.mainMenuFrame
 
         self.buttonInitial = ImageTk.PhotoImage(Image.open("Assets/Button_Initial.png"))
         self.buttonHover   = ImageTk.PhotoImage(Image.open("Assets/Button_Hover.png"))
@@ -150,16 +152,43 @@ class GUI(Frame):
 
         self.plannerFrame = Frame(master = parent)
         self.plannerFrame.configure(background = Constants.mainWindowBgColor)
+        parent = self.plannerFrame
+
+        self.plannerContainer = Frame(master = parent, bg = Constants.mainWindowBgColor, width = 1280-54, height = 720)
+        self.plannerContainer.place(x = 54, y = 0, anchor = "nw")
+
+        self.plannerTitle = Label(master = self.plannerFrame, text = "Planner", font = ("", 36), bg = Constants.mainWindowBgColor)
+        self.plannerTitle.place(x = 55, y = 0, anchor = "nw")
+
+        self.planner = Planner.Planner(parent)
 
     def InitAccount(self, parent: Frame):
 
         self.accountFrame = Frame(master = parent)
         self.accountFrame.configure(background = Constants.mainWindowBgColor)
+        parent = self.accountFrame
         
+        self.accountContainer = Frame(master = parent, bg = Constants.mainWindowBgColor, width = 1280-54, height = 720)
+        self.accountContainer.place(x = 54, y = 0, anchor = "nw")
+
+        self.accountTitle = Label(master = self.accountFrame, text = "Account", font = ("", 36), bg = Constants.mainWindowBgColor)
+        self.accountTitle.place(x = 55, y = 0, anchor = "nw")
+
+        self.account = Account.Account(parent)
+
     def InitInvestment(self, parent: Frame):
 
         self.investmentFrame = Frame(master = parent)
         self.investmentFrame.configure(background = Constants.mainWindowBgColor)
+        parent = self.investmentFrame
+
+        self.investmentContainer = Frame(master = parent, bg = Constants.mainWindowBgColor, width = 1280-54, height = 720)
+        self.investmentContainer.place(x = 54, y = 0, anchor = "nw")
+
+        self.investmentTitle = Label(master = self.investmentFrame, text = "Investment", font = ("", 36), bg = Constants.mainWindowBgColor)
+        self.investmentTitle.place(x = 55, y = 0, anchor = "nw")
+
+        self.investment = Investment.Investment(parent)
 
     def InitNavBar(self, parent: Frame):
         
@@ -218,7 +247,8 @@ class GUI(Frame):
 
         pass
 
-    # Sub window Changer
+
+# Sub window Changer
 
     def MainMenu(self, parent: Frame):
         self.HideLastWindow()
