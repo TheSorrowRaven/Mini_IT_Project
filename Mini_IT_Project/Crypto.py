@@ -47,21 +47,23 @@ data = Client(api_key_id= user_credentials['api_id'] , api_key_secret= user_cred
 do_something = int(input('Press 1 for crypto balance, press 2 for crypto prices: '))
 
 #Balance Checker
-if do_something == 1:
-    while True:
+while True:
+    if do_something == 1:
         picker = int(input('Press 1 for Ethereum, Press 2 for Bitcoin , Press 3 for Ripple: '))
         if picker < 4:
-            CryptoBalance(picker)
+             CryptoBalance(picker)
         else:
             break
 
 #Crypto prices
-elif do_something == 2:
-    while True:
+    elif do_something == 2:
         picker = int(input('Press 1 for Ethereum, Press 2 for Bitcoin , Press 3 for Ripple: '))
         if picker < 4:
             PriceTicket(picker)
         else:
             break
+
+    else:
+        print('Invalid input, please try again')
     
         
