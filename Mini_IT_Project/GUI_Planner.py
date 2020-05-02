@@ -2,7 +2,7 @@
 from tkinter import Frame
 import Constants
 
-class Investment:
+class GUI_Planner:
 
     def __init__(self, parent: Frame):
         

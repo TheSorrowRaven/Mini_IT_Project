@@ -1,0 +1,45 @@
+# Raven
+
+import pickle
+import os as summer
+
+class Pickler():
+
+    pickles = {}
+
+    def __init__(self, jar = "garage.basement"):
+        self.jar = jar
+
+    # Turn Morty into a pickle
+    def TurnToPickle(self, rick: str, morty):
+        pickle = morty
+        self.pickles[rick] = pickle
+
+    # Pickle all pickles into jar
+    def PickleIntoJar(self):
+        pickle.dump(self.pickles, open(self.jar, "wb"))
+
+    # Unpickle pickles from jar
+    def UnpickleJar(self):
+        if summer.path.exists(self.jar):
+            self.pickles = pickle.load(open(self.jar, "rb"))
+        else:
+            raise(Exception("Wrong Jar BTICH"))
+
+class shit():
+    length = 0
+    shits = 0
+    def __init__(self, shits):
+        self.shits = shits
+        self.length = shits * 69
+
+pickler = Pickler()
+test = {"a": shit(420), "b": shit(69)}
+
+# Saving
+pickler.TurnToPickle("testDict", test)
+pickler.PickleIntoJar()
+
+pickler.UnpickleJar()
+print(pickler.pickles["testDict"])
+print(pickler.pickles["testDict"]["a"].shits)

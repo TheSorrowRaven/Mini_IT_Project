@@ -1,11 +1,6 @@
 # Raven
-from tkinter import Frame
-import Constants
 
-class Account:
+class Account():
 
-    def __init__(self, parent: Frame):
-        
-        
-
+    def __init__(self):
         pass
