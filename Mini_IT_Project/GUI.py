@@ -121,7 +121,7 @@ class GUI(Frame):
         self.plannerButton = Button(master = parent, command = lambda: self.Planner(self.plannerFrame))
         self.accountButton = Button(master = parent, command = lambda: self.Account(self.accountFrame))
         self.investButton  = Button(master = parent, command = lambda: self.Investment(self.investmentFrame))
-        self.quitButton    = Button(master = parent, command = lambda: self.root.quit())
+        self.quitButton    = Button(master = parent, command = lambda: self.Main.ExitRoot())
 
         self.plannerButton.place(x = 640, y = Constants.firstButtonYVal, anchor = "nw")
         self.accountButton.place(x = 740, y = Constants.firstButtonYVal + Constants.nextButtonYDiff, anchor = "nw")
@@ -173,7 +173,7 @@ class GUI(Frame):
         self.accountTitle = Label(master = self.accountFrame, text = "Account", font = ("", 36), bg = Constants.mainWindowBgColor)
         self.accountTitle.place(x = 55, y = 0, anchor = "nw")
 
-        self.account = GUI_Account.GUI_Account(parent)
+        self.account = GUI_Account.GUI_Account(parent, self.Main)
 
     def InitInvestment(self, parent: Frame):
 

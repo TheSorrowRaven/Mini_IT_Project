@@ -1,6 +1,9 @@
 # Raven
 
 
+# Save File Location/Name
+saveFile = "GoTFinale.sucks"
+
 # Window Names
 mainWindow    = "Main"
 warningWindow = "Warning"

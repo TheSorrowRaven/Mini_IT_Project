@@ -24,22 +24,5 @@ class Pickler():
         if summer.path.exists(self.jar):
             self.pickles = pickle.load(open(self.jar, "rb"))
         else:
-            raise(Exception("Wrong Jar BTICH"))
+            self.pickles = {}
 
-class shit():
-    length = 0
-    shits = 0
-    def __init__(self, shits):
-        self.shits = shits
-        self.length = shits * 69
-
-pickler = Pickler()
-test = {"a": shit(420), "b": shit(69)}
-
-# Saving
-pickler.TurnToPickle("testDict", test)
-pickler.PickleIntoJar()
-
-pickler.UnpickleJar()
-print(pickler.pickles["testDict"])
-print(pickler.pickles["testDict"]["a"].shits)
