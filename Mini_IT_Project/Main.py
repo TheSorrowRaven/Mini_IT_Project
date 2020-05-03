@@ -31,7 +31,7 @@ class Master:
     def LaunchApp(self):
         self.root = Tk()
         self.a = 0
-        self.root.protocol("WM_DELETE_WINDOW", self.SaveAll)
+        self.root.protocol("WM_DELETE_WINDOW", self.ExitRoot)
         app = GUI.GUI(self, root = self.root, window = Constants.mainWindow)
         app.root.mainloop()
 
@@ -55,6 +55,7 @@ class Master:
         self.root.quit()
 
     def SaveAll(self):
+        print("Save Call")
         for i in self.saveEvents:
             i.OnSave()
         self.IO.PickleIntoJar()

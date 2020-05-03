@@ -21,4 +21,11 @@ class Transaction():
     category = None
 
 class Category():
+    parent = None
+    name = ""
+    
+    def __init__(self, name, parent = None):
+        self.name = name
+        self.parent = parent
+
     pass
