@@ -4,10 +4,9 @@ from PIL import Image, ImageTk
 import Constants
 import Functions
 
-import Planner
-import Account
-import Investment
-
+import GUI_Planner
+import GUI_Account
+import GUI_Investment
 
 # GUI
 # 1. EmptyWindow
@@ -122,7 +121,7 @@ class GUI(Frame):
         self.plannerButton = Button(master = parent, command = lambda: self.Planner(self.plannerFrame))
         self.accountButton = Button(master = parent, command = lambda: self.Account(self.accountFrame))
         self.investButton  = Button(master = parent, command = lambda: self.Investment(self.investmentFrame))
-        self.quitButton    = Button(master = parent, command = lambda: self.root.quit())
+        self.quitButton    = Button(master = parent, command = lambda: self.Main.ExitRoot())
 
         self.plannerButton.place(x = 640, y = Constants.firstButtonYVal, anchor = "nw")
         self.accountButton.place(x = 740, y = Constants.firstButtonYVal + Constants.nextButtonYDiff, anchor = "nw")
@@ -160,7 +159,7 @@ class GUI(Frame):
         self.plannerTitle = Label(master = self.plannerFrame, text = "Planner", font = ("", 36), bg = Constants.mainWindowBgColor)
         self.plannerTitle.place(x = 55, y = 0, anchor = "nw")
 
-        self.planner = Planner.Planner(parent)
+        self.planner = GUI_Planner.GUI_Planner(parent)
 
     def InitAccount(self, parent: Frame):
 
@@ -174,7 +173,7 @@ class GUI(Frame):
         self.accountTitle = Label(master = self.accountFrame, text = "Account", font = ("", 36), bg = Constants.mainWindowBgColor)
         self.accountTitle.place(x = 55, y = 0, anchor = "nw")
 
-        self.account = Account.Account(parent)
+        self.account = GUI_Account.GUI_Account(parent, self.Main)
 
     def InitInvestment(self, parent: Frame):
 
@@ -188,7 +187,7 @@ class GUI(Frame):
         self.investmentTitle = Label(master = self.investmentFrame, text = "Investment", font = ("", 36), bg = Constants.mainWindowBgColor)
         self.investmentTitle.place(x = 55, y = 0, anchor = "nw")
 
-        self.investment = Investment.Investment(parent)
+        self.investment = GUI_Investment.GUI_Investment(parent)
 
     def InitNavBar(self, parent: Frame):
         

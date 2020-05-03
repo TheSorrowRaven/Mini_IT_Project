@@ -1,11 +1,24 @@
 # Raven
-from tkinter import Frame
-import Constants
 
-class Account:
+class Account():
 
-    def __init__(self, parent: Frame):
-        
-        
+    balance = 0
+
+    def __init__(self):
+
+
 
         pass
+
+    def EarnAmount(self, amount):
+        self.balance += amount
+    
+    def LoseAmount(self, amount):
+        self.balance -= amount
+
+class Transaction():
+    cash = 0
+    category = None
+
+class Category():
+    pass
