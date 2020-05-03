@@ -63,6 +63,9 @@ while True:
         else:
             break
 
+    elif do_something == 3:
+        picker = int(input('Press 1 for Ethereum, Press 2 for Bitcoin , Press 3 for Ripple: '))
+
     else:
         print('Invalid input, please try again')
     
