@@ -5,6 +5,7 @@ import Constants
 class GUI_Investment:
 
     def __init__(self, parent: Frame):
+        
         self.investmentDesc = Label(master = parent, text = "NOTE: If you don't have a Luno Account", font = ("", 24), bg = Constants.mainWindowBgColor)
         self.investmentDesc.place(x = 600, y = 300, anchor = "center")
         self.investmentDesc2 = Label(master = parent, text = "Please signup first from the Luno Website", font = ("", 24), bg = Constants.mainWindowBgColor)
@@ -31,4 +32,3 @@ class GUI_Investment:
         pass
 
     #def BuyCoins(self, parent: Frame):      Planned future feature
-

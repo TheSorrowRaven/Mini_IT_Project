@@ -11,3 +11,5 @@ NOTE: Not all currency change are actual to what the user gets , allow user to d
 Raven: The above currencyconversion.py guideline is now outdated, use the public functions instead
 
 Raven: GUYS! TRY RUNNING Main.py
+
+Darwisy: for piechart.py, need to install matplotlib
