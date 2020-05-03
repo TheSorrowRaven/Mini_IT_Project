@@ -65,7 +65,7 @@ class GUI_Account(Interfaces.IOnSave):
 
         self.addCategoryEntry = Entry(master = self.categoryFrame, textvariable = self.entryStrVar, width = 30)
         self.addCategoryEntry.place(relx = 0.1, rely = 0.9, anchor = "sw")
-        self.addCategoryEntry.bind("<Enter>", lambda e: ButtonCreateCategory())
+        self.addCategoryEntry.bind("<Return>", lambda e: ButtonCreateCategory())
 
         self.addCategoryButton = Button(master = self.categoryFrame, text = "+", command = ButtonCreateCategory)
         

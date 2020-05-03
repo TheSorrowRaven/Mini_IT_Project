@@ -31,7 +31,6 @@ class Master:
 
     def LaunchApp(self):
         self.root = Tk()
-        self.a = 0
         self.root.protocol("WM_DELETE_WINDOW", self.ExitRoot)
         app = GUI.GUI(self, root = self.root, window = Constants.mainWindow)
         app.root.mainloop()
