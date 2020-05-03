@@ -19,6 +19,7 @@ class Master:
         # Make sure this runs
         print("Main")
         
+        
     def GetSavedData(self, key):
         if (key in self.IO.pickles):
             return self.IO.pickles[key]
