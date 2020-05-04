@@ -21,11 +21,9 @@ myAcc.DepositMoney(20)      #So myAcc got 20 money
 
 fongsAcc = BankAccount()  # Object creation
 
-fongsAcc.DepositMoney(100)    #Fong's rich
+fongsAcc.DepositMoney(100)    #Add money to Fong Account
 
 fongsAcc.WithdrawMoney(10) #Taxes
-
-
 
 print(myAcc.amount)
 print(fongsAcc.amount)
