@@ -1,8 +1,12 @@
 # Raven
 
+import datetime
+
 class Account():
 
+    name = None
     balance = 0
+    transactions = []
 
     def __init__(self):
 
@@ -16,9 +20,32 @@ class Account():
     def LoseAmount(self, amount):
         self.balance -= amount
 
+    def CreateTransaction(self, amount, category, title, description, dateTime, otherSubject):
+        transaction = Transaction()
+        transaction.amount = amount
+        transaction.category = category
+        transaction.title = title
+        transaction.description = description
+        transaction.dateTime = dateTime
+        transaction.otherSubject = otherSubject
+
+    def AddTransaction(self, transaction):
+        self.transactions.append(transaction)
+
 class Transaction():
-    cash = 0
+    amount = 0
     category = None
+    title = None
+    description = None
+    dateTime = None
+    creationDateTime = None
+    otherSubject = None
+
+    def __init__(self):
+        self.creationDateTime = datetime.datetime.now()
+
+    def printData(self):
+        print("Amount: {}, Title: {}, Desc: {}, Other Subject: {}".format(self.amount, self.title, self.description, self.otherSubject))
 
 class Category():
     parent = None
