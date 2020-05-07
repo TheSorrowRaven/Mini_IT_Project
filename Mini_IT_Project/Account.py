@@ -5,7 +5,6 @@ import datetime
 class Account():
 
     name = None
-    balance = 0
 
     def __init__(self):
         self.transactions = []
@@ -13,20 +12,14 @@ class Account():
 
         pass
 
-    def EarnAmount(self, amount):
-        self.balance += amount
-    
-    def LoseAmount(self, amount):
-        self.balance -= amount
-
-    def CreateTransaction(self, amount, category, title, description, dateTime, otherSubject):
-        transaction = Transaction()
-        transaction.amount = amount
-        transaction.category = category
-        transaction.title = title
-        transaction.description = description
-        transaction.dateTime = dateTime
-        transaction.otherSubject = otherSubject
+    def GetBalance(self):
+        calcBalance = 0
+        for i in self.transactions:
+            if (i.isIncome):
+                calcBalance += i.amount
+            else:
+                calcBalance -= i.amount
+        return calcBalance
 
     def AddTransaction(self, transaction):
         self.transactions.append(transaction)
@@ -34,18 +27,16 @@ class Account():
 
 class Transaction():
     amount = 0
+    isIncome = True
     category = None
     title = None
     description = None
-    dateTime = None
+    date = None
     creationDateTime = None
     otherSubject = None
 
     def __init__(self):
         self.creationDateTime = datetime.datetime.now()
-
-    def printData(self):
-        print("Amount: {}, Title: {}, Desc: {}, Other Subject: {}".format(self.amount, self.title, self.description, self.otherSubject))
 
 class Category():
     parent = None
@@ -54,6 +45,18 @@ class Category():
     def __init__(self, name, parent = None):
         self.name = name
         self.parent = parent
+
+    def GetFullPath(self) -> str:
+        loop = True
+        i = self
+        text = self.name
+        while loop:
+            i = i.parent
+            if i is None:
+                loop = False
+            else:
+                text = i.name + " - " + text
+        return text
 
     pass
 
