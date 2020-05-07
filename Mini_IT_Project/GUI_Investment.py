@@ -11,7 +11,7 @@ class GUI_Investment:
 
     def __init__(self, parent: Frame, main): 
         self.Main = main
-        self.parent = parent  
+        self.parent = parent
         super().__init__()
         self.login = main.GetSavedData("API Key")
         self.password = main.GetSavedData("API Secret")
@@ -32,22 +32,66 @@ class GUI_Investment:
                 self.passwordlabel.place(x = 390, y = 460, anchor = "center")
                 self.password = Entry(master = parent, textvariable = "API Secret", font = ("", 24), show ="*")
                 self.password.place(x = 800, y = 460, anchor = "center")
+                self.data = Client(api_key_id= self.login , api_key_secret= self.password)
+                self.loginBtn = Button(master = parent, text="Login", command = self.MainScreen)
+                self.loginBtn.place(x = 1000, y = 520, anchor = "center")
+
+            else:
+                self.MainScreen(parent)
             
-            self.loginBtn = Button(master = parent, text="Login", command = self.MainScreen)
-            self.loginBtn.place(x = 1000, y = 520, anchor = "center")
-            data = Client(api_key_id= self.login , api_key_secret= self.password)     #required to get data from Luno Site
 
-    def MainScreen(self):
-        self.loginBtn.destroy()    #Test improper function in OOP
+    def MainScreen(self, parent: Frame):
+        self.loginBtn.destroy()
+        self.login.destroy()
+        self.passwordlabel.destroy()
+        self.password.destroy()
 
-        pass
+        #Display current cryptobalance
+        self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
+        self.balancelabel.place(anchor = "nw")
+        self.balancebtc = Entry(master = parent, text = self.CryptoBalance(1) , bd =1)
+        self.balancebtc.place(anchor = "nw", relx = 1.3 , rely = 1.5)
+        self.balanceeth = Entry(master = parent, text = self.CryptoBalance(2) , bd =1)
+        self.balanceeth.place(anchor = "nw", relx = 1.3 , rely = 1.5)
+        self.balancexrp = Entry(master = parent, text = self.CryptoBalance(3) , bd =1)
+        self.balancexrp.place(anchor = "nw", relx = 1.3 , rely = 1.5)
 
-    def ShowPrices(self, parent: Frame):
+        #Display current prices
+        self.balancelabel = Label(master = parent, text="The current price is :", font = ("", 26), bg = Constants.mainWindowBgColor)
+        self.balancelabel.place(anchor = "ne")
+        self.balancebtc = Entry(master = parent, text = self.CryptoBalance(1) , bd =1)
+        self.balancebtc.place(anchor = "ne", relx = -1.3 , rely = -1.5)
+        self.balanceeth = Entry(master = parent, text = self.CryptoBalance(2) , bd =1)
+        self.balanceeth.place(anchor = "ne", relx = -1.3 , rely = -1.5)
+        self.balancexrp = Entry(master = parent, text = self.CryptoBalance(3) , bd =1)
+        self.balancexrp.place(anchor = "ne", relx = -1.3 , rely = -1.5)
+        
+    def CryptoBalance(self, value):     #required to get data from Luno Site
+        self.json_data = self.data.get_tickers()
+        if value == 1:
+            self.bitcoinbal = self.json_data['balance'][2]['balance']
+            return self.bitcoinbal
 
-        pass
+        elif value == 2:
+            self.ethereumbal = self.json_data['balance'][0]['balance']
+            return self.ethereumbal
 
-    def CurrentBalance(self, parent: Frame):
+        elif value == 3:
+            self.xrpbal = self.json_data['balance'][3]['balance']
+            return self.xrpbal
 
-        pass
+    def ShowPrice(self, value):
+        self.json_data = self.data.get_tickers()
+        if value == 1:
+            self.bitcoinprice = self.json_data['tickers'][3]['ask']
+            return self.bitcoinprice
+
+        elif value == 2:
+            self.ethereumprice = self.json_data['tickers'][1]['ask']
+            return self.ethereumprice
+
+        elif value == 3:
+            self.xrpprice = self.json_data['tickers'][1]['ask']
+            return self.ethereumprice
 
     #def BuyCoins(self, parent: Frame):      Planned future feature
