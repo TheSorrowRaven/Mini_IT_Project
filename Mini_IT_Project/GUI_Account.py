@@ -3,6 +3,7 @@ from tkinter import Frame, ttk, Entry, Button, StringVar, OptionMenu, Label, BOT
 import Constants
 import Interfaces
 import Account
+import Statistics
 
 class GUI_Account(Interfaces.IOnSave):
 
@@ -14,14 +15,10 @@ class GUI_Account(Interfaces.IOnSave):
         self.Main.SaveData("CategoriesList", self.categories)
         self.Main.SaveData("SelectedAccount", self.selectedAccount)
 
-    def __init__(self, parent: Frame, main):
+    def GoToStatistics(self, parent:Frame):
+        Statistics.Statistics(parent)
 
-        def Statistics():
-            self.statisticsDesc2 = Label(master = parent, text = "click to see statistics", font = ("", 12), bg = Constants.mainWindowBgColor)
-            self.statisticsDesc2.place(x = 0.9, y = 0.9, anchor = "sw")
-            self.proceedBtn = Button(master = parent, text="Proceed" , command = lambda : self.Statistics ) 
-            self.proceedBtn.place(x = 0.9, y = 0.9, anchor = "sw")
-            pass
+    def __init__(self, parent: Frame, main):
 
         self.Main = main
         self.parent = parent
@@ -41,10 +38,12 @@ class GUI_Account(Interfaces.IOnSave):
         if (self.selectedAccount is None):
             self.selectedAccount = self.accounts[0]
 
+        self.TransHistoryFrame()
         self.InitAccountFrame()
         self.InitIncomeExpenseFrame()
-        self.TransHistoryFrame()
         
+        self.statsButton = Button(master = parent, text= "Statistics", command = lambda : self.GoToStatistics(parent)) 
+        self.statsButton.place(x = 60, y = 710, anchor = "sw")
 
 
 
