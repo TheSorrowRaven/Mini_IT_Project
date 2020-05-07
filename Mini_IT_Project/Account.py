@@ -6,10 +6,9 @@ class Account():
 
     name = None
     balance = 0
-    transactions = []
 
     def __init__(self):
-
+        self.transactions = []
 
 
         pass

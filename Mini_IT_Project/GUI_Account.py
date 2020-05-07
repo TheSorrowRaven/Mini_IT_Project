@@ -3,6 +3,7 @@ from tkinter import Frame, ttk, Entry, Button, StringVar, OptionMenu, Label, BOT
 import Constants
 import Interfaces
 import Account
+import Statistics
 
 class GUI_Account(Interfaces.IOnSave):
 
@@ -14,14 +15,10 @@ class GUI_Account(Interfaces.IOnSave):
         self.Main.SaveData("CategoriesList", self.categories)
         self.Main.SaveData("SelectedAccount", self.selectedAccount)
 
-    def __init__(self, parent: Frame, main):
+    def GoToStatistics(self, parent:Frame):
+        Statistics.Statistics(parent)
 
-        def Statistics():
-            self.statisticsDesc2 = Label(master = parent, text = "click to see statistics", font = ("", 12), bg = Constants.mainWindowBgColor)
-            self.statisticsDesc2.place(x = 0.9, y = 0.9, anchor = "sw")
-            self.proceedBtn = Button(master = parent, text="Proceed" , command = lambda : self.Statistics ) 
-            self.proceedBtn.place(x = 0.9, y = 0.9, anchor = "sw")
-            pass
+    def __init__(self, parent: Frame, main):
 
         self.Main = main
         self.parent = parent
@@ -41,10 +38,12 @@ class GUI_Account(Interfaces.IOnSave):
         if (self.selectedAccount is None):
             self.selectedAccount = self.accounts[0]
 
+        self.TransHistoryFrame()
         self.InitAccountFrame()
         self.InitIncomeExpenseFrame()
-        self.TransHistoryFrame()
         
+        self.statsButton = Button(master = parent, text= "Statistics", command = lambda : self.GoToStatistics(parent)) 
+        self.statsButton.place(x = 60, y = 710, anchor = "sw")
 
 
 
@@ -220,18 +219,24 @@ class GUI_Account(Interfaces.IOnSave):
             self.transHistoryFrame.pack_forget()
         except Exception:
             pass
+        self.transHistoryTree.delete(*self.transHistoryTree.get_children())
 
         self.transHistoryFrame.pack()
         self.transHistoryTree.pack()
 
-        self.transHistoryTree["columns"] = ("Title", "Amount")
+        self.transHistoryTree["columns"] = ("Title", "Amount", "Other Subject")
 
-        self.transHistoryTree.column("#0", width = 20)
-        self.transHistoryTree.column("#1", width = 20)
-        self.transHistoryTree.column("#2", width = 20)
+        self.transHistoryTree.column("#0", width = 40)
+        self.transHistoryTree.column("#1", width = 100)
+        self.transHistoryTree.column("#2", width = 100)
+        self.transHistoryTree.column("#3", width = 100)
 
-        self.transHistoryTree.heading("#0", text = "Title")
-        self.transHistoryTree.heading("#1", text = "Amount")
+        self.transHistoryTree.heading("#1", text = "Title")
+        self.transHistoryTree.heading("#2", text = "Amount")
+        self.transHistoryTree.heading("#3", text = "Subject")
+
+        for i in self.accounts:
+            print(i.transactions)
 
         for i in range(0, len(transactions)):
             self.GrowTransactionHistory(self.transHistoryTree, transactions[i], i)
@@ -241,6 +246,13 @@ class GUI_Account(Interfaces.IOnSave):
         pass
 
     def GrowTransactionHistory(self, tree: ttk.Treeview, transaction: Account.Transaction, index):
+        
+        subject = transaction.otherSubject
+        if (type(transaction.otherSubject) is Account.Account):
+            subject = transaction.otherSubject.name
+        
+        tree.insert("", index, text = str(index + 1), values = (transaction.title, transaction.amount, subject))
+        
         pass
 
 
