@@ -15,6 +15,14 @@ class GUI_Account(Interfaces.IOnSave):
         self.Main.SaveData("SelectedAccount", self.selectedAccount)
 
     def __init__(self, parent: Frame, main):
+
+        def Statistics():
+            self.statisticsDesc2 = Label(master = parent, text = "click to see statistics", font = ("", 12), bg = Constants.mainWindowBgColor)
+            self.statisticsDesc2.place(x = 0.9, y = 0.9, anchor = "sw")
+            self.proceedBtn = Button(master = parent, text="Proceed" , command = lambda : self.Statistics ) 
+            self.proceedBtn.place(x = 0.9, y = 0.9, anchor = "sw")
+            pass
+
         self.Main = main
         self.parent = parent
         super().__init__(main)
