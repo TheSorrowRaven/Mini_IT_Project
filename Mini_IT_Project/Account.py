@@ -24,6 +24,7 @@ class Account():
     def AddTransaction(self, transaction):
         self.transactions.append(transaction)
 
+
 class Transaction():
     amount = 0
     isIncome = True
@@ -57,3 +58,14 @@ class Category():
                 text = i.name + " - " + text
         return text
 
+    pass
+
+class BankAccount():
+    def __init__(self): # When BankAccount is created, this will be instantly called
+        self.amount = 0 # Upon creation, their money is set to 0
+
+    def DepositMoney(self, money):
+        self.amount = self.amount + money
+
+    def WithdrawMoney(self, money):
+        self.amount = self.amount - money
