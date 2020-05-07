@@ -219,18 +219,24 @@ class GUI_Account(Interfaces.IOnSave):
             self.transHistoryFrame.pack_forget()
         except Exception:
             pass
+        self.transHistoryTree.delete(*self.transHistoryTree.get_children())
 
         self.transHistoryFrame.pack()
         self.transHistoryTree.pack()
 
-        self.transHistoryTree["columns"] = ("Title", "Amount")
+        self.transHistoryTree["columns"] = ("Title", "Amount", "Other Subject")
 
-        self.transHistoryTree.column("#0", width = 20)
-        self.transHistoryTree.column("#1", width = 20)
-        self.transHistoryTree.column("#2", width = 20)
+        self.transHistoryTree.column("#0", width = 40)
+        self.transHistoryTree.column("#1", width = 100)
+        self.transHistoryTree.column("#2", width = 100)
+        self.transHistoryTree.column("#3", width = 100)
 
-        self.transHistoryTree.heading("#0", text = "Title")
-        self.transHistoryTree.heading("#1", text = "Amount")
+        self.transHistoryTree.heading("#1", text = "Title")
+        self.transHistoryTree.heading("#2", text = "Amount")
+        self.transHistoryTree.heading("#3", text = "Subject")
+
+        for i in self.accounts:
+            print(i.transactions)
 
         for i in range(0, len(transactions)):
             self.GrowTransactionHistory(self.transHistoryTree, transactions[i], i)
@@ -240,6 +246,13 @@ class GUI_Account(Interfaces.IOnSave):
         pass
 
     def GrowTransactionHistory(self, tree: ttk.Treeview, transaction: Account.Transaction, index):
+        
+        subject = transaction.otherSubject
+        if (type(transaction.otherSubject) is Account.Account):
+            subject = transaction.otherSubject.name
+        
+        tree.insert("", index, text = str(index + 1), values = (transaction.title, transaction.amount, subject))
+        
         pass
 
 
