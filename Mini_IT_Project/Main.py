@@ -6,7 +6,6 @@ import GUI
 import Rick
 import Interfaces
 
-# Master Class (Backbone)
 class Master:
 
 

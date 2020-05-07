@@ -9,9 +9,6 @@ class Account():
     def __init__(self):
         self.transactions = []
 
-
-        pass
-
     def GetBalance(self):
         calcBalance = 0
         for i in self.transactions:
@@ -23,6 +20,36 @@ class Account():
 
     def AddTransaction(self, transaction):
         self.transactions.append(transaction)
+
+
+class BankAccount(Account): #Inheritance
+
+    interestRate = 0    # In percentage, currently 0%
+
+    def __init__(self):
+        super().__init__() #Calls base class __init__()
+
+    def SetInterests(self, interestRate):
+        self.interestRate = interestRate
+
+    def GainInterests(self):
+        currentBalance = super().GetBalance()
+        # SO basically from here is basic maths
+        gainedInterest = currentBalance * self.interestRate / 100
+
+        transaction = Transaction()
+        transaction.amount = gainedInterest
+        transaction.isIncome = True
+        transaction.category = None # We set as None otherwise will be super super complicated
+        transaction.title = "Interests"
+        transaction.description = str(datetime.datetime.now()) + " Added" # Over here we can be creative, by setting when the interest is gained
+        transaction.date = datetime.date.today()
+        transaction.creationDateTime = datetime.datetime.now()
+        transaction.otherSubject = "Bank"   # Over here I dk what it's called but I'll say BANK paid the interests
+
+        #So all done
+
+        super().AddTransaction(transaction) # Over here we just add into the list
 
 
 class Transaction():
@@ -59,5 +86,4 @@ class Category():
         return text
 
     pass
-
 

@@ -209,7 +209,60 @@ class GUI_Account(Interfaces.IOnSave):
         self.balanceDisplay = Label(master = self.accountChoiceFrame, font = "Arial 14", bg = Constants.mainWindowBgColor)
         self.balanceDisplay.grid(row = 1, column = 1)
 
+        ## INTERESTS BELOW ##
+
+        self.interestFrame = Frame(master = self.accountChoiceFrame, bg = Constants.mainWindowAltColor)
+
+        self.LInterestTxt = Label(master = self.interestFrame, text = "Interests:")
+        self.LInterest = Label(master = self.interestFrame)    # Label is for text, we'll use later for displaying
+
+        self.interestEntrySV = StringVar()  # this is to catch input from entry
+        self.accountInterestEntry = Entry(master = self.interestFrame, textvariable = self.interestEntrySV, width = 6) #This is Entry, for the user to put in their desired interest
+        self.accountInterestButton = Button (master = self.interestFrame, text = "Update Interest")  # After the user sets the interest in the Entry, the user will press this button to SET
+
+        self.LInterestTxt.grid          (row = 0, column = 0)
+        self.LInterest.grid             (row = 0, column = 1)
+        self.accountInterestEntry.grid  (row = 1, column = 0)
+        self.accountInterestButton.grid (row = 1, column = 1)
+
+        # This is my custom value checker, quite powerful haha
+        def AmountVerifier(currentString):
+            try:
+                dotCount = 0
+                for i in currentString.get():
+                    if (i != "."):
+                        int(i)
+                    else:
+                        dotCount += 1
+                if (dotCount > 1):
+                    int("a")    # Shameful Haha
+                self.previousInterest = currentString.get()
+            except ValueError:
+                currentString.set(self.previousInterest)
+
+        def SetInterest():
+            self.selectedAccount.SetInterests(float(self.interestEntrySV.get()))
+            self.LInterest.configure(text = str(self.selectedAccount.interestRate) + "%")
+
+        
+        self.previousInterest = ""
+        self.interestEntrySV.trace("w", lambda name, index, mode, sv = self.interestEntrySV: AmountVerifier(sv))    #This verifies the number thing
+
+        self.accountInterestButton.configure(command = SetInterest)     #Here we set the interest
+
+        # Test Button #
+
+        def GETRICH():
+            self.selectedAccount.GainInterests()
+            self.RefreshTransHistory()
+            self.RefreshAccountBalance()
+
+        self.GetRichButton = Button(master = self.parent, text = "Get Rich By Interests", command = GETRICH)
+        self.GetRichButton.place(relx = 0.5, rely = 0.99, anchor = "s")
+    
+
         self.AccountSelect(self.selectedAccount)
+
 
     def InitTransHistory(self):
         
@@ -322,9 +375,19 @@ class GUI_Account(Interfaces.IOnSave):
 
     def AccountSelect(self, selectedAccount):
         self.accountChoice.set(selectedAccount.name)
-        self.balanceDisplay.configure(text = selectedAccount.GetBalance())
+
+        self.balanceDisplay.configure(text = selectedAccount.GetBalance())  # This is where we update the amount
+
+        if isinstance(selectedAccount, Account.BankAccount):   # Here we check the type, if it's like Cash In Hand Account we WONT disply the text
+            self.interestFrame.grid(row = 0, column = 3, rowspan = 2, padx = (40, 0))   #This should work, i also not sure for Python, that's why we test
+            self.LInterest.configure(text = str(selectedAccount.interestRate) + "%")
+
+        else:
+            self.interestFrame.grid_forget()
+
         self.selectedAccount = selectedAccount
         self.RefreshTransHistory()
+        
 
     def RefreshAccountBalance(self):
         self.balanceDisplay.configure(text = self.selectedAccount.GetBalance())
@@ -363,7 +426,7 @@ class GUI_Account(Interfaces.IOnSave):
         self.accounts = []
         cashAccount = Account.Account()
         cashAccount.name = "Cash In Hand"
-        bankAccount = Account.Account()
+        bankAccount = Account.BankAccount()
         bankAccount.name = "Bank Account"
 
         self.accounts.append(cashAccount)
