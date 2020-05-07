@@ -33,6 +33,10 @@ class BankAccount(Account): #Inheritance
         self.interestRate = interestRate
 
     def GainInterests(self):
+
+        if self.interestRate == 0:
+            return
+
         currentBalance = super().GetBalance()
         # SO basically from here is basic maths
         gainedInterest = currentBalance * self.interestRate / 100
