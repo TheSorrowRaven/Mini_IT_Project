@@ -10,9 +10,10 @@ warningWindow = "Warning"
 queryWindow   = "Query"
 
 # Main Window Base
-mainDisplayTitle  = "Smart Financial Planner"
-mainWindowSize    = "1280x720"
-mainWindowBgColor = "white"
+mainDisplayTitle   = "Smart Financial Planner"
+mainWindowSize     = "1280x720"
+mainWindowBgColor  = "white"
+mainWindowAltColor = "#EDEDED"
 
 # Warning Window Base
 warningDisplayTitle  = "Warning"
