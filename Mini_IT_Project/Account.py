@@ -32,7 +32,7 @@ class Account():
     def AddTransaction(self, transaction):
         self.transactions.append(transaction)
 
-    def Interest(self, ):
+    def Interest(self):
 
 
 class Transaction():
@@ -59,3 +59,14 @@ class Category():
         self.parent = parent
 
     pass
+
+class BankAccount():
+
+    def __init__(self): # When BankAccount is created, this will be instantly called
+        self.amount = 0 # Upon creation, their money is set to 0
+
+    def DepositMoney(self, money):
+        self.amount = self.amount + money
+
+    def WithdrawMoney(self, money):
+        self.amount = self.amount - money
