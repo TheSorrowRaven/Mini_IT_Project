@@ -1,8 +1,9 @@
 # Raven
-from tkinter import Frame, ttk, Entry, Button, StringVar, OptionMenu, Label
+from tkinter import Frame, ttk, Entry, Button, StringVar, OptionMenu, Label, BOTH, Canvas
 import Constants
 import Interfaces
 import Account
+import Statistics
 
 class GUI_Account(Interfaces.IOnSave):
 
@@ -14,7 +15,11 @@ class GUI_Account(Interfaces.IOnSave):
         self.Main.SaveData("CategoriesList", self.categories)
         self.Main.SaveData("SelectedAccount", self.selectedAccount)
 
+    def GoToStatistics(self, parent:Frame):
+        Statistics.Statistics(parent)
+
     def __init__(self, parent: Frame, main):
+
         self.Main = main
         self.parent = parent
         super().__init__(main)
@@ -33,71 +38,21 @@ class GUI_Account(Interfaces.IOnSave):
         if (self.selectedAccount is None):
             self.selectedAccount = self.accounts[0]
 
-        self.categoryFrame = Frame(master = parent, width = 400, height = 300)
-        self.categoryFrame.place(relx = 0.5, rely = 0.5, anchor = "nw")
-
-
-        self.displayCategoryTree = ttk.Treeview(self.categoryFrame)
-        self.GrowCategoryTree(self.displayCategoryTree)
-        self.displayCategoryTree.place(relx = 0.5, rely = 0, anchor = "n")
-        self.displayCategoryTree.column("#0", width = 380)
-
-        def OnCategoryEntryChanged(entryText):
-            state = self.CheckCategory(entryText.get())
-            if (state == 0):
-                self.addCategoryEntry.configure(fg = "red")
-                self.addCategoryButton.place(relx = 1, rely = 1, anchor = "nw")
-                # Hide add button
-            elif (state == 1):
-                self.addCategoryEntry.configure(fg = "red")
-                self.addCategoryButton.place(relx = 1, rely = 1, anchor = "nw")
-                # Hide add button and color text red
-            else:
-                self.addCategoryEntry.configure(fg = "black")
-                self.addCategoryButton.place(relx = 0.9, rely = 0.9, anchor = "se")
-                # Show add button
-
-        self.entryStrVar = StringVar()
-        self.entryStrVar.trace("w", lambda name, index, mode, sv=self.entryStrVar: OnCategoryEntryChanged(sv))
-
-        def ButtonCreateCategory(): 
-            if (self.CheckCreateCategory(self.addCategoryEntry.get(), self.displayCategoryTree.item(self.displayCategoryTree.focus())["text"])):
-                self.RefreshCategory()
-            else:
-                print("Error Creating Category")
-
-        self.addCategoryEntry = Entry(master = self.categoryFrame, textvariable = self.entryStrVar, width = 30)
-        self.addCategoryEntry.place(relx = 0.1, rely = 0.9, anchor = "sw")
-        self.addCategoryEntry.bind("<Return>", lambda e: ButtonCreateCategory())
-
-        self.addCategoryButton = Button(master = self.categoryFrame, text = "+", command = ButtonCreateCategory)
+        self.TransHistoryFrame()
+        self.InitAccountFrame()
+        self.InitIncomeExpenseFrame()
         
+        self.statsButton = Button(master = parent, text= "Statistics", command = lambda : self.GoToStatistics(parent)) 
+        self.statsButton.place(x = 60, y = 710, anchor = "sw")
 
 
-        self.accountChoiceFrame = Frame(master = parent)
-        self.accountChoiceFrame.pack()
 
-        accountNames = [i.name for i in self.accounts]
 
-        self.accountChoice = StringVar()
-        def AccountChoiceChanged(choice):
-            for i in self.accounts:
-                if (choice == i.name):
-                    self.AccountSelect(i)
-                    break
-        
-        self.accountChoice.trace("w", lambda name, index, mode, choice = self.accountChoice: AccountChoiceChanged(choice.get()))
+    def InitIncomeExpenseFrame(self):
 
-        self.accountChoiceDropdown = OptionMenu(self.accountChoiceFrame, self.accountChoice, *accountNames)
-        self.accountChoiceDropdown.pack()
-
-        self.balanceDisplay = Label(master = self.accountChoiceFrame)
-        self.balanceDisplay.pack()
-
-        self.AccountSelect(self.selectedAccount)
-
-        self.transactionAdderFrame = Frame(master = parent)
-        self.transactionAdderFrame.pack()
+        self.transactionAdderFrame = Frame(master = self.parent, width = 300, height = 680, bg = "pink")
+        self.transactionAdderFrame.pack_propagate(0)
+        self.transactionAdderFrame.place(relx = 0.99, rely = 0.5, anchor = "e")
 
         def AmountVerifier(currentString):
             try:
@@ -154,10 +109,84 @@ class GUI_Account(Interfaces.IOnSave):
         self.LDesc.pack()
         self.transDesc.pack()
 
-        self.transDoneButton.pack()
-        self.transTitle.pack()
-        self.transOtherSubject.pack()
 
+        ## BELOW ## Category Section
+    
+        self.categoryFrame = Frame(master = self.transactionAdderFrame, width = 300, height = 250)
+        #self.categoryFrame.place(relx = 0.5, rely = 0.99, anchor = "s")
+        self.categoryFrame.pack()
+
+
+        self.displayCategoryTree = ttk.Treeview(self.categoryFrame)
+        self.GrowCategoryTree(self.displayCategoryTree)
+        self.displayCategoryTree.place(relx = 0.5, rely = 0, anchor = "n")
+        self.displayCategoryTree.column("#0", width = 280)
+
+        def OnCategoryEntryChanged(entryText):
+            state = self.CheckCategory(entryText.get())
+            if (state == 0):
+                self.addCategoryEntry.configure(fg = "red")
+                self.addCategoryButton.place(relx = 1, rely = 1, anchor = "nw")
+                # Hide add button
+            elif (state == 1):
+                self.addCategoryEntry.configure(fg = "red")
+                self.addCategoryButton.place(relx = 1, rely = 1, anchor = "nw")
+                # Hide add button and color text red
+            else:
+                self.addCategoryEntry.configure(fg = "black")
+                self.addCategoryButton.place(relx = 0.9, rely = 0.9, anchor = "se")
+                # Show add button
+
+        self.entryStrVar = StringVar()
+        self.entryStrVar.trace("w", lambda name, index, mode, sv=self.entryStrVar: OnCategoryEntryChanged(sv))
+
+        def ButtonCreateCategory(): 
+            if (self.CheckCreateCategory(self.addCategoryEntry.get(), self.displayCategoryTree.item(self.displayCategoryTree.focus())["text"])):
+                self.RefreshCategory()
+            else:
+                print("Error Creating Category")
+
+        self.addCategoryEntry = Entry(master = self.categoryFrame, textvariable = self.entryStrVar, width = 30)
+        self.addCategoryEntry.place(relx = 0.1, rely = 0.9, anchor = "sw")
+        self.addCategoryEntry.bind("<Return>", lambda e: ButtonCreateCategory())
+
+        self.addCategoryButton = Button(master = self.categoryFrame, text = "+", command = ButtonCreateCategory)
+
+        
+        self.transDoneButton.pack()
+        self.transCancelButton.pack()
+        
+    def InitAccountFrame(self):
+
+        self.accountChoiceFrame = Frame(master = self.parent, bg = Constants.mainWindowBgColor)
+        self.accountChoiceFrame.place(x = 60, y = 60, anchor = "nw")
+
+        accountNames = [i.name for i in self.accounts]
+
+        self.accountChoice = StringVar()
+        def AccountChoiceChanged(choice):
+            for i in self.accounts:
+                if (choice == i.name):
+                    self.AccountSelect(i)
+                    break
+        
+        self.accountChoice.trace("w", lambda name, index, mode, choice = self.accountChoice: AccountChoiceChanged(choice.get()))
+
+        self.accountChoiceDropdown = OptionMenu(self.accountChoiceFrame, self.accountChoice, *accountNames)
+        self.accountChoiceDropdown.pack()
+
+        self.balanceDisplay = Label(master = self.accountChoiceFrame)
+        self.balanceDisplay.pack()
+
+        self.AccountSelect(self.selectedAccount)
+
+    def TransHistoryFrame(self):
+        
+        self.transHistoryFrame = Frame(master = self.parent)
+        self.transHistoryTree = ttk.Treeview(master = self.transHistoryFrame)
+        self.transHistorySB = ttk.Scrollbar(orient = "vertical", command = self.transHistoryTree.yview)
+
+        pass
 
     def AddTransaction(self):
         conversion = 0
@@ -179,18 +208,59 @@ class GUI_Account(Interfaces.IOnSave):
         trans.title = self.enteredTitle.get()
         trans.description = self.enteredDesc.get()
         self.selectedAccount.AddTransaction(trans)
-        self.GrowTransactionHistory()
+        self.RefreshTransHistory()
         trans.printData()
-        
-    def GrowTransactionHistory(self):
+
+    def RefreshTransHistory(self):
+
+        transactions = self.selectedAccount.transactions
+
+        try:
+            self.transHistoryFrame.pack_forget()
+        except Exception:
+            pass
+        self.transHistoryTree.delete(*self.transHistoryTree.get_children())
+
+        self.transHistoryFrame.pack()
+        self.transHistoryTree.pack()
+
+        self.transHistoryTree["columns"] = ("Title", "Amount", "Other Subject")
+
+        self.transHistoryTree.column("#0", width = 40)
+        self.transHistoryTree.column("#1", width = 100)
+        self.transHistoryTree.column("#2", width = 100)
+        self.transHistoryTree.column("#3", width = 100)
+
+        self.transHistoryTree.heading("#1", text = "Title")
+        self.transHistoryTree.heading("#2", text = "Amount")
+        self.transHistoryTree.heading("#3", text = "Subject")
+
+        for i in self.accounts:
+            print(i.transactions)
+
+        for i in range(0, len(transactions)):
+            self.GrowTransactionHistory(self.transHistoryTree, transactions[i], i)
+
+            
         print("transaction history update")
         pass
+
+    def GrowTransactionHistory(self, tree: ttk.Treeview, transaction: Account.Transaction, index):
+        
+        subject = transaction.otherSubject
+        if (type(transaction.otherSubject) is Account.Account):
+            subject = transaction.otherSubject.name
+        
+        tree.insert("", index, text = str(index + 1), values = (transaction.title, transaction.amount, subject))
+        
+        pass
+
 
     def AccountSelect(self, selectedAccount):
         self.accountChoice.set(selectedAccount.name)
         self.balanceDisplay.configure(text = selectedAccount.balance)
         self.selectedAccount = selectedAccount
-        self.GrowTransactionHistory()
+        self.RefreshTransHistory()
 
 
     def NewUserCategories(self):
