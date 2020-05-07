@@ -4,7 +4,7 @@ from tkcalendar import Calendar
 import Constants
 import Interfaces
 import Account
-import Statistics
+import statistics
 import datetime
 
 class GUI_Account(Interfaces.IOnSave):
@@ -18,7 +18,7 @@ class GUI_Account(Interfaces.IOnSave):
         self.Main.SaveData("SelectedAccount", self.selectedAccount)
 
     def GoToStatistics(self, parent:Frame):
-        Statistics.Statistics(parent)
+        statistics.Statistics(parent)
 
     def __init__(self, parent: Frame, main):
 
