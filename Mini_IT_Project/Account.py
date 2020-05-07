@@ -32,8 +32,6 @@ class Account():
     def AddTransaction(self, transaction):
         self.transactions.append(transaction)
 
-    def Interest(self):
-
 
 class Transaction():
     amount = 0
@@ -61,7 +59,6 @@ class Category():
     pass
 
 class BankAccount():
-
     def __init__(self): # When BankAccount is created, this will be instantly called
         self.amount = 0 # Upon creation, their money is set to 0
 
