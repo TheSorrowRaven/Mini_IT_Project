@@ -32,6 +32,9 @@ class Account():
     def AddTransaction(self, transaction):
         self.transactions.append(transaction)
 
+    def Interest(self, ):
+
+
 class Transaction():
     amount = 0
     category = None

@@ -2,8 +2,8 @@
 
 class BankAccount():
 
-    def __init__(self): # When BankAccount is created, this will be instantly called
-        self.amount = 0 # Upon creation, their money is set to 0
+    def __init__(self, money): # When BankAccount is created, this will be instantly called
+        self.amount = money # Upon creation, their money is set to 0
 
     def DepositMoney(self, money):
         self.amount = self.amount + money
@@ -15,11 +15,11 @@ class BankAccount():
 
 
 
-myAcc = BankAccount()   # Object creation
+myAcc = BankAccount(100)   # Object creation
 
 myAcc.DepositMoney(20)      #So myAcc got 20 money
 
-fongsAcc = BankAccount()  # Object creation
+fongsAcc = BankAccount(100)  # Object creation
 
 fongsAcc.DepositMoney(100)    #Add money to Fong Account
 
