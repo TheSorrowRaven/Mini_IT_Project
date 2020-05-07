@@ -187,7 +187,7 @@ class GUI(Frame):
         self.investmentTitle = Label(master = self.investmentFrame, text = "Investment", font = ("", 36), bg = Constants.mainWindowBgColor)
         self.investmentTitle.place(x = 55, y = 0, anchor = "nw")
 
-        self.investment = GUI_Investment.GUI_Investment(parent)
+        self.investment = GUI_Investment.GUI_Investment(parent, self.Main)
 
     def InitNavBar(self, parent: Frame):
         
