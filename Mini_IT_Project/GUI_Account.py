@@ -211,7 +211,7 @@ class GUI_Account(Interfaces.IOnSave):
 
 
         ## Add Account Below ##
-        self.addAccFrame = Frame(master = self.accountChoiceFrame, bg = "pink")
+        self.addAccFrame = Frame(master = self.accountChoiceFrame, bg = Constants.mainWindowAltColor)
         self.addAccFrame.grid(row = 0, column = 3, rowspan = 2, padx = (10, 10))
 
         def AddAccount(isBank):
