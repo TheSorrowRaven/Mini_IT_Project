@@ -4,7 +4,7 @@ from tkcalendar import Calendar
 import Constants
 import Interfaces
 import Account
-import statistics
+import Statistics
 import datetime
 
 class GUI_Account(Interfaces.IOnSave):
@@ -18,7 +18,7 @@ class GUI_Account(Interfaces.IOnSave):
         self.Main.SaveData("SelectedAccount", self.selectedAccount)
 
     def GoToStatistics(self, parent:Frame):
-        statistics.Statistics(parent)
+        Statistics.Statistics(parent)
 
     def __init__(self, parent: Frame, main):
 
@@ -43,6 +43,7 @@ class GUI_Account(Interfaces.IOnSave):
         self.InitTransHistory()
         self.InitAccountFrame()
         self.InitIncomeExpenseFrame()
+        self.RefreshAccountSelect()
         
         self.statsButton = Button(master = parent, text= "Statistics", command = lambda : self.GoToStatistics(parent)) 
         self.statsButton.place(x = 60, y = 710, anchor = "sw")
@@ -187,8 +188,6 @@ class GUI_Account(Interfaces.IOnSave):
         self.accountChoiceFrame = Frame(master = self.parent, bg = Constants.mainWindowBgColor)
         self.accountChoiceFrame.place(x = 60, y = 60, anchor = "nw")
 
-        accountNames = [i.name for i in self.accounts]
-
         self.accountChoice = StringVar()
         def AccountChoiceChanged(choice):
             for i in self.accounts:
@@ -201,13 +200,42 @@ class GUI_Account(Interfaces.IOnSave):
         self.LAccountChoice = Label(self.accountChoiceFrame, text = "Operating Account:", font = "Arial 8", bg = Constants.mainWindowBgColor)
         self.LAccountChoice.grid(row = 0, column = 0, columnspan = 2)
 
+        accountNames = [i.name for i in self.accounts]
+
         self.accountChoiceDropdown = OptionMenu(self.accountChoiceFrame, self.accountChoice, *accountNames)
-        self.accountChoiceDropdown["font"] = "Arial 14"
-        self.accountChoiceDropdown["bg"] = Constants.mainWindowBgColor
-        self.accountChoiceDropdown.grid(row = 1, column = 0)
+
 
         self.balanceDisplay = Label(master = self.accountChoiceFrame, font = "Arial 14", bg = Constants.mainWindowBgColor)
         self.balanceDisplay.grid(row = 1, column = 1)
+        
+
+
+        ## Add Account Below ##
+        self.addAccFrame = Frame(master = self.accountChoiceFrame, bg = "pink")
+        self.addAccFrame.grid(row = 0, column = 3, rowspan = 2, padx = (10, 10))
+
+        def AddAccount(isBank):
+            name = self.addAccEntrySV.get()
+            if (isBank):
+                acc = Account.BankAccount()
+            else:
+                acc = Account.Account()
+            acc.name = name
+            self.accounts.append(acc)
+            self.addAccEntrySV.set("")
+            self.selectedAccount = acc
+            self.RefreshAccountSelect()
+
+        self.addAccEntrySV = StringVar()
+        self.addAccEntry = Entry(master = self.addAccFrame, textvariable = self.addAccEntrySV, width = 35)
+        self.addAccButton = Button(master = self.addAccFrame, text = "Add Normal Account", command = lambda: AddAccount(False))
+        self.addAccButton2 = Button(master = self.addAccFrame, text = "Add Bank Account", command = lambda: AddAccount(True))
+
+        self.addAccEntry.grid(row = 0, column = 0, columnspan = 2, pady = (1, 1))
+        self.addAccButton.grid(row = 1, column = 0, padx = (1, 1))
+        self.addAccButton2.grid(row = 1, column = 1, padx = (1, 1))
+
+
 
         ## INTERESTS BELOW ##
 
@@ -262,8 +290,7 @@ class GUI_Account(Interfaces.IOnSave):
     
 
         self.AccountSelect(self.selectedAccount)
-
-
+    
     def InitTransHistory(self):
         
         def updateScroll(event):
@@ -279,7 +306,15 @@ class GUI_Account(Interfaces.IOnSave):
         self.transHistorySBX.grid(row = 1, column = 0, sticky = "wes")
         self.transHistoryTree.bind("<Configure>", updateScroll)
 
-        pass
+
+    def RefreshAccountSelect(self):
+        self.accountChoiceDropdown.grid_forget()
+        accountNames = [i.name for i in self.accounts]
+        self.accountChoiceDropdown = OptionMenu(self.accountChoiceFrame, self.accountChoice, *accountNames)
+        self.accountChoiceDropdown["font"] = "Arial 14"
+        self.accountChoiceDropdown["bg"] = Constants.mainWindowBgColor
+        self.accountChoiceDropdown.grid(row = 1, column = 0)
+        self.AccountSelect(self.selectedAccount)
 
     def AddTransaction(self, isIncome):
         conversion = 0
@@ -372,23 +407,24 @@ class GUI_Account(Interfaces.IOnSave):
         
         pass
 
-
     def AccountSelect(self, selectedAccount):
-        self.accountChoice.set(selectedAccount.name)
+
+        if (selectedAccount is None):
+            return
 
         self.balanceDisplay.configure(text = selectedAccount.GetBalance())  # This is where we update the amount
 
         if isinstance(selectedAccount, Account.BankAccount):   # Here we check the type, if it's like Cash In Hand Account we WONT disply the text
-            self.interestFrame.grid(row = 0, column = 3, rowspan = 2, padx = (40, 0))   #This should work, i also not sure for Python, that's why we test
+            self.interestFrame.grid(row = 0, column = 4, rowspan = 2, padx = (40, 0))   #This should work, i also not sure for Python, that's why we test
             self.LInterest.configure(text = str(selectedAccount.interestRate) + "%")
 
         else:
             self.interestFrame.grid_forget()
 
         self.selectedAccount = selectedAccount
+        self.accountChoice.set(selectedAccount.name)
         self.RefreshTransHistory()
         
-
     def RefreshAccountBalance(self):
         self.balanceDisplay.configure(text = self.selectedAccount.GetBalance())
 
