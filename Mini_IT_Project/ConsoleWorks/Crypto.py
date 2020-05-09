@@ -123,9 +123,7 @@ def CreateAccount(picker):
         name = input('Enter Name')
         json_data = data.create_account('XRP', name)
         print(json_data)
-
-
-
+        
 #Authorization with the Luno API
 user_credentials = {}                  #Allow user prompt only if theres no data
 
