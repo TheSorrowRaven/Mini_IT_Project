@@ -23,7 +23,6 @@ class GUI_Investment:
     def LoginMenu(self, parent: Frame):
             self.investmentDesc2.destroy()
             if (self.login is None):
-                self.selectedAccount = self.login[0]
                 self.loginlabel = Label(master = parent, text = "API Key:", font = ("", 24), bg = Constants.mainWindowBgColor)
                 self.loginlabel.place(x = 400, y = 420, anchor = "center")
                 self.login = Entry(master = parent, textvariable ="API Key", font = ("", 24))
@@ -33,7 +32,7 @@ class GUI_Investment:
                 self.password = Entry(master = parent, textvariable = "API Secret", font = ("", 24), show ="*")
                 self.password.place(x = 800, y = 460, anchor = "center")
                 self.data = Client(api_key_id= self.login , api_key_secret= self.password)
-                self.loginBtn = Button(master = parent, text="Login", command = self.MainScreen)
+                self.loginBtn = Button(master = parent, text="Login", command = lambda : self.MainScreen(parent))
                 self.loginBtn.place(x = 1000, y = 520, anchor = "center")
 
             else:
@@ -41,10 +40,10 @@ class GUI_Investment:
             
 
     def MainScreen(self, parent: Frame):
+         
+        #Post Login
         self.loginBtn.destroy()
-        self.login.destroy()
         self.passwordlabel.destroy()
-        self.password.destroy()
 
         #Display current cryptobalance
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
