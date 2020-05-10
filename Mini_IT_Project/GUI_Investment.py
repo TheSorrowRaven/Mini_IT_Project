@@ -24,6 +24,24 @@ class GUI_Investment:
         self.proceedBtn.pack()
 
     def LoginMenu(self, parent: Frame):
+
+            def LoginTest(login, password):
+                self.api = login.get()      #Save before deleting the widget            
+                self.secret = password.get()
+                print(self.api)
+                print(self.secret)
+                self.data = Client(api_key_id= self.api , api_key_secret= self.secret)
+                
+                #Test login before letting user log in     
+                try:
+                    trial = self.data.get_balances()
+                    print(trial)
+                    self.MainScreen(parent)
+
+                except Exception as e:
+                    print(e)
+                    tkinter.messagebox.showerror(title="Login Error", message="Invalid api key or api key secret, please try again")
+
             self.investmentDesc2.destroy()
             self.proceedBtn.destroy()
             if (self.login is None):
@@ -35,12 +53,15 @@ class GUI_Investment:
                 self.passwordlabel.place(x = 390, y = 460, anchor = "center")
                 self.password = Entry(master = parent, textvariable = "API Secret", font = ("", 24), show ="*")
                 self.password.place(x = 800, y = 460, anchor = "center")
-                self.loginBtn = Button(master = parent, text="Login", command = lambda : self.MainScreen(parent))
+                self.loginBtn = Button(master = parent, text="Login", command = lambda : LoginTest(self.login, self.password))
                 self.loginBtn.place(x = 1000, y = 520, anchor = "center")
 
             else:
+                self.api = self.login.get()      #Save before deleting the widget            
+                self.secret = self.password.get()
+                self.data = Client(api_key_id= self.api , api_key_secret= self.secret)
                 self.MainScreen(parent)
-            
+
 
     def MainScreen(self, parent: Frame):
          
@@ -48,9 +69,6 @@ class GUI_Investment:
         self.loginBtn.destroy()
         self.loginlabel.destroy()
         self.passwordlabel.destroy()
-        self.api = self.login.get()      #Save before deleting the widget            
-        self.secret = self.password.get()
-        self.data = Client(api_key_id= self.api , api_key_secret= self.secret)
         self.login.delete(0)
         self.password.delete(0)
 
@@ -88,7 +106,7 @@ class GUI_Investment:
         self.configbtn = Button(text="Manage crypto", command = self.CoinOption)
         self.configbtn.place(x = 700, y = 120, anchor = "nw")
 
-
+            
     def CryptoBalance(self, value):     #required to get data from Luno Site
         self.json_data = self.data.get_balances()
         if value == 1:
@@ -118,7 +136,7 @@ class GUI_Investment:
             return self.xrpprice
     
 
-    def CoinOption(self):
+    def CoinOption(self):       #Buy or Sell a Coin
         self.configbtn.destroy()
         self.optionwindow = Toplevel()               #opens a new window for user to decide
         self.labelinfo = Label(self.optionwindow, text='Would you like to :', font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -129,58 +147,80 @@ class GUI_Investment:
         self.buy.pack()
         self.sell.pack()
 
+    def CryptoinRM(self, buysell, function):      #Display coin value in RM
+        try:
+            actualbuy = float(buysell)
+            thevalue = float(self.ShowPrice(1))
+            if function == 1:
+                self.currencycalc = actualbuy * thevalue
+            elif function == 2:
+                self.currencycalc = actualbuy / thevalue
+            else:
+                print('The Master Chief is an anime weeb')
+
+            print(self.currencycalc)
+            self.textdisplay = "RM {}" 
+            self.actualtextdisplay = self.textdisplay.format(self.currencycalc)
+            self.currencydisplay = Label(self.optionwindow, text = self.actualtextdisplay, font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.currencydisplay.grid(row=1, column=1)
+        
+        except Exception as e:
+            print(e)
+            tkinter.messagebox.showerror(title="Input Error", message="Invalid input")
+
     def BuyCoins(self):
 
         self.buy.destroy()
         self.sell.destroy()
 
         def ConfirmMsgBox(value, crypto):
-            tkinter.messagebox.showinfo("Confirm Transaction", "Would you like to proceed with transaction of {} {}?").format(value, crypto)
+
+            tkinter.messagebox.showinfo("Confirm Transaction", "Would you like to proceed with transaction of {} {}?".format(value, crypto))
 
         def FunctionDestroyer():      #Destroys widget without repetitive code
             self.buybtcbtn.destroy()
             self.buyethbtn.destroy()
             self.buyxrpbtn.destroy()
-
+           
         def BTC():
             FunctionDestroyer()
             self.buylabel = Label(self.optionwindow, text='Enter BTC to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.buylabel.place(anchor = 'nw')
+            self.buylabel.grid(row=0)
             self.btcbuy = Entry(self.optionwindow, textvariable ="Total BTC", font = ("", 24))
-            self.btcbuy.place(anchor = 'ne')
-            self.buylabel.pack()
-            self.btcbuy.pack()
-            self.actualbuy = float(self.btcbuy.get())
-            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = ConfirmMsgBox(self.actualbuy, "BTC"))
+            self.btcbuy.grid(row=0, column=1)
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcbuy.get(), 1))
+            self.viewbuy.grid(row=1)
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : ConfirmMsgBox(self.btcbuy.get(), "BTC"))
+            self.confirmbuy.grid(row=2, column=1)
 
         def ETH():
             FunctionDestroyer()
             self.buylabel = Label(self.optionwindow, text='Enter ETH to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.buylabel.place(anchor = 'nw')
+            self.buylabel.grid(row=0)
             self.ethbuy = Entry(self.optionwindow, textvariable ="Total ETH", font = ("", 24))
-            self.ethbuy.place(anchor = 'ne')
-            self.buylabel.pack()
-            self.ethbuy.pack()
-            self.actualbuy = float(self.ethbuy.get())
-            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = ConfirmMsgBox(self.actualbuy, "ETH"))
+            self.ethbuy.grid(row=0, column=1)
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethbuy.get(), 1))
+            self.viewbuy.grid(row=1)
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = ConfirmMsgBox(self.ethbuy, "ETH"))
+            self.confirmbuy.grid(row=2, column=1)
 
         def XRP():
             FunctionDestroyer()
             self.buylabel = Label(self.optionwindow, text='Enter XRP to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.buylabel.place(anchor = 'nw')
+            self.buylabel.grid(row=0)
             self.xrpbuy = Entry(self.optionwindow, textvariable ="Total XRP", font = ("", 24))
-            self.xrpbuy.place(anchor = 'ne')
-            self.buylabel.pack()
-            self.xrpbuy.pack()
-            self.actualbuy = float(self.xrpbuy.get())
-            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = ConfirmMsgBox(self.actualbuy, "XRP"))
+            self.xrpbuy.grid(row=0, column=1)
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpbuy.get(), 1))
+            self.viewbuy.grid(row=1)
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = ConfirmMsgBox(self.xrpbuy, "XRP"))
+            self.confirmbuy.grid(row=2, column=1)
         
         self.buybtcbtn = Button(self.optionwindow, text="Buy BTC", command = BTC)
-        self.buybtcbtn.place(anchor = 'nw')
+        self.buybtcbtn.grid(anchor = 'nw')
         self.buyethbtn = Button(self.optionwindow, text="Buy ETH", command = ETH)
-        self.buyethbtn.place(anchor = 'center')
+        self.buyethbtn.grid(anchor = 'center')
         self.buyxrpbtn = Button(self.optionwindow, text="Buy XRP", command = XRP)
-        self.buyxrpbtn.place(anchor = 'ne')
+        self.buyxrpbtn.grid(anchor = 'ne')
         self.buybtcbtn.pack()
         self.buyethbtn.pack()
         self.buyxrpbtn.pack()
@@ -201,36 +241,36 @@ class GUI_Investment:
         def BTC():
             FunctionDestroyer()
             self.selllabel = Label(self.optionwindow, text='Enter BTC to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.selllabel.place(anchor = 'nw')
+            self.selllabel.grid(row=0)
             self.btcsell = Entry(self.optionwindow, textvariable ="Total BTC", font = ("", 24))
-            self.btcsell.place(anchor = 'ne')
-            self.selllabel.pack()
-            self.btcsell.pack()
-            self.actualsell = float(self.btcsell.get())
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.actualsell, "BTC"))
+            self.btcsell.grid(row=0, column=1)
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcsell.get(), 2))
+            self.viewbuy.grid(row=1)
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.btcsell, "BTC"))
+            self.confirmsell.grid(row=2)
 
         def ETH():
             FunctionDestroyer()
             self.selllabel = Label(self.optionwindow, text='Enter ETH to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.selllabel.place(anchor = 'nw')
+            self.selllabel.grid(row=0)
             self.ethsell = Entry(self.optionwindow, textvariable ="Total ETH", font = ("", 24))
-            self.ethsell.place(anchor = 'ne')
-            self.selllabel.pack()
-            self.ethsell.pack()
-            self.actualsell = float(self.ethsell.get())
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.actualsell, "ETH"))
+            self.ethsell.grid(row=0, column=1)
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethsell.get(), 1))
+            self.viewbuy.grid(row=1, column=1)
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.ethsell, "ETH"))
+            self.confirmsell.grid(row=2, column=1)
 
         def XRP():
             FunctionDestroyer()
             self.selllabel = Label(self.optionwindow, text='Enter XRP to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.selllabel.place(anchor = 'nw')
+            self.selllabel.grid(row=0)
             self.xrpsell = Entry(self.optionwindow, textvariable ="Total XRP", font = ("", 24))
-            self.xrpsell.place(anchor = 'ne')
-            self.selllabel.pack()
-            self.xrpsell.pack()
-            self.actualsell = float(self.xrpsell.get())
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.actualsell, "XRP"))
- 
+            self.xrpsell.grid(row=0, column=1)
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpsell.get(), 1))
+            self.viewbuy.grid(row=1)
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.xrpsell, "XRP"))
+            self.confirmsell.grid(row=2, column=1)
+
         self.sellbtcbtn = Button(self.optionwindow, text="Sell BTC", command = BTC)
         self.sellbtcbtn.place(anchor = 'nw')
         self.sellethbtn = Button(self.optionwindow, text="Sell ETH", command = ETH)
