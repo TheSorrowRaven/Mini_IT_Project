@@ -2,7 +2,7 @@
 
 
 # Save File Location/Name
-saveFile = "GoTFinale.sucks"
+saveFile = "pickle.rick"
 
 # Window Names
 mainWindow    = "Main"

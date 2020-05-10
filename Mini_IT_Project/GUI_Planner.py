@@ -1,13 +1,19 @@
 # Raven
-from tkinter import Frame, Label, Button, StringVar, Entry
+from tkinter import Frame, Label, Button, StringVar, Entry, OptionMenu
 from tkcalendar import Calendar
-import Constants
+import Constants as Constants
 import datetime
-import Plans
+import Plans as Plans
+import Interfaces as Interfaces
 
-class GUI_Planner:
+class GUI_Planner(Interfaces.IOnSave):
 
-    def __init__(self, parent: Frame):
+    def OnSave(self):
+        self.main.SaveData("plans", self.Plans)
+
+    def __init__(self, parent: Frame, main):
+        super().__init__(main)
+        self.main = main
         self.parent = parent
 
         # self.plannerDesc = Label(master = parent, text = "This platform all about your budget planner", font = ("", 12), bg = Constants.mainWindowBgColor)
@@ -15,10 +21,26 @@ class GUI_Planner:
         # self.plannerDesc2 = Label(master = parent, text = "\'The safe way to double your money is to fold it over once and put it in your pocket\'", font = ("", 12), bg = Constants.mainWindowBgColor)
         # self.plannerDesc2.place(relx = 1.0, rely = 1.0, anchor = "se")
         
+
+        plans = main.GetSavedData("plans")
+        if (plans is None):
+            self.Plans = Plans.Plans()
+        else:
+            self.Plans = plans
+
+        self.EFrame = Frame(master = self.parent)
+        self.EFrame.place(relx = 0.65, rely = 0.1, anchor = "nw")
+
         self.InitCalendar()
         self.InitTimeEntry()
+        self.InitDetailsEntry()
+        self.InitSyncGC()
 
-        pass
+    def InitSyncGC(self):
+        def Sync():
+            self.Plans.AddAllPlans()
+        self.syncButton = Button(master = self.parent, text = "Sync plans with Google Calendar", command = Sync)
+        self.syncButton.place(relx = 1, rely = 1, anchor = "se")
 
     def InitCalendar(self):
 
@@ -36,11 +58,11 @@ class GUI_Planner:
 
     def InitTimeEntry(self):
 
-        self.timePickerFrame = Frame(master = self.parent)
-        self.timePickerFrame.place(relx = 0.91, y = 75, anchor = "ne")
+        self.timePickerFrame = Frame(master = self.EFrame)
+        self.timePickerFrame.grid(row = 0, column = 1)
 
-        self.LTime = Label(master = self.parent, text = "Start Time:")
-        self.LTime.place(relx = 0.62, y = 55, anchor = "nw")
+        self.LTime = Label(master = self.EFrame, text = "Start Time:")
+        self.LTime.grid(row = 0, column = 0)
 
         self.previousTime = ["08", "00", "00"]
         self.SVTime = [StringVar(), StringVar(), StringVar()]
@@ -103,11 +125,11 @@ class GUI_Planner:
 
 
 
-        self.timePickerFrame2 = Frame(master = self.parent)
-        self.timePickerFrame2.place(relx = 0.91, y = 225, anchor = "ne")
+        self.timePickerFrame2 = Frame(master = self.EFrame)
+        self.timePickerFrame2.grid(row = 1, column = 1)
 
-        self.LTime2 = Label(master = self.parent, text = "End Time:")
-        self.LTime2.place(relx = 0.62, y = 205, anchor = "nw")
+        self.LTime2 = Label(master = self.EFrame, text = "End Time:")
+        self.LTime2.grid(row = 1, column = 0)
 
         self.previousTime2 = ["16", "0", "0"]
         self.SVTime2 = [StringVar(), StringVar(), StringVar()]
@@ -168,6 +190,84 @@ class GUI_Planner:
             self.EntryTime2[i].grid(row = 2, column = i, padx = (2, 2), pady = (2, 2))
             self.LsplitTime2[i].grid(row = 0, column = i)
     
+    def InitDetailsEntry(self):
+        self.detailsFrame = Frame(master = self.EFrame)
+        self.detailsFrame.grid(row = 2, column = 1, pady = (10, 5))
+
+        parent = self.detailsFrame
+
+        self.LTitle = Label(master = parent, text = "Title:")
+        self.LTitle.grid(row = 0, column = 0)
+        self.SVTitle = StringVar()
+        self.ETitle = Entry(master = parent, textvariable = self.SVTitle)
+        self.ETitle.grid(row = 0, column = 1, columnspan = 2, padx = (0,2))
+
+        self.LLocation = Label(master = parent, text = "Location:")
+        self.LLocation.grid(row = 1, column = 0)
+        self.SVLocation = StringVar()
+        self.ELocation = Entry(master = parent, textvariable = self.SVLocation)
+        self.ELocation.grid(row = 1, column = 1, columnspan = 2, padx = (0,2))
+
+        self.LDesc = Label(master = parent, text = "Description:")
+        self.LDesc.grid(row = 2, column = 0)
+        self.SVDesc = StringVar()
+        self.EDesc = Entry(master = parent, textvariable = self.SVDesc)
+        self.EDesc.grid(row = 2, column = 1, columnspan = 2, padx = (0,2))
+
+        self.LFreq = Label(master = parent, text = "Count & Frequency:")
+        self.LFreq.grid(row = 3, column = 0)
+
+        def VerifyNumber(string):
+            if string == "":
+                self.previousCount = string
+            else:
+                try:
+                    int(string)
+                    self.previousCount = string
+                except ValueError:
+                    self.SVCount.set(self.previousCount)
+
+        self.previousCount = "1"
+        self.SVCount = StringVar()
+        self.SVCount.set("1")
+        self.SVCount.trace("w", lambda name, index, mode, choice = self.SVCount: VerifyNumber(choice.get()))
+        self.ECount = Entry(master = parent, textvariable = self.SVCount, width = 5)
+        self.ECount.grid(row = 3, column = 1)
+
+
+        self.SVFreq = StringVar()
+        freqOptions = ["YEARLY", "MONTHLY", "WEEKLY", "DAILY"]
+        self.OFreq = OptionMenu(parent, self.SVFreq, *freqOptions)
+        self.OFreq.grid(row = 3, column = 2)
+        self.SVFreq.set("MONTHLY")
+
+        self.BSubmit = Button(master = parent, text = "Add Plan", command = self.SubmitPlan)
+        self.BSubmit.grid(row = 4, column = 0, columnspan = 3, pady = (4, 4))
+
+
+        
+    def SubmitPlan(self):
+        title = self.SVTitle.get()
+        location = self.SVLocation.get()
+        desc = self.SVDesc.get()
+        freq = self.SVFreq.get()
+        count = self.SVCount.get()
+
+        self.RetrieveDateTime()
+
+        startTime = self.rStartDT
+        endTime = self.rEndDT
+
+        self.Plans.AddPlan(title, location, desc, freq, startTime, endTime, count)
+        self.Clear()
+        
+    def Clear(self):
+        self.SVTitle.set("")
+        self.SVLocation.set("")
+        self.SVDesc.set("")
+        self.SVFreq.set("MONTHLY")
+        self.SVCount.set("1")
+
     def VerifyDTDiff(self):
         self.RetrieveDateTime()
         if self.rEndDT < self.rStartDT:
@@ -175,12 +275,13 @@ class GUI_Planner:
                 i.configure(fg = "red")
             for i in self.EntryTime2:
                 i.configure(fg = "red")
-            ######################## PUT BUTTON UNABLE TO CLICK ###############################
+            self.BSubmit.grid_forget()
         else:
             for i in self.EntryTime:
                 i.configure(fg = "black")
             for i in self.EntryTime2:
                 i.configure(fg = "black")
+            self.BSubmit.grid(row = 4, column = 0, columnspan = 3, pady = (4, 4))
 
 
     def RetrieveDateTime(self):

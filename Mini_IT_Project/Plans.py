@@ -9,9 +9,9 @@ from google.auth.transport.requests import Request
 
 class Plans():
 
-    def __init__(self):
 
-        self.InitGCalendar()
+    def __init__(self):
+        self.plans = []
 
     def InitGCalendar(self):
         SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -29,32 +29,53 @@ class Plans():
                 flow = InstalledAppFlow.from_client_secrets_file(
                     'credentials.json', SCOPES)
                 creds = flow.run_local_server(port=0)
-            # Save the credentials for the next run
             with open('token.pickle', 'wb') as token:
                 pickle.dump(creds, token)
 
         self.service = build('calendar', 'v3', credentials=creds)
 
+    def AddPlan(self, title, location, description, frequency, startDT, endDT, count):
+        plan = Plan()
+        plan.title = title
+        plan.location = location
+        plan.description = description
+        plan.frequency = frequency
+        plan.startDT = startDT
+        plan.endDT = endDT
+        plan.count = count
+
+        self.plans.append(plan)
+
+        print(self.plans)
+
+    def AddAllPlans(self):
+        self.InitGCalendar()
+        for i in self.plans:
+            if not i.added:
+                i.service = self.service
+                i.SetGEvent()
+
+    
+
+
 class Plan():
 
+    added = False
     title = ""
     location = ""
     description = ""
     frequency = "MONTHLY"
+    count = 1
 
-    def __init__(self, service):
+    def __init__(self):
         self.startDT = None
         self.endDT = None
-        self.stopDT = None
-        self.service = service
+        self.service = None
 
     def SetGEvent(self):
 
-        self.stopDT = self.stopDT - datetime.timedelta(hours=8)
-
-        startTime = self.startDT.strftime("%y-%m-%dT%H:%M:%S")
-        endTime = self.endDT.strftime("%y-%m-%dT%H:%M:%S")
-        stopTime = datetime.datetime().now().strftime("%y%m%dT%H%M%SZ")
+        startTime = self.startDT.strftime("%Y-%m-%dT%H:%M:%S")
+        endTime = self.endDT.strftime("%Y-%m-%dT%H:%M:%S")
 
         event = {
         'summary': self.title,
@@ -62,19 +83,24 @@ class Plan():
         'description': self.description,
         'start': {
             'dateTime': startTime,
-            'timeZone': 'Malaysia',
+            'timeZone': 'Asia/Kuala_Lumpur',
         },
         'end': {
             'dateTime': endTime,
-            'timeZone': 'Malaysia',
+            'timeZone': 'Asia/Kuala_Lumpur',
         },
         'recurrence': [
-            'RRULE:FREQ='+ self.frequency +';UNTIL=' + stopTime
+            'RRULE:FREQ='+ self.frequency +';COUNT=' + self.count
         ],
         'reminders': {
             'useDefault': True
         },
         }
 
-        event = self.service.events().insert(calendarId='primary', body=event).execute()
-        print ('Event created: %s' % (event.get('htmlLink')))
+        try:
+            event = self.service.events().insert(calendarId='primary', body=event).execute()
+            self.added = True
+            print ('Event created: %s' % (event.get('htmlLink')))
+        except Exception as e:
+            print(e)
+        

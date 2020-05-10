@@ -159,7 +159,7 @@ class GUI(Frame):
         self.plannerTitle = Label(master = self.plannerFrame, text = "Planner", font = ("", 36), bg = Constants.mainWindowBgColor)
         self.plannerTitle.place(x = 55, y = 0, anchor = "nw")
 
-        self.planner = GUI_Planner.GUI_Planner(parent)
+        self.planner = GUI_Planner.GUI_Planner(parent, self.Main)
 
     def InitAccount(self, parent: Frame):
 
