@@ -6,6 +6,9 @@ import tkinter.messagebox
 
 class GUI_Investment:
 
+    api_key = []
+    api_secret = []
+
     def OnSave(self):
         self.Main.SaveData("API Key", self.login)
         self.Main.SaveData("API Secret", self.password)
@@ -132,17 +135,6 @@ class GUI_Investment:
         elif value == 3:
             self.xrpprice = self.json_data['tickers'][14]['ask']
             return self.xrpprice
-    
-
-    def CoinOption(self):       #Buy or Sell a Coin
-        self.optionwindow = Toplevel()               #opens a new window for user to decide
-        self.labelinfo = Label(self.optionwindow, text='Would you like to :', font = ("", 26), bg = Constants.mainWindowBgColor)
-        self.buy = Button(self.optionwindow, text="Buy coins", command = self.BuyCoins)
-        self.buy.place(anchor ='nw')
-        self.sell = Button(self.optionwindow, text="Sell Coins", command = self.SellCoins)
-        self.sell.place(anchor ='ne')
-        self.buy.pack()
-        self.sell.pack()
 
     def CryptoinRM(self, buysell, function):      #Display coin value in RM
         try:
@@ -164,6 +156,18 @@ class GUI_Investment:
         except Exception as e:
             print(e)
             tkinter.messagebox.showerror(title="Input Error", message="Invalid input")
+
+    
+
+    def CoinOption(self):       #Buy or Sell a Coin
+        self.optionwindow = Toplevel()               #opens a new window for user to decide
+        self.labelinfo = Label(self.optionwindow, text='Would you like to :', font = ("", 26), bg = Constants.mainWindowBgColor)
+        self.buy = Button(self.optionwindow, text="Buy coins", command = self.BuyCoins)
+        self.buy.place(anchor ='nw')
+        self.sell = Button(self.optionwindow, text="Sell Coins", command = self.SellCoins)
+        self.sell.place(anchor ='ne')
+        self.buy.pack()
+        self.sell.pack()
 
     def BuyCoins(self):
 
