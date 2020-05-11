@@ -18,7 +18,7 @@ class GUI_Account(Interfaces.IOnSave):
         self.Main.SaveData("SelectedAccount", self.selectedAccount)
 
     def GoToStatistics(self, parent:Frame):
-        GUI_Stats.Statistics(parent)
+        GUI_Stats.Statistics(parent, self)
 
     def __init__(self, parent: Frame, main):
 
