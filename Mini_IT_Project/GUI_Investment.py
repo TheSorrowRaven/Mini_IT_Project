@@ -17,11 +17,9 @@ class GUI_Investment:
         self.login = main.GetSavedData("API Key")
         self.password = main.GetSavedData("API Secret")
         self.investmentDesc2 = Label(master = parent, text = "Please signup first from the Luno Website", font = ("", 24), bg = Constants.mainWindowBgColor)
-        self.investmentDesc2.place(x = 600, y = 360, anchor = "center")
+        self.investmentDesc2.place(x = 660, y = 360, anchor = "center")
         self.proceedBtn = Button(master = parent, text="Proceed" , command = lambda : self.LoginMenu(parent)) #might change bg in a later date
         self.proceedBtn.place(x = 660, y = 420, anchor = "center")
-        self.investmentDesc2.pack()
-        self.proceedBtn.pack()
 
     def LoginMenu(self, parent: Frame):
 
@@ -69,8 +67,8 @@ class GUI_Investment:
         self.loginBtn.destroy()
         self.loginlabel.destroy()
         self.passwordlabel.destroy()
-        self.login.delete(0)
-        self.password.delete(0)
+        self.login.destroy()
+        self.password.destroy()
 
         #Display current cryptobalance
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -92,18 +90,18 @@ class GUI_Investment:
         self.balancelabel = Label(master = parent, text="The current price is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61, y = 420)
         self.balancebtc = Label(master = parent, text = self.ShowPrice(1) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balancebtc.place(anchor = "nw", x = 300 , y = 480)
+        self.balancebtc.place(anchor = "nw", x = 200 , y = 480)
         self.btclabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
         self.btclabel.place(anchor = 'nw', x = 61, y = 480)
         self.balanceeth = Label(master = parent, text = self.ShowPrice(2) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balanceeth.place(anchor = "nw", x = 300 , y = 540)
+        self.balanceeth.place(anchor = "nw", x = 200 , y = 540)
         self.ethlabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
         self.ethlabel.place(anchor = 'nw', x = 61, y = 540)
         self.balancexrp = Label(master = parent, text = self.ShowPrice(3) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balancexrp.place(anchor = "nw", x = 300 , y = 600)
+        self.balancexrp.place(anchor = "nw", x = 200 , y = 600)
         self.xrplabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
         self.xrplabel.place(anchor = 'nw', x = 61, y = 600)
-        self.configbtn = Button(text="Manage crypto", command = self.CoinOption)
+        self.configbtn = Button(master = parent, text="Manage crypto", command = self.CoinOption)
         self.configbtn.place(x = 700, y = 120, anchor = "nw")
 
             
@@ -137,7 +135,6 @@ class GUI_Investment:
     
 
     def CoinOption(self):       #Buy or Sell a Coin
-        self.configbtn.destroy()
         self.optionwindow = Toplevel()               #opens a new window for user to decide
         self.labelinfo = Label(self.optionwindow, text='Would you like to :', font = ("", 26), bg = Constants.mainWindowBgColor)
         self.buy = Button(self.optionwindow, text="Buy coins", command = self.BuyCoins)
