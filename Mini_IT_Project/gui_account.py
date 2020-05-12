@@ -17,8 +17,8 @@ class GUI_Account(Interfaces.IOnSave):
         self.Main.SaveData("CategoriesList", self.categories)
         self.Main.SaveData("SelectedAccount", self.selectedAccount)
 
-    def GoToStatistics(self, parent:Frame):
-        GUI_Stats.Statistics(parent, self)
+    def GoToStatistics(self):
+        GUI_Stats.Statistics(self)
 
     def __init__(self, parent: Frame, main):
 
@@ -45,7 +45,7 @@ class GUI_Account(Interfaces.IOnSave):
         self.InitIncomeExpenseFrame()
         self.RefreshAccountSelect()
         
-        self.statsButton = Button(master = parent, text= "Statistics", command = lambda : self.GoToStatistics(parent)) 
+        self.statsButton = Button(master = parent, text= "Statistics", command = lambda : self.GoToStatistics()) 
         self.statsButton.place(x = 60, y = 710, anchor = "sw")
 
 
