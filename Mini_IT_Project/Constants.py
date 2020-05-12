@@ -2,7 +2,7 @@
 
 
 # Save File Location/Name
-saveFile = "pickle.rick"
+saveFile = "PICKLE.RICKKK"
 
 # Window Names
 mainWindow    = "Main"
@@ -13,7 +13,7 @@ queryWindow   = "Query"
 mainDisplayTitle   = "Smart Financial Planner"
 mainWindowSize     = "1280x720"
 mainWindowBgColor  = "white"
-mainWindowAltColor = "#EDEDED"
+mainWindowAltColor = "#ABABAB"
 
 # Warning Window Base
 warningDisplayTitle  = "Warning"
@@ -40,3 +40,8 @@ nextButtonYDiff = 115
 
 # Exceptions
 switchLenException = "Commands List' len() must have +1 default state than Constants List len()"
+
+
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass

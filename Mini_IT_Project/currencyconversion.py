@@ -23,3 +23,8 @@ def convert(current: str, convertTo: str, value: float) -> float:
 
 # print(convert('AUD', 'MYR', 69))
 # print(convert('USD', 'EGP', 420))
+
+
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass

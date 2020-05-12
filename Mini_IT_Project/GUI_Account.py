@@ -1,10 +1,10 @@
 # Raven
 from tkinter import Frame, ttk, Entry, Button, StringVar, OptionMenu, Label, BOTH, Canvas
 from tkcalendar import Calendar
-import Constants
-import Interfaces
-import Account
-import GUI_Stats
+import constants as Constants
+import interfaces as Interfaces
+import account as Account
+import gui_stats as GUI_Stats
 import datetime
 
 class GUI_Account(Interfaces.IOnSave):
@@ -102,9 +102,9 @@ class GUI_Account(Interfaces.IOnSave):
             ClearTransDetails()
             self.RefreshAccountBalance()
 
-        self.transIncomeButton  = Button(master = self.transactionAdderFrame, text = "Add as Income",  command = lambda: AddTransaction(True), bg = Constants.mainWindowAltColor)
-        self.transExpenseButton = Button(master = self.transactionAdderFrame, text = "Add as Expense", command = lambda: AddTransaction(False), bg = Constants.mainWindowAltColor)
-        self.transCancelButton  = Button(master = self.transactionAdderFrame, text = "Clear", command = ClearTransDetails, bg = Constants.mainWindowAltColor)
+        self.transIncomeButton  = Button(master = self.transactionAdderFrame, text = "Add as Income",  command = lambda: AddTransaction(True))
+        self.transExpenseButton = Button(master = self.transactionAdderFrame, text = "Add as Expense", command = lambda: AddTransaction(False))
+        self.transCancelButton  = Button(master = self.transactionAdderFrame, text = "Clear", command = ClearTransDetails)
 
 
         #Calendar
@@ -490,3 +490,8 @@ class GUI_Account(Interfaces.IOnSave):
             if (i.name == parentName):
                 return i
         return None
+
+
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass

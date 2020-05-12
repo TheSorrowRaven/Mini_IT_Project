@@ -1,10 +1,10 @@
 # Raven
-import Constants
 from tkinter import Tk
 
-import GUI
-import Rick
-import Interfaces
+import constants as Constants
+import gui as GUI
+import rick as Rick
+import interfaces as Interfaces
 
 class Master:
 

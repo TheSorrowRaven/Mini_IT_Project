@@ -13,3 +13,8 @@ Raven: The above currencyconversion.py guideline is now outdated, use the public
 Raven: GUYS! TRY RUNNING Main.py
 
 Darwisy: for piechart.py, need to install matplotlib
+
+RAVEN: MAJOR CHANGES
+
+FILE STARTING WITH F IS FLAGGED FOR NOT INCLUDED IN MAIN PROGRAM
+ALL FILES HAS BEEN LOWER-CASED RENAMED

@@ -1,7 +1,7 @@
 from tkinter import Frame
-import GUI_Account
-import Account
-import Interfaces
+import gui_account as GUI_Account
+import account as Account
+import interfaces as Interfaces
 
 class Statistics():
 
@@ -48,3 +48,6 @@ class Statistics():
 
         pass
     
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass

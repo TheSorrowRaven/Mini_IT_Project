@@ -12,3 +12,8 @@ class IOnLoad():
     def OnLoad(self, main):
         main.AddLoadEvent(self)
         pass
+
+    
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass
