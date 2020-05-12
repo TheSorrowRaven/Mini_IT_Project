@@ -23,7 +23,7 @@ class GUI_Account(Interfaces.IOnSave):
     def __init__(self, parent: Frame, main):
 
         self.Main = main
-        self.parent = Frame(master = parent)
+        self.parent = parent
         super().__init__(main)
         self.accounts = main.GetSavedData("AccountsList")
         self.categories = main.GetSavedData("CategoriesList")
