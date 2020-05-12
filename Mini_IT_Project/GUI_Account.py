@@ -23,7 +23,7 @@ class GUI_Account(Interfaces.IOnSave):
     def __init__(self, parent: Frame, main):
 
         self.Main = main
-        self.parent = parent
+        self.parent = Frame(master = parent)
         super().__init__(main)
         self.accounts = main.GetSavedData("AccountsList")
         self.categories = main.GetSavedData("CategoriesList")
@@ -47,7 +47,6 @@ class GUI_Account(Interfaces.IOnSave):
         
         self.statsButton = Button(master = parent, text= "Statistics", command = lambda : self.GoToStatistics(parent)) 
         self.statsButton.place(x = 60, y = 710, anchor = "sw")
-
 
 
 

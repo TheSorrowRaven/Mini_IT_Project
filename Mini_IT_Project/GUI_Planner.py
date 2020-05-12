@@ -15,7 +15,6 @@ class GUI_Planner(Interfaces.IOnSave):
         super().__init__(main)
         self.main = main
         self.parent = parent
-        
 
         plans = main.GetSavedData("plans")
         if (plans is None):
