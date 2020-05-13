@@ -34,7 +34,6 @@ class GUI_Investment:
                 self.logino.place(x = 800, y = 420, anchor = "center")
                 
                 self.login.append(self.logino)
-                print(self.login)
 
             def NewPassword():
                 self.password = []
@@ -44,7 +43,6 @@ class GUI_Investment:
                 self.passwordo.place(x = 800, y = 460, anchor = "center")
 
                 self.password.append(self.passwordo)
-                print(self.password)
 
             def LoginTest(logintest, passwordtest):
                 logintest = logintest.get()
@@ -78,6 +76,8 @@ class GUI_Investment:
             else:
                 self.logindata = self.login[0]
                 self.passworddata = self.password[0]
+                self.logindata = self.logindata.get()
+                self.passworddata = self.passworddata.get()
                 self.data = Client(api_key_id= self.logindata , api_key_secret= self.passworddata)
                 self.MainScreen(parent)
 
@@ -142,25 +142,44 @@ class GUI_Investment:
 
     def ShowPrice(self, value):
         self.json_data = self.data.get_tickers()
+        self.json_data = self.json_data['tickers']
 
         if value == 1:
-            self.bitcoinprice = self.json_data['tickers'][3]['ask']
-            return self.bitcoinprice
+            for i in self.json_data:
+                if i['pair'] == 'XBTMYR':
+                    self.bitcoinprice = i['ask']
+                    float(self.bitcoinprice)
+                    return self.bitcoinprice
 
         elif value == 2:
-            self.ethereumprice = self.json_data['tickers'][1]['ask']
-            return self.ethereumprice
+               for i in self.json_data:
+                if i['pair'] == 'ETHMYR':
+                    self.ethereumprice = i['ask']
+                    float(self.ethereumprice)
+                    return self.ethereumprice
 
         elif value == 3:
-            self.xrpprice = self.json_data['tickers'][14]['ask']
-            return self.xrpprice
+            for i in self.json_data:
+                if i['pair'] == 'XRPMYR':
+                    self.xrpprice = i['ask']
+                    float(self.xrpprice)
+                    return self.xrpprice
 
-    def CryptoinRM(self, buysell, function):      #Display coin value in RM
+    def CryptoinRM(self, buysell, crypto, function):      #Display coin value in RM
  
         try:
-            attempt = 0
             actualbuy = float(buysell)
-            thevalue = float(self.ShowPrice(1))
+            if crypto == 'BTC':
+                thevalue = float(self.ShowPrice(1))
+
+            elif crypto == 'ETH':
+                thevalue = float(self.ShowPrice(2))
+
+            elif crypto == 'XRP':
+                thevalue = float(self.ShowPrice(3))
+            else:
+                print('Halo Infinite this July! :3')
+
             if function == 1:
                 self.currencycalc = actualbuy * thevalue
             elif function == 2:
@@ -168,18 +187,12 @@ class GUI_Investment:
             else:
                 print('The Master Chief is an anime weeb')
 
-            print(self.currencycalc)
+            self.currencycalc = round(self.currencycalc, 2)
             self.textdisplay = "RM {}" 
             self.actualtextdisplay = self.textdisplay.format(self.currencycalc)
-
-            if attempt != 1:
-                self.currencydisplay = Label(self.optionwindow, text = self.actualtextdisplay, font = ("", 26), bg = Constants.mainWindowBgColor)
-                self.currencydisplay.grid(row=1, column=1)
-                attempt += 1
-
-            else:
-                self.currencydisplay.destroy()
-                attempt = 0
+            self.currencydisplay = Label(self.optionwindow, text = self.actualtextdisplay, font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.currencydisplay.grid(row=1, column=1)
+            
             
         except Exception as e:
             print(e)
@@ -217,7 +230,7 @@ class GUI_Investment:
             self.buylabel.grid(row=0)
             self.btcbuy = Entry(self.optionwindow, textvariable ="Total BTC", font = ("", 24))
             self.btcbuy.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcbuy.get(), 1))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcbuy.get(), 'BTC', 1))
             self.viewbuy.grid(row=1)
             self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : ConfirmMsgBox(self.btcbuy.get(), "BTC"))
             self.confirmbuy.grid(row=2, column=1)
@@ -228,9 +241,9 @@ class GUI_Investment:
             self.buylabel.grid(row=0)
             self.ethbuy = Entry(self.optionwindow, textvariable ="Total ETH", font = ("", 24))
             self.ethbuy.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethbuy.get(), 1))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethbuy.get(), 'ETH', 1))
             self.viewbuy.grid(row=1)
-            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = ConfirmMsgBox(self.ethbuy, "ETH"))
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : ConfirmMsgBox(self.ethbuy, "ETH"))
             self.confirmbuy.grid(row=2, column=1)
 
         def XRP():
@@ -239,9 +252,9 @@ class GUI_Investment:
             self.buylabel.grid(row=0)
             self.xrpbuy = Entry(self.optionwindow, textvariable ="Total XRP", font = ("", 24))
             self.xrpbuy.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpbuy.get(), 1))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpbuy.get(), 'XRP', 1))
             self.viewbuy.grid(row=1)
-            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = ConfirmMsgBox(self.xrpbuy, "XRP"))
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : ConfirmMsgBox(self.xrpbuy, "XRP"))
             self.confirmbuy.grid(row=2, column=1)
         
         self.buybtcbtn = Button(self.optionwindow, text="Buy BTC", command = BTC)
@@ -273,9 +286,9 @@ class GUI_Investment:
             self.selllabel.grid(row=0)
             self.btcsell = Entry(self.optionwindow, textvariable ="Total BTC", font = ("", 24))
             self.btcsell.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcsell.get(), 2))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcsell.get(),'BTC', 2))
             self.viewbuy.grid(row=1)
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.btcsell, "BTC"))
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : ConfirmMsgBox(self.btcsell, "BTC"))
             self.confirmsell.grid(row=2)
 
         def ETH():
@@ -284,9 +297,9 @@ class GUI_Investment:
             self.selllabel.grid(row=0)
             self.ethsell = Entry(self.optionwindow, textvariable ="Total ETH", font = ("", 24))
             self.ethsell.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethsell.get(), 1))
-            self.viewbuy.grid(row=1, column=1)
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.ethsell, "ETH"))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethsell.get(),'ETH', 1))
+            self.viewbuy.grid(row=1)
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : ConfirmMsgBox(self.ethsell, "ETH"))
             self.confirmsell.grid(row=2, column=1)
 
         def XRP():
@@ -295,9 +308,9 @@ class GUI_Investment:
             self.selllabel.grid(row=0)
             self.xrpsell = Entry(self.optionwindow, textvariable ="Total XRP", font = ("", 24))
             self.xrpsell.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpsell.get(), 1))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpsell.get(),'XRP', 1))
             self.viewbuy.grid(row=1)
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = ConfirmMsgBox(self.xrpsell, "XRP"))
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : ConfirmMsgBox(self.xrpsell, "XRP"))
             self.confirmsell.grid(row=2, column=1)
 
         self.sellbtcbtn = Button(self.optionwindow, text="Sell BTC", command = BTC)
