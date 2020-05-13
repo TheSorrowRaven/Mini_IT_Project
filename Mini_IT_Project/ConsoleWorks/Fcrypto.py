@@ -1,3 +1,16 @@
+###
+#/***************************************************
+#File Name: crypto.py
+#Version/Date: 0.6 (2020-05-06)
+#Programmer/ID: Nagaindran A/L Kanaseelanayagam (1191100776)
+#Project Name: Smart Finance Manager 
+#Teammates: Raven Lim Zhe Xuan, Raja Muhammad Darwisy bin Raja Ahmad, Fong Zheng Wei
+#Course/Term: PSP0201 Mini IT Project (2019/20 T3)
+#***************************************************/
+###
+
+
+
 """ 
 ███████ ██       █████   ██████   ██████  ███████ ██████                                                       
 ██      ██      ██   ██ ██       ██       ██      ██   ██                                                      
@@ -22,9 +35,6 @@
                                                                                                             
  """
 
-
-
-# Naga
 from luno_python.client import Client
 
 #App function

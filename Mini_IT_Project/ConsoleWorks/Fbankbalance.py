@@ -1,3 +1,14 @@
+#/***************************************************
+#File Name: bankbalance.py
+#Version/Date: 0.5 (2020-05-06)
+#Programmer/ID: Fong Zheng Wei (1191100350)
+#Project Name: Smart Finance Manager 
+#Teammates: Raven Lim Zhe Xuan, Raja Muhammad Darwisy bin Raja Ahmad, Nagaindran A/L Kanaseelanayagam
+#Course/Term: PSP0201 Mini IT Project (2019/20 T3)
+#***************************************************/
+###
+
+
 """ 
 ███████ ██       █████   ██████   ██████  ███████ ██████                                                       
 ██      ██      ██   ██ ██       ██       ██      ██   ██                                                      
@@ -22,8 +33,6 @@
                                                                                                             
  """
 
-
-# Fong
 
 class BankAccount():
 

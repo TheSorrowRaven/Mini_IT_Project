@@ -1,4 +1,12 @@
-# Naga
+#/***************************************************
+#File Name: currencyconversion.py
+#Version/Date: 1.0 (2020-05-13)
+#Programmer/ID: Nagaindran A/L Kanaseelanayagam (1191100776)
+#Project Name: Smart Finance Manager 
+#Teammates: Raven Lim Zhe Xuan, Raja Muhammad Darwisy bin Raja Ahmad, Fong Zheng Wei
+#Course/Term: PSP0201 Mini IT Project (2019/20 T3)
+#***************************************************/
+###
 import requests
 
 url = 'https://prime.exchangerate-api.com/v5/4c9d7a2d30d56d42d0bd5d28/latest/MYR'

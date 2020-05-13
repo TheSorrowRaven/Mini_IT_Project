@@ -1,4 +1,12 @@
-# Naga
+#/***************************************************
+#File Name: gui_investment.py
+#Version/Date: 0.9 (2020-05-13)
+#Programmer/ID: Nagaindran A/L Kanaseelanayagam (1191100776)
+#Project Name: Smart Finance Manager 
+#Teammates: Raven Lim Zhe Xuan, Raja Muhammad Darwisy bin Raja Ahmad, Fong Zheng Wei
+#Course/Term: PSP0201 Mini IT Project (2019/20 T3)
+#***************************************************/
+###
 from tkinter import Frame, ttk, Entry, Label, Button, Canvas, Toplevel
 from luno_python.client import Client
 import constants as Constants

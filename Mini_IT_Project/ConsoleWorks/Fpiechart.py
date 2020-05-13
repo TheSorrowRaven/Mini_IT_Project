@@ -1,3 +1,15 @@
+###
+#/***************************************************
+#File Name: piechart.py
+#Version/Date: 0.2 (2020-05-06)
+#Programmer/ID: Raja Muhammad Darwisy bin Raja Ahmad(11911000792)
+#Project Name: Smart Finance Manager 
+#Teammates: Raven Lim Zhe Xuan , Nagaindran A/L Kanaseelanayagam, Fong Zheng Wei
+#Course/Term: PSP0201 Mini IT Project (2019/20 T3)
+#***************************************************/
+###
+
+
 """ 
 ███████ ██       █████   ██████   ██████  ███████ ██████                                                       
 ██      ██      ██   ██ ██       ██       ██      ██   ██                                                      
@@ -23,8 +35,6 @@
  """
 
 
-
-#Darwisy
 import matplotlib.pyplot as plt
 
 # Data to plot

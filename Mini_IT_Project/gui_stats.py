@@ -1,3 +1,14 @@
+###
+#/***************************************************
+#File Name: gui_stats.py
+#Version/Date: 0.4 (2020-05-13)
+#Programmer/ID: Raja Muhammad Darwisy bin Raja Ahmad(11911000792), Fong Zheng Wei(1191100350)
+#Project Name: Smart Finance Manager 
+#Teammates: Raven Lim Zhe Xuan , Nagaindran A/L Kanaseelanayagam, Fong Zheng Wei
+#Course/Term: PSP0201 Mini IT Project (2019/20 T3)
+#***************************************************/
+###
+
 from tkinter import Frame, Tk, Label, ttk, Canvas
 import gui_account as GUI_Account
 import account as Account

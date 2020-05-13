@@ -1,4 +1,13 @@
-# Raven
+###
+#/***************************************************
+#File Name: rick.py
+#Version/Date: 1.0 (2020-05-13)
+#Programmer/ID: Raven Lim Zhe Xuan (1191101213)
+#Project Name: Smart Finance Manager 
+#Teammates: Nagaindran A/L Kanaseelanayagam, Raja Muhammad Darwisy bin Raja Ahmad, Fong Zheng Wei
+#Course/Term: PSP0201 Mini IT Project (2019/20 T3)
+#***************************************************/
+###
 
 import pickle
 import os as summer
