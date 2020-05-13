@@ -26,12 +26,32 @@ class GUI_Investment:
 
     def LoginMenu(self, parent: Frame):
 
-            def LoginTest(login, password):
-                self.api = login.get()      #Save before deleting the widget            
-                self.secret = password.get()
-                print(self.api)
-                print(self.secret)
-                self.data = Client(api_key_id= self.api , api_key_secret= self.secret)
+            def NewLogin():
+                self.login = []
+                self.loginlabel = Label(master = parent, text = "API Key:", font = ("", 24), bg = Constants.mainWindowBgColor)
+                self.loginlabel.place(x = 400, y = 420, anchor = "center")
+                self.logino = Entry(master = parent, textvariable ="API Key", font = ("", 24))
+                self.logino.place(x = 800, y = 420, anchor = "center")
+                
+                self.login.append(self.logino)
+                print(self.login)
+
+            def NewPassword():
+                self.password = []
+                self.passwordlabel = Label(master = parent, text = "API Secret:", font = ("", 24), bg = Constants.mainWindowBgColor)
+                self.passwordlabel.place(x = 390, y = 460, anchor = "center")
+                self.passwordo = Entry(master = parent, textvariable = "API Secret", font = ("", 24), show ="*")
+                self.passwordo.place(x = 800, y = 460, anchor = "center")
+
+                self.password.append(self.passwordo)
+                print(self.password)
+
+            def LoginTest(logintest, passwordtest):
+                logintest = logintest.get()
+                passwordtest = passwordtest.get()
+                self.data = Client(api_key_id= logintest , api_key_secret= passwordtest)
+
+                print(passwordtest)
                 
                 #Test login before letting user log in     
                 try:
@@ -40,27 +60,25 @@ class GUI_Investment:
                     self.MainScreen(parent)
 
                 except Exception as e:
+                    self.login = []
+                    self.password = []
                     print(e)
                     tkinter.messagebox.showerror(title="Login Error", message="Invalid api key or api key secret, please try again")
 
             self.investmentDesc2.destroy()
             self.proceedBtn.destroy()
             if (self.login is None):
-                self.loginlabel = Label(master = parent, text = "API Key:", font = ("", 24), bg = Constants.mainWindowBgColor)
-                self.loginlabel.place(x = 400, y = 420, anchor = "center")
-                self.login = Entry(master = parent, textvariable ="API Key", font = ("", 24))
-                self.login.place(x = 800, y = 420, anchor = "center")
-                self.passwordlabel = Label(master = parent, text = "API Secret:", font = ("", 24), bg = Constants.mainWindowBgColor)
-                self.passwordlabel.place(x = 390, y = 460, anchor = "center")
-                self.password = Entry(master = parent, textvariable = "API Secret", font = ("", 24), show ="*")
-                self.password.place(x = 800, y = 460, anchor = "center")
-                self.loginBtn = Button(master = parent, text="Login", command = lambda : LoginTest(self.login, self.password))
+                NewLogin()
+                NewPassword()
+                self.logininput = self.login[0]
+                self.passwordinput = self.password[0]
+                self.loginBtn = Button(master = parent, text="Login", command = lambda : LoginTest(self.logininput, self.passwordinput))
                 self.loginBtn.place(x = 1000, y = 520, anchor = "center")
 
             else:
-                self.api = self.login.get()      #Save before deleting the widget            
-                self.secret = self.password.get()
-                self.data = Client(api_key_id= self.api , api_key_secret= self.secret)
+                self.logindata = self.login[0]
+                self.passworddata = self.password[0]
+                self.data = Client(api_key_id= self.logindata , api_key_secret= self.passworddata)
                 self.MainScreen(parent)
 
 
@@ -70,8 +88,8 @@ class GUI_Investment:
         self.loginBtn.destroy()
         self.loginlabel.destroy()
         self.passwordlabel.destroy()
-        self.login.destroy()
-        self.password.destroy()
+        self.logino.destroy()
+        self.passwordo.destroy()
 
         #Display current cryptobalance
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -124,6 +142,7 @@ class GUI_Investment:
 
     def ShowPrice(self, value):
         self.json_data = self.data.get_tickers()
+
         if value == 1:
             self.bitcoinprice = self.json_data['tickers'][3]['ask']
             return self.bitcoinprice
@@ -137,7 +156,9 @@ class GUI_Investment:
             return self.xrpprice
 
     def CryptoinRM(self, buysell, function):      #Display coin value in RM
+ 
         try:
+            attempt = 0
             actualbuy = float(buysell)
             thevalue = float(self.ShowPrice(1))
             if function == 1:
@@ -150,9 +171,16 @@ class GUI_Investment:
             print(self.currencycalc)
             self.textdisplay = "RM {}" 
             self.actualtextdisplay = self.textdisplay.format(self.currencycalc)
-            self.currencydisplay = Label(self.optionwindow, text = self.actualtextdisplay, font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.currencydisplay.grid(row=1, column=1)
-        
+
+            if attempt != 1:
+                self.currencydisplay = Label(self.optionwindow, text = self.actualtextdisplay, font = ("", 26), bg = Constants.mainWindowBgColor)
+                self.currencydisplay.grid(row=1, column=1)
+                attempt += 1
+
+            else:
+                self.currencydisplay.destroy()
+                attempt = 0
+            
         except Exception as e:
             print(e)
             tkinter.messagebox.showerror(title="Input Error", message="Invalid input")
@@ -217,11 +245,11 @@ class GUI_Investment:
             self.confirmbuy.grid(row=2, column=1)
         
         self.buybtcbtn = Button(self.optionwindow, text="Buy BTC", command = BTC)
-        self.buybtcbtn.grid(anchor = 'nw')
+        self.buybtcbtn.place(anchor = 'nw')
         self.buyethbtn = Button(self.optionwindow, text="Buy ETH", command = ETH)
-        self.buyethbtn.grid(anchor = 'center')
+        self.buyethbtn.place(anchor = 'center')
         self.buyxrpbtn = Button(self.optionwindow, text="Buy XRP", command = XRP)
-        self.buyxrpbtn.grid(anchor = 'ne')
+        self.buyxrpbtn.place(anchor = 'ne')
         self.buybtcbtn.pack()
         self.buyethbtn.pack()
         self.buyxrpbtn.pack()
