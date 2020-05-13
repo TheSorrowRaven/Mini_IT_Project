@@ -1,3 +1,5 @@
+# Raven
+
 from __future__ import print_function
 import datetime
 import pickle
@@ -104,3 +106,8 @@ class Plan():
         except Exception as e:
             print(e)
         
+
+        
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass

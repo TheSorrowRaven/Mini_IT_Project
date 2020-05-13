@@ -1,10 +1,10 @@
 # Raven
-from tkinter import Frame, Label, Button, StringVar, Entry, OptionMenu
+from tkinter import Frame, Label, Button, StringVar, Entry, OptionMenu, ttk
 from tkcalendar import Calendar
-import Constants as Constants
 import datetime
-import Plans as Plans
-import Interfaces as Interfaces
+import constants as Constants
+import plans as Plans
+import interfaces as Interfaces
 
 class GUI_Planner(Interfaces.IOnSave):
 
@@ -16,61 +16,60 @@ class GUI_Planner(Interfaces.IOnSave):
         self.main = main
         self.parent = parent
 
-        # self.plannerDesc = Label(master = parent, text = "This platform all about your budget planner", font = ("", 12), bg = Constants.mainWindowBgColor)
-        # self.plannerDesc.place(relx = 0.5 , rely = 0, anchor = "n")
-        # self.plannerDesc2 = Label(master = parent, text = "\'The safe way to double your money is to fold it over once and put it in your pocket\'", font = ("", 12), bg = Constants.mainWindowBgColor)
-        # self.plannerDesc2.place(relx = 1.0, rely = 1.0, anchor = "se")
-        
-
         plans = main.GetSavedData("plans")
         if (plans is None):
             self.Plans = Plans.Plans()
         else:
             self.Plans = plans
 
-        self.EFrame = Frame(master = self.parent)
-        self.EFrame.place(relx = 0.65, rely = 0.1, anchor = "nw")
+        self.InputFrame = Frame(master = parent, bg = Constants.mainWindowAltColor)
+        self.InputFrame.place(relx = 0.5, y = 75, anchor = "n")
+
+        self.EFrame = Frame(master = self.InputFrame, bg = Constants.mainWindowAltColor)
+        self.EFrame.grid(row = 0, column = 1)
 
         self.InitCalendar()
         self.InitTimeEntry()
         self.InitDetailsEntry()
         self.InitSyncGC()
+        self.InitPlans()
 
     def InitSyncGC(self):
         def Sync():
             self.Plans.AddAllPlans()
-        self.syncButton = Button(master = self.parent, text = "Sync plans with Google Calendar", command = Sync)
+            self.RefreshPlans()
+        self.syncButton = Button(master = self.parent, text = "Sync plans with\n Google Calendar", command = Sync)
         self.syncButton.place(relx = 1, rely = 1, anchor = "se")
 
     def InitCalendar(self):
 
-        self.calendarFrame = Frame(master = self.parent)
+        self.calendarFrame = Frame(master = self.InputFrame, bg = Constants.mainWindowAltColor)
 
         #Calendar
         self.LCalendar     = Label(master = self.calendarFrame, text = "Date:", bg = Constants.mainWindowAltColor)
         self.planCalendar = Calendar(self.calendarFrame, 
-                                      font = "Arial 30", selectmode = 'day', cursor = "hand2", 
+                                      font = "Arial 20", selectmode = 'day', cursor = "hand2", 
                                       year = datetime.date.today().year, month = datetime.date.today().month, day = datetime.date.today().day)
 
         self.planCalendar.grid(row = 0, column = 0)
 
-        self.calendarFrame.place(x = 75, y = 75)
+        self.calendarFrame.grid(row = 0, column = 0)
 
     def InitTimeEntry(self):
 
-        self.timePickerFrame = Frame(master = self.EFrame)
+        self.timePickerFrame = Frame(master = self.EFrame, bg = Constants.mainWindowAltColor)
         self.timePickerFrame.grid(row = 0, column = 1)
 
-        self.LTime = Label(master = self.EFrame, text = "Start Time:")
+        self.LTime = Label(master = self.EFrame, text = "Start Time:", bg = Constants.mainWindowAltColor)
         self.LTime.grid(row = 0, column = 0)
 
         self.previousTime = ["08", "00", "00"]
         self.SVTime = [StringVar(), StringVar(), StringVar()]
         self.EntryTime = [None] * 3
         self.LsplitTime = [
-            Label(master = self.timePickerFrame, text = "  Hour  "),
-            Label(master = self.timePickerFrame, text = " Minute "),
-            Label(master = self.timePickerFrame, text = " Second ")]
+            Label(master = self.timePickerFrame, text = "  Hour  ", bg = Constants.mainWindowAltColor),
+            Label(master = self.timePickerFrame, text = " Minute ", bg = Constants.mainWindowAltColor),
+            Label(master = self.timePickerFrame, text = " Second ", bg = Constants.mainWindowAltColor)]
         self.buttonTimeChange = [None] * 6
 
         def TimeVerify(svi):
@@ -125,19 +124,19 @@ class GUI_Planner(Interfaces.IOnSave):
 
 
 
-        self.timePickerFrame2 = Frame(master = self.EFrame)
+        self.timePickerFrame2 = Frame(master = self.EFrame, bg = Constants.mainWindowAltColor)
         self.timePickerFrame2.grid(row = 1, column = 1)
 
-        self.LTime2 = Label(master = self.EFrame, text = "End Time:")
+        self.LTime2 = Label(master = self.EFrame, text = "End Time:", bg = Constants.mainWindowAltColor)
         self.LTime2.grid(row = 1, column = 0)
 
         self.previousTime2 = ["16", "0", "0"]
         self.SVTime2 = [StringVar(), StringVar(), StringVar()]
         self.EntryTime2 = [None] * 3
         self.LsplitTime2 = [
-            Label(master = self.timePickerFrame2, text = "  Hour  "),
-            Label(master = self.timePickerFrame2, text = " Minute "),
-            Label(master = self.timePickerFrame2, text = " Second ")]
+            Label(master = self.timePickerFrame2, text = "  Hour  ", bg = Constants.mainWindowAltColor),
+            Label(master = self.timePickerFrame2, text = " Minute ", bg = Constants.mainWindowAltColor),
+            Label(master = self.timePickerFrame2, text = " Second ", bg = Constants.mainWindowAltColor)]
         self.buttonTimeChange2 = [None] * 6
 
         def TimeVerify2(svi):
@@ -191,30 +190,30 @@ class GUI_Planner(Interfaces.IOnSave):
             self.LsplitTime2[i].grid(row = 0, column = i)
     
     def InitDetailsEntry(self):
-        self.detailsFrame = Frame(master = self.EFrame)
+        self.detailsFrame = Frame(master = self.EFrame, bg = Constants.mainWindowAltColor)
         self.detailsFrame.grid(row = 2, column = 1, pady = (10, 5))
 
         parent = self.detailsFrame
 
-        self.LTitle = Label(master = parent, text = "Title:")
+        self.LTitle = Label(master = parent, text = "Title:", bg = Constants.mainWindowAltColor)
         self.LTitle.grid(row = 0, column = 0)
         self.SVTitle = StringVar()
         self.ETitle = Entry(master = parent, textvariable = self.SVTitle)
         self.ETitle.grid(row = 0, column = 1, columnspan = 2, padx = (0,2))
 
-        self.LLocation = Label(master = parent, text = "Location:")
+        self.LLocation = Label(master = parent, text = "Location:", bg = Constants.mainWindowAltColor)
         self.LLocation.grid(row = 1, column = 0)
         self.SVLocation = StringVar()
         self.ELocation = Entry(master = parent, textvariable = self.SVLocation)
         self.ELocation.grid(row = 1, column = 1, columnspan = 2, padx = (0,2))
 
-        self.LDesc = Label(master = parent, text = "Description:")
+        self.LDesc = Label(master = parent, text = "Description:", bg = Constants.mainWindowAltColor)
         self.LDesc.grid(row = 2, column = 0)
         self.SVDesc = StringVar()
         self.EDesc = Entry(master = parent, textvariable = self.SVDesc)
         self.EDesc.grid(row = 2, column = 1, columnspan = 2, padx = (0,2))
 
-        self.LFreq = Label(master = parent, text = "Count & Frequency:")
+        self.LFreq = Label(master = parent, text = "Count & Frequency:", bg = Constants.mainWindowAltColor)
         self.LFreq.grid(row = 3, column = 0)
 
         def VerifyNumber(string):
@@ -244,7 +243,68 @@ class GUI_Planner(Interfaces.IOnSave):
         self.BSubmit = Button(master = parent, text = "Add Plan", command = self.SubmitPlan)
         self.BSubmit.grid(row = 4, column = 0, columnspan = 3, pady = (4, 4))
 
+    def InitPlans(self):
+        self.plansFrame = Frame(master = self.parent)
+        self.plansFrame.place(relx = 0.5, rely = 0.59, anchor = "n")
 
+        def updateScroll(event):
+            self.plansTree.configure(yscrollcommand = self.plansSBY.set)
+            self.plansTree.configure(xscrollcommand = self.plansSBX.set)
+            
+
+        self.plansTree = ttk.Treeview(master = self.plansFrame, height = 12)
+        self.plansSBY = ttk.Scrollbar(master = self.plansFrame, orient = "vertical", command = self.plansTree.yview)
+        self.plansSBY.grid(row = 0, column = 1, sticky = "nse")
+        self.plansSBX = ttk.Scrollbar(master = self.plansFrame, orient = "horizontal", command = self.plansTree.xview)
+        self.plansSBX.grid(row = 1, column = 0, sticky = "wes")
+        self.plansTree.bind("<Configure>", updateScroll)
+
+        self.RefreshPlans()
+
+        
+    def RefreshPlans(self):
+        try:
+            self.plansFrame.place_forget()
+        except:
+            pass
+        self.plansTree.delete(*self.plansTree.get_children())
+
+        self.plansFrame.place(relx = 0.5, rely = 0.59, anchor = "n")
+
+        self.plansTree.grid(row = 0, column = 0)
+
+        self.plansTree["columns"] = ("Title", "Start Date", "Location", "Description", "Frequency", "Count", "Added")
+
+        self.plansTree.column("#0", width = 40)
+        self.plansTree.column("#1", width = 100)
+        self.plansTree.column("#2", width = 200)
+        self.plansTree.column("#3", width = 150)
+        self.plansTree.column("#4", width = 150)
+        self.plansTree.column("#5", width = 100)
+        self.plansTree.column("#6", width = 100)
+        self.plansTree.column("#7", width = 100)
+
+        self.plansTree.heading("#1", text = "Title")
+        self.plansTree.heading("#2", text = "Start Date")
+        self.plansTree.heading("#3", text = "Location")
+        self.plansTree.heading("#4", text = "Description")
+        self.plansTree.heading("#5", text = "Frequency")
+        self.plansTree.heading("#6", text = "Count")
+        self.plansTree.heading("#7", text = "Added")
+
+        for i in range(0, len(self.Plans.plans)):
+            self.GrowPlansTree(self.plansTree, self.Plans.plans[i], i)
+
+    def GrowPlansTree(self, tree, plan: Plans.Plan, index):
+        if (plan.startDT == plan.endDT):
+            time = plan.startDT.strftime("%d/%m/%Y @ %H:%M:%S")
+        else:
+            time = plan.startDT.strftime("%d/%m/%Y @ %H:%M:%S - ") + plan.endDT.strftime("%H:%M:%S")
+        if plan.added:
+            added = "Yes"
+        else:
+            added = "No"
+        tree.insert("", index, text = str(index + 1), values = (plan.title, time, plan.location, plan.description, plan.frequency, plan.count, added))
         
     def SubmitPlan(self):
         title = self.SVTitle.get()
@@ -260,6 +320,7 @@ class GUI_Planner(Interfaces.IOnSave):
 
         self.Plans.AddPlan(title, location, desc, freq, startTime, endTime, count)
         self.Clear()
+        self.RefreshPlans()
         
     def Clear(self):
         self.SVTitle.set("")
@@ -299,3 +360,8 @@ class GUI_Planner(Interfaces.IOnSave):
 
     def CompareStartEndTime(self):
         pass
+
+
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass

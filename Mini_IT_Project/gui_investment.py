@@ -1,7 +1,7 @@
 # Naga
 from tkinter import Frame, ttk, Entry, Label, Button, Canvas, Toplevel
 from luno_python.client import Client
-import Constants
+import constants as Constants
 import tkinter.messagebox
 
 class GUI_Investment:
@@ -310,3 +310,7 @@ class GUI_Investment:
         self.sellethbtn.pack()
         self.sellxrpbtn.pack()
 
+
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass

@@ -1,12 +1,12 @@
 # Raven
 from tkinter import Frame, Label, Button, Canvas, PhotoImage
 from PIL import Image, ImageTk
-import Constants
-import Functions
+import constants as Constants
+import functions as Functions
 
-import GUI_Planner
-import GUI_Account
-import GUI_Investment
+import gui_planner as GUI_Planner
+import gui_account as GUI_Account
+import gui_investment as GUI_Investment
 
 # GUI
 # 1. EmptyWindow
@@ -144,8 +144,10 @@ class GUI(Frame):
             updatedButtons[i].bind("<ButtonPress>",   lambda x, butt = butt, i = i: SetButton(butt, self.downButtons[i]))
             updatedButtons[i].bind("<ButtonRelease>", lambda x, butt = butt, i = i: SetButton(butt, self.initialButtons[i]))
 
-        self.statusFrame = Frame(master = parent, width = 460, height = 320, background = "black")
+        self.statusFrame = Frame(master = parent, bg = Constants.mainWindowBgColor)
         self.statusFrame.place(x = 80, y = 80, anchor = "nw")
+        self.statusLabel = Label(master = self.statusFrame, text = "Smart Financial Planner", font = ("Comic Sans MS", 48),bg = Constants.mainWindowBgColor)
+        self.statusLabel.pack()
 
     def InitPlanner(self, parent: Frame):
 
@@ -281,3 +283,6 @@ class GUI(Frame):
         pass
 
 
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass

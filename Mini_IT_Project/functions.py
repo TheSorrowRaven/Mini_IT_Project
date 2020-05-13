@@ -1,5 +1,5 @@
 # Raven
-import Constants
+import constants as Constants
 
 class Switch:
 
@@ -13,3 +13,6 @@ class Switch:
             commandsList[len(commandsList) - 1]()
 
 
+if __name__ == "__main__":
+    print("Please run main.py instead")
+    pass
