@@ -7,7 +7,7 @@
 #Course/Term: PSP0201 Mini IT Project (2019/20 T3)
 #***************************************************/
 ###
-from tkinter import Frame, ttk, Entry, Label, Button, Canvas, Toplevel
+from tkinter import Button, Canvas, Entry, Frame, Label, StringVar,OptionMenu, Toplevel, ttk
 from luno_python.client import Client
 import constants as Constants
 import tkinter.messagebox
@@ -89,6 +89,14 @@ class GUI_Investment:
                 self.data = Client(api_key_id= self.logindata , api_key_secret= self.passworddata)
                 self.MainScreen(parent)
 
+    def DropDownMenus(self, parent: Frame):
+        WalletList = ['option1', 'option2', 'option3', 'option4']
+        variabledefault = StringVar(parent)
+        variabledefault.set(WalletList[0])
+
+        options = OptionMenu(parent, variabledefault, *WalletList)
+        options.config(width = 25, font=("", 15))
+        options.place(anchor = 'nw', x = 61.0 , y = 50)
 
     def MainScreen(self, parent: Frame):
          
@@ -100,6 +108,7 @@ class GUI_Investment:
         self.passwordo.destroy()
 
         #Display current cryptobalance
+        self.DropDownMenus(parent)
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61.0, y = 10)
         self.balancebtc = Label(master = parent, text = self.CryptoBalance(1) ,font = ("", 20), bd =1, bg = 'seashell3')
@@ -132,21 +141,62 @@ class GUI_Investment:
         self.xrplabel.place(anchor = 'nw', x = 61, y = 600)
         self.configbtn = Button(master = parent, text="Manage crypto", command = self.CoinOption)
         self.configbtn.place(x = 700, y = 120, anchor = "nw")
+        self.configtransc1 = Button(master = parent, text="See BTC Transactions", command = lambda: self.TransactionHistory(1))
+        self.configtransc1.place(x = 700, y = 160, anchor = "nw")
+        self.configtransc2 = Button(master = parent, text="See ETH transactions", command = lambda: self.TransactionHistory(2))
+        self.configtransc2.place(x = 700, y = 200, anchor = "nw")
+        self.configtransc3 = Button(master = parent, text="See XRP Transactions", command = lambda: self.TransactionHistory(3))
+        self.configtransc3.place(x = 700, y = 240, anchor = "nw")
 
-            
-    def CryptoBalance(self, value):     #required to get data from Luno Site
+    def CreateAccount(self, value):
+        pass
+
+    def TransactionHistory(self, value):       #Get transaction history
         self.json_data = self.data.get_balances()
-        if value == 1:
-            self.bitcoinbal = self.json_data['balance'][2]['balance']
-            return self.bitcoinbal
+        self.json_data = self.json_data['balance']
 
-        elif value == 2:
-            self.ethereumbal = self.json_data['balance'][0]['balance']
-            return self.ethereumbal
+        if value == 1:
+            for i in self.json_data:
+                if i['asset'] == 'XBT':
+                    self.id = i['account_id']
+                    print(self.id)
+
+        if value == 2:
+            for i in self.json_data:
+                if i['asset'] == 'ETH':
+                    self.id = i['account_id']
 
         elif value == 3:
-            self.xrpbal = self.json_data['balance'][3]['balance']
-            return self.xrpbal
+            for i in self.json_data:
+                if i['asset'] == 'XRP':
+                    self.xrpid = i['account_id']
+
+        min_row = 0
+        max_row = 1000
+        transactionlist = self.data.list_transactions(self.id, max_row, min_row)
+        print(transactionlist)
+        
+    def CryptoBalance(self, value):     #required to get data from Luno Site
+        self.json_data = self.data.get_balances()
+        self.json_data = self.json_data['balance']
+
+        if value == 1:
+            for i in self.json_data:
+                if i['asset'] == 'XBT':
+                    self.bitcoinbal = i['balance']
+                    return self.bitcoinbal
+
+        if value == 2:
+            for i in self.json_data:
+                if i['asset'] == 'ETH':
+                    self.ethereumbal = i['balance']
+                    return self.ethereumbal
+
+        elif value == 3:
+            for i in self.json_data:
+                if i['asset'] == 'XRP':
+                    self.xrpbal = i['balance']
+                    return self.xrpbal
 
     def ShowPrice(self, value):
         self.json_data = self.data.get_tickers()
@@ -173,18 +223,30 @@ class GUI_Investment:
                     float(self.xrpprice)
                     return self.xrpprice
 
+
+    def CoinOption(self):       #Buy or Sell a Coin
+        self.optionwindow = Toplevel()               #opens a new window for user to decide
+        self.labelinfo = Label(self.optionwindow, text='Would you like to :', font = ("", 26), bg = Constants.mainWindowBgColor)
+        self.buy = Button(self.optionwindow, text="Buy coins", command = self.BuyCoins)
+        self.buy.place(anchor ='nw')
+        self.sell = Button(self.optionwindow, text="Sell Coins", command = self.SellCoins)
+        self.sell.place(anchor ='ne')
+        self.buy.pack()
+        self.sell.pack()
+
     def CryptoinRM(self, buysell, crypto, function):      #Display coin value in RM
  
         try:
             actualbuy = float(buysell)
             if crypto == 'BTC':
-                thevalue = float(self.ShowPrice(1))
+                thevalue = self.ShowPrice(1)
 
             elif crypto == 'ETH':
-                thevalue = float(self.ShowPrice(2))
+                thevalue = self.ShowPrice(2)
 
             elif crypto == 'XRP':
-                thevalue = float(self.ShowPrice(3))
+                thevalue = self.ShowPrice(3)
+
             else:
                 print('Halo Infinite this July! :3')
 
@@ -207,16 +269,6 @@ class GUI_Investment:
             tkinter.messagebox.showerror(title="Input Error", message="Invalid input")
 
     
-
-    def CoinOption(self):       #Buy or Sell a Coin
-        self.optionwindow = Toplevel()               #opens a new window for user to decide
-        self.labelinfo = Label(self.optionwindow, text='Would you like to :', font = ("", 26), bg = Constants.mainWindowBgColor)
-        self.buy = Button(self.optionwindow, text="Buy coins", command = self.BuyCoins)
-        self.buy.place(anchor ='nw')
-        self.sell = Button(self.optionwindow, text="Sell Coins", command = self.SellCoins)
-        self.sell.place(anchor ='ne')
-        self.buy.pack()
-        self.sell.pack()
 
     def BuyCoins(self):
 
