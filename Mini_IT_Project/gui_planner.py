@@ -1,6 +1,6 @@
 ###
 #/***************************************************
-#File Name: account.py
+#File Name: gui_planner.py
 #Version/Date: 1.0 (2020-05-13)
 #Programmer/ID: Raven Lim Zhe Xuan (1191101213)
 #Project Name: Smart Finance Manager 
