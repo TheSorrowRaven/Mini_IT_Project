@@ -21,7 +21,7 @@ class GUI_Investment:
         self.Main.SaveData("API Key", self.login)
         self.Main.SaveData("API Secret", self.password)
 
-    def __init__(self, parent: Frame, main): 
+    def __init__(self, parent: Frame, main): #Attempt getting saved data and main message
         self.Main = main
         self.parent = parent
         super().__init__()
@@ -242,7 +242,7 @@ class GUI_Investment:
                 if i['asset'] == 'XBT':
                     self.bitcoinbal = i['balance']
                     return self.bitcoinbal
-
+                    
         if value == 2:
             for i in self.json_data:
                 if i['asset'] == 'ETH':
