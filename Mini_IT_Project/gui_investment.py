@@ -32,9 +32,9 @@ class GUI_Investment:
         self.proceedBtn = Button(master = parent, text="Proceed" , command = lambda : self.LoginMenu(parent)) #might change bg in a later date
         self.proceedBtn.place(x = 660, y = 420, anchor = "center")
 
-    def LoginMenu(self, parent: Frame):
+    def LoginMenu(self, parent: Frame): #Log in time
 
-            def NewLogin():
+            def NewLogin():   #API Key info
                 self.login = []
                 self.loginlabel = Label(master = parent, text = "API Key:", font = ("", 24), bg = Constants.mainWindowBgColor)
                 self.loginlabel.place(x = 400, y = 420, anchor = "center")
@@ -43,7 +43,7 @@ class GUI_Investment:
                 
                 self.login.append(self.logino)
 
-            def NewPassword():
+            def NewPassword(): #API Key Secret
                 self.password = []
                 self.passwordlabel = Label(master = parent, text = "API Secret:", font = ("", 24), bg = Constants.mainWindowBgColor)
                 self.passwordlabel.place(x = 390, y = 460, anchor = "center")
@@ -52,14 +52,13 @@ class GUI_Investment:
 
                 self.password.append(self.passwordo)
 
-            def LoginTest(logintest, passwordtest):
+            def LoginTest(logintest, passwordtest):  #Test login before letting user log in
                 logintest = logintest.get()
                 passwordtest = passwordtest.get()
                 self.data = Client(api_key_id= logintest , api_key_secret= passwordtest)
 
                 print(passwordtest)
-                
-                #Test login before letting user log in     
+                 
                 try:
                     trial = self.data.get_balances()
                     print(trial)
@@ -89,14 +88,11 @@ class GUI_Investment:
                 self.data = Client(api_key_id= self.logindata , api_key_secret= self.passworddata)
                 self.MainScreen(parent)
 
-    def DropDownMenus(self, parent: Frame):
-        WalletList = ['option1', 'option2', 'option3', 'option4']
-        variabledefault = StringVar(parent)
-        variabledefault.set(WalletList[0])
-
-        options = OptionMenu(parent, variabledefault, *WalletList)
-        options.config(width = 25, font=("", 15))
-        options.place(anchor = 'nw', x = 61.0 , y = 50)
+    #def DropDownMenus(self, parent: Frame):
+    #    WalletList = ['option1', 'option2', 'option3', 'option4']
+    ##    variabledefault1 = variabledefault.set(WalletList[0])
+     #   options = OptionMenu(parent, variabledefault, *WalletList)
+     ##    options.place(anchor = 'nw', x = 61.0 , y = 50)
 
     def MainScreen(self, parent: Frame):
          
@@ -108,21 +104,45 @@ class GUI_Investment:
         self.passwordo.destroy()
 
         #Display current cryptobalance
-        self.DropDownMenus(parent)
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61.0, y = 10)
-        self.balancebtc = Label(master = parent, text = self.CryptoBalance(1) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balancebtc.place(anchor = "nw", x = 61.0, y = 90)
-        self.btcbal = Label(master = parent, text='BTC', font = ("", 26), bg = Constants.mainWindowBgColor)
-        self.btcbal.place(anchor = 'nw', x = 300, y = 90)
-        self.balanceeth = Label(master = parent, text = self.CryptoBalance(2) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balanceeth.place(anchor = "nw", x = 61.0 , y = 150)
-        self.ethbal = Label(master = parent, text='ETH', font = ("", 26), bg = Constants.mainWindowBgColor)
-        self.ethbal.place(anchor = 'nw', x = 300, y = 150)
-        self.balancexrp = Label(master = parent, text = self.CryptoBalance(3) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balancexrp.place(anchor = "nw",x = 61.0 , y = 210)
-        self.xrpbal = Label(master = parent, text='XRP', font = ("", 26), bg = Constants.mainWindowBgColor)
-        self.xrpbal.place(anchor = 'nw', x = 300, y = 210)
+
+        #Ensure user has a crypto wallet
+        try:
+            self.balancebtc = Label(master = parent, text = self.CryptoBalance(1) ,font = ("", 20), bd =1, bg = 'seashell3')
+            self.balancebtc.place(anchor = "nw", x = 61.0, y = 90)
+            self.btcbal = Label(master = parent, text='BTC', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.btcbal.place(anchor = 'nw', x = 300, y = 90)
+
+        except:
+            self.addaccountbtc = Label(master = parent, text='Account Unavailable', font = ("", 20), bg = Constants.mainWindowBgColor)
+            self.addaccountbtc.place(anchor = "nw", x = 61.0, y = 90)
+            self.addaccountbtnbtc = Button(master = parent , text='Create BTC Account', command = lambda : self.CreateAccount(1))
+            self.addaccountbtnbtc.place(anchor = "nw", x = 200 , y = 90)
+
+        try:
+            self.balanceeth = Label(master = parent, text = self.CryptoBalance(2) ,font = ("", 20), bd =1, bg = 'seashell3')
+            self.balanceeth.place(anchor = "nw", x = 61.0 , y = 150)
+            self.ethbal = Label(master = parent, text='ETH', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.ethbal.place(anchor = 'nw', x = 300, y = 150)
+
+        except:
+            self.addaccounteth = Label(master = parent, text='Account Unavailable', font = ("", 20), bg = Constants.mainWindowBgColor)
+            self.addaccounteth.place(anchor = "nw", x = 61.0, y = 150)
+            self.addaccountbtneth = Button(master = parent , text='Create ETH Account', command = lambda : self.CreateAccount(2))
+            self.addaccountbtneth.place(anchor = "nw", x = 200 , y = 150)
+
+        try:
+            self.balancexrp = Label(master = parent, text = self.CryptoBalance(3) ,font = ("", 20), bd =1, bg = 'seashell3')
+            self.balancexrp.place(anchor = "nw",x = 61.0 , y = 210)
+            self.xrpbal = Label(master = parent, text='XRP', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.xrpbal.place(anchor = 'nw', x = 300, y = 210)
+
+        except:
+            self.addaccountxrp = Label(master = parent, text='Account Unavailable', font = ("", 20), bg = Constants.mainWindowBgColor)
+            self.addaccountxrp.place(anchor = "nw", x = 61.0, y = 210)
+            self.addaccountbtnxrp = Button(master = parent , text='Create XRP Account', command = lambda : self.CreateAccount(3))
+            self.addaccountbtnxrp.place(anchor = "nw", x = 200 , y = 210)
 
         #Display current prices
         self.balancelabel = Label(master = parent, text="The current price is :", font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -139,6 +159,8 @@ class GUI_Investment:
         self.balancexrp.place(anchor = "nw", x = 200 , y = 600)
         self.xrplabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
         self.xrplabel.place(anchor = 'nw', x = 61, y = 600)
+        
+        #Config Buttons
         self.configbtn = Button(master = parent, text="Manage crypto", command = self.CoinOption)
         self.configbtn.place(x = 700, y = 120, anchor = "nw")
         self.configtransc1 = Button(master = parent, text="See BTC Transactions", command = lambda: self.TransactionHistory(1))
@@ -149,27 +171,62 @@ class GUI_Investment:
         self.configtransc3.place(x = 700, y = 240, anchor = "nw")
 
     def CreateAccount(self, value):
-        pass
+
+        def InfoMaker():
+            self.labelmaker = Label(self.createaccountwindow, text="Account Name: ", font=("", 20) , bg = Constants.mainWindowBgColor)
+            self.labelmaker.grid(row=0)
+            self.accountnameentry = Entry(self.createaccountwindow, textvariable = "Account Name", font = ("", 20))
+            self.accountnameentry.grid(row=0, column=1)
+            nameinfo = self.accountnameentry.get()
+            return nameinfo
+
+        self.createaccountwindow = Toplevel()
+
+        if value == 1:
+            try:
+                accountname = InfoMaker()
+                self.jsonparse = self.data.create_account('BTC', accountname)
+                tkinter.messagebox.Message("Crypto Account Progress", message= "Account Creation Successful!")
+                self.createaccountwindow.quit()
+
+            except:
+                tkinter.messagebox.showerror("Crypto Account Progress", message = "Action Failed")
+                self.createaccountwindow.quit()
+
+        elif value == 2:
+            try:
+                accountname = InfoMaker()
+                self.jsonparse = self.data.create_account('ETH', accountname)
+                tkinter.messagebox.Message("Crypto Account Progress", message= "Account Creation Successful!")
+                self.createaccountwindow.quit()
+
+            except:
+                tkinter.messagebox.showerror("Crypto Account Progress", message = "Action Failed")
+                self.createaccountwindow.quit()
+
+        elif value == 3:
+            try:
+                accountname = InfoMaker()
+                self.jsonparse = self.data.create_account('XRP', accountname)
+                tkinter.messagebox.Message("Crypto Account Progress", message= "Account Creation Successful!")
+                self.createaccountwindow.quit()
+
+            except:
+                tkinter.messagebox.showerror("Crypto Account Progress", message = "Action Failed")
+                self.createaccountwindow.quit()
 
     def TransactionHistory(self, value):       #Get transaction history
         self.json_data = self.data.get_balances()
         self.json_data = self.json_data['balance']
 
         if value == 1:
-            for i in self.json_data:
-                if i['asset'] == 'XBT':
-                    self.id = i['account_id']
-                    print(self.id)
+            self.id = self.CryptoBalance(1)
 
         if value == 2:
-            for i in self.json_data:
-                if i['asset'] == 'ETH':
-                    self.id = i['account_id']
+            self.id = self.CryptoBalance(2)
 
         elif value == 3:
-            for i in self.json_data:
-                if i['asset'] == 'XRP':
-                    self.xrpid = i['account_id']
+            self.id = self.CryptoBalance(3)
 
         min_row = 0
         max_row = 1000
