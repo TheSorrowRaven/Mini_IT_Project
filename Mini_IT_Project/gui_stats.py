@@ -35,13 +35,18 @@ class Statistics():
     self.thisBalance
     """
 
-    def __init__(self, guiAcc):
+    def __init__(self, guiAcc, main):
 
         self.guiAcc = guiAcc
         self.thisAccount = guiAcc.selectedAccount
         self.allAccounts = guiAcc.accounts
 
+        self.accounts = main.GetSavedData("AccountsList")
+        self.categories = main.GetSavedData("CategoriesList")
+        self.selectedAccount = main.GetSavedData("SelectedAccount")
+
         self.InitData()
+        self.Main = main
 
 
 
@@ -97,33 +102,33 @@ class Statistics():
 
         #Example 1
         # Fixing random state for reproducibility
-        np.random.seed(19680801)
+        #np.random.seed(19680801)
 
         # Compute areas and colors
-        N = 150
-        r = 2 * np.random.rand(N)
-        theta = 2 * np.pi * np.random.rand(N)
-        area = 200 * r**2
-        colors = theta
+        #N = 150
+        #r = 2 * np.random.rand(N)
+        #theta = 2 * np.pi * np.random.rand(N)
+        #area = 200 * r**2
+        #colors = theta
 
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection = 'polar')
-        c = ax.scatter(theta, r, c = colors, s = area, cmap = 'hsv', alpha = 0.75)
+        #fig = plt.figure()
+        #ax = fig.add_subplot(111, projection = 'polar')
+        #c = ax.scatter(theta, r, c = colors, s = area, cmap = 'hsv', alpha = 0.75)
 
-        canvas = FigureCanvasTkAgg(fig, self.viewingFrame)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row = 1, column = 0)
+        #canvas = FigureCanvasTkAgg(fig, self.viewingFrame)
+        #canvas.draw()
+        #canvas.get_tk_widget().grid(row = 1, column = 0)
         
 
         #Example 2
-        f = Figure(figsize=(5,5), dpi=100)
-        a = f.add_subplot(111)
-        a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
+        #f = Figure(figsize=(5,5), dpi=100)
+        #a = f.add_subplot(111)
+        #a.plot([1,2,3,4,5,6,7,8],[5,6,1,3,8,9,3,5])
 
 
-        canvas = FigureCanvasTkAgg(f, self.viewingFrame)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row = 2, column = 0)
+        #canvas = FigureCanvasTkAgg(f, self.viewingFrame)
+        #canvas.draw()
+        #canvas.get_tk_widget().grid(row = 2, column = 0)
 
 
 
