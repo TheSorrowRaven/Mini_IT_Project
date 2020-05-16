@@ -13,7 +13,7 @@ import constants as Constants
 import tkinter.messagebox
 
 class GUI_Investment:
-
+    #data retrieval
     api_key = []
     api_secret = []
 
@@ -88,14 +88,54 @@ class GUI_Investment:
                 self.data = Client(api_key_id= self.logindata , api_key_secret= self.passworddata)
                 self.MainScreen(parent)
 
-    #def DropDownMenus(self, parent: Frame):
-    #    WalletList = ['option1', 'option2', 'option3', 'option4']
-    ##    variabledefault1 = variabledefault.set(WalletList[0])
-     #   options = OptionMenu(parent, variabledefault, *WalletList)
-     ##    options.place(anchor = 'nw', x = 61.0 , y = 50)
 
-    def MainScreen(self, parent: Frame):
+    def MainScreen(self, parent: Frame):   #Main menu items
          
+        def DropDownMenus(): #Choose Which account
+
+            self.json_data = self.data.get_balances()
+            self.json_datalol = self.json_data['balance']
+
+            #Easy drop down access
+            asset = []
+            account_id = []
+            name = []
+
+            for i in range (0,12):
+                try:
+                    banana = self.json_datalol[i]['asset']
+                    asset.append(banana)        
+                    
+                except:
+                    asset.append('noname')
+
+            print(asset)
+
+            for i in range(0,12):
+                try:
+                    potato = self.json_datalol[i]['account_id']
+                    account_id.append(potato)
+
+                except:
+                    account_id.append('noid')   
+                            
+            print(account_id)
+
+            for i in range(0,12):
+                try:
+                    sugar = self.json_datalol[i]['name']
+                    name.append(sugar)
+                except:
+                    name.append("noname")
+
+            print(name)
+
+            variablebar = StringVar()
+            variablebar.set(asset[0])
+            options = OptionMenu(parent, variablebar, *asset)
+            options.place(anchor = "nw", x = 61.0 , y = 50)
+
+
         #Post Login
         self.loginBtn.destroy()
         self.loginlabel.destroy()
@@ -104,6 +144,7 @@ class GUI_Investment:
         self.passwordo.destroy()
 
         #Display current cryptobalance
+        DropDownMenus()
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61.0, y = 10)
 
@@ -170,7 +211,7 @@ class GUI_Investment:
         self.configtransc3 = Button(master = parent, text="See XRP Transactions", command = lambda: self.TransactionHistory(3))
         self.configtransc3.place(x = 700, y = 240, anchor = "nw")
 
-    def CreateAccount(self, value):
+    def CreateAccount(self, value): #Creates an account if user doesn't have one
 
         def InfoMaker():
             self.labelmaker = Label(self.createaccountwindow, text="Account Name: ", font=("", 20) , bg = Constants.mainWindowBgColor)
@@ -242,7 +283,7 @@ class GUI_Investment:
                 if i['asset'] == 'XBT':
                     self.bitcoinbal = i['balance']
                     return self.bitcoinbal
-                    
+
         if value == 2:
             for i in self.json_data:
                 if i['asset'] == 'ETH':
@@ -318,14 +359,12 @@ class GUI_Investment:
             self.textdisplay = "RM {}" 
             self.actualtextdisplay = self.textdisplay.format(self.currencycalc)
             self.currencydisplay = Label(self.optionwindow, text = self.actualtextdisplay, font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.currencydisplay.grid(row=1, column=1)
-            
+            self.currencydisplay.grid(row=1, column=1)          
             
         except Exception as e:
             print(e)
             tkinter.messagebox.showerror(title="Input Error", message="Invalid input")
 
-    
 
     def BuyCoins(self):
 
