@@ -10,12 +10,10 @@
 from tkinter import Button, Canvas, Entry, Frame, Label, StringVar,OptionMenu, Toplevel, ttk
 from luno_python.client import Client
 import constants as Constants
+import interfaces as Interfaces
 import tkinter.messagebox
 
-class GUI_Investment:
-    #data retrieval
-    api_key = []
-    api_secret = []
+class GUI_Investment(Interfaces.IOnSave):
 
     def OnSave(self):
         self.Main.SaveData("API Key", self.login)
@@ -24,72 +22,70 @@ class GUI_Investment:
     def __init__(self, parent: Frame, main): #Attempt getting saved data and main message
         self.Main = main
         self.parent = parent
-        super().__init__()
+        super().__init__(main)
         self.login = main.GetSavedData("API Key")
         self.password = main.GetSavedData("API Secret")
-        self.investmentDesc2 = Label(master = parent, text = "Please signup first from the Luno Website", font = ("", 24), bg = Constants.mainWindowBgColor)
-        self.investmentDesc2.place(x = 660, y = 360, anchor = "center")
-        self.proceedBtn = Button(master = parent, text="Proceed" , command = lambda : self.LoginMenu(parent)) #might change bg in a later date
-        self.proceedBtn.place(x = 660, y = 420, anchor = "center")
+        print(self.login)
+        print(self.password)
+
+        if (self.login is None):
+            self.investmentDesc2 = Label(master = parent, text = "Please signup first from the Luno Website", font = ("", 24), bg = Constants.mainWindowBgColor)
+            self.investmentDesc2.place(x = 660, y = 360, anchor = "center")
+            self.proceedBtn = Button(master = parent, text="Proceed" , command = lambda : self.LoginMenu(parent)) #might change bg in a later date
+            self.proceedBtn.place(x = 660, y = 420, anchor = "center")
+        
+        else:
+            self.LoginMenu(parent)
 
     def LoginMenu(self, parent: Frame): #Log in time
 
             def NewLogin():   #API Key info
-                self.login = []
                 self.loginlabel = Label(master = parent, text = "API Key:", font = ("", 24), bg = Constants.mainWindowBgColor)
                 self.loginlabel.place(x = 400, y = 420, anchor = "center")
                 self.logino = Entry(master = parent, textvariable ="API Key", font = ("", 24))
                 self.logino.place(x = 800, y = 420, anchor = "center")
-                
-                self.login.append(self.logino)
 
             def NewPassword(): #API Key Secret
-                self.password = []
                 self.passwordlabel = Label(master = parent, text = "API Secret:", font = ("", 24), bg = Constants.mainWindowBgColor)
                 self.passwordlabel.place(x = 390, y = 460, anchor = "center")
                 self.passwordo = Entry(master = parent, textvariable = "API Secret", font = ("", 24), show ="*")
                 self.passwordo.place(x = 800, y = 460, anchor = "center")
 
-                self.password.append(self.passwordo)
+            def LoginTest(status):  #Test login before letting user log in
+                self.logini = self.logino.get()
+                self.passwordi = self.passwordo.get()           #Dudes saving Spartan 1337 from the dinasour maintaining his one heck of a mama reputation
+                self.data = Client(api_key_id= self.logini , api_key_secret= self.passwordi)
 
-            def LoginTest(logintest, passwordtest):  #Test login before letting user log in
-                logintest = logintest.get()
-                passwordtest = passwordtest.get()
-                self.data = Client(api_key_id= logintest , api_key_secret= passwordtest)
-
-                print(passwordtest)
+                print(self.login)
                  
                 try:
                     trial = self.data.get_balances()
                     print(trial)
-                    self.MainScreen(parent)
+                    self.login = self.logini
+                    self.password = self.passwordi
+                    self.MainScreen(status, parent)
 
                 except Exception as e:
-                    self.login = []
-                    self.password = []
                     print(e)
                     tkinter.messagebox.showerror(title="Login Error", message="Invalid api key or api key secret, please try again")
 
-            self.investmentDesc2.destroy()
-            self.proceedBtn.destroy()
+            
             if (self.login is None):
+                self.investmentDesc2.destroy()
+                self.proceedBtn.destroy()
+                status = 0
                 NewLogin()
                 NewPassword()
-                self.logininput = self.login[0]
-                self.passwordinput = self.password[0]
-                self.loginBtn = Button(master = parent, text="Login", command = lambda : LoginTest(self.logininput, self.passwordinput))
+                self.loginBtn = Button(master = parent, text="Login", command = lambda : LoginTest(status))
                 self.loginBtn.place(x = 1000, y = 520, anchor = "center")
 
             else:
-                self.logindata = self.login[0]
-                self.passworddata = self.password[0]
-                self.logindata = self.logindata.get()
-                self.passworddata = self.passworddata.get()
-                self.data = Client(api_key_id= self.logindata , api_key_secret= self.passworddata)
-                self.MainScreen(parent)
+                status = 1
+                self.data = Client(api_key_id= self.login , api_key_secret= self.password)
+                self.MainScreen(status, parent)
 
 
-    def MainScreen(self, parent: Frame):   #Main menu items
+    def MainScreen(self, status, parent: Frame):   #Main menu items
          
         def DropDownMenus(): #Choose Which account
 
@@ -98,10 +94,10 @@ class GUI_Investment:
 
             #Easy drop down access
             asset = []
-            account_id = []
             name = []
+            nameacc = []
 
-            for i in range (0,12):
+            for i in range (0,12):  #Determine amount of accounts from assuming max
                 try:
                     banana = self.json_datalol[i]['asset']
                     asset.append(banana)        
@@ -111,17 +107,7 @@ class GUI_Investment:
 
             print(asset)
 
-            for i in range(0,12):
-                try:
-                    potato = self.json_datalol[i]['account_id']
-                    account_id.append(potato)
-
-                except:
-                    account_id.append('noid')   
-                            
-            print(account_id)
-
-            for i in range(0,12):
+            for i in range(0,12):    
                 try:
                     sugar = self.json_datalol[i]['name']
                     name.append(sugar)
@@ -130,18 +116,26 @@ class GUI_Investment:
 
             print(name)
 
+            while 'noname' in asset:   #Remove excess
+                asset.remove('noname')
+
+            displayprogram = len(asset)
+            for i in (0,displayprogram):
+                nameacc.append(name[i])
+
             variablebar = StringVar()
-            variablebar.set(asset[0])
-            options = OptionMenu(parent, variablebar, *asset)
+            variablebar.set(nameacc[0])
+            options = OptionMenu(parent, variablebar, *nameacc)
             options.place(anchor = "nw", x = 61.0 , y = 50)
 
 
         #Post Login
-        self.loginBtn.destroy()
-        self.loginlabel.destroy()
-        self.passwordlabel.destroy()
-        self.logino.destroy()
-        self.passwordo.destroy()
+        if status == 0:
+            self.loginBtn.destroy()
+            self.loginlabel.destroy()
+            self.passwordlabel.destroy()
+            self.logino.destroy()
+            self.passwordo.destroy()
 
         #Display current cryptobalance
         DropDownMenus()
