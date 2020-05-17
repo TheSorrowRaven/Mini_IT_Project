@@ -19,6 +19,7 @@ class GUI_Investment(Interfaces.IOnSave):
         self.Main.SaveData("API Key", self.login)
         self.Main.SaveData("API Secret", self.password)
 
+
     def __init__(self, parent: Frame, main): #Attempt getting saved data and main message
         self.Main = main
         self.parent = parent
@@ -36,6 +37,7 @@ class GUI_Investment(Interfaces.IOnSave):
         
         else:
             self.LoginMenu(parent)
+
 
     def LoginMenu(self, parent: Frame): #Log in time
 
@@ -87,48 +89,6 @@ class GUI_Investment(Interfaces.IOnSave):
 
     def MainScreen(self, status, parent: Frame):   #Main menu items
          
-        def DropDownMenus(): #Choose Which account
-
-            self.json_data = self.data.get_balances()
-            self.json_datalol = self.json_data['balance']
-
-            #Easy drop down access
-            asset = []
-            name = []
-            nameacc = []
-
-            for i in range (0,12):  #Determine amount of accounts from assuming max
-                try:
-                    banana = self.json_datalol[i]['asset']
-                    asset.append(banana)        
-                    
-                except:
-                    asset.append('noname')
-
-            print(asset)
-
-            for i in range(0,12):    
-                try:
-                    sugar = self.json_datalol[i]['name']
-                    name.append(sugar)
-                except:
-                    name.append("noname")
-
-            print(name)
-
-            while 'noname' in asset:   #Remove excess
-                asset.remove('noname')
-
-            displayprogram = len(asset)
-            for i in (0,displayprogram):
-                nameacc.append(name[i])
-
-            variablebar = StringVar()
-            variablebar.set(nameacc[0])
-            options = OptionMenu(parent, variablebar, *nameacc)
-            options.place(anchor = "nw", x = 61.0 , y = 50)
-
-
         #Post Login
         if status == 0:
             self.loginBtn.destroy()
@@ -138,7 +98,7 @@ class GUI_Investment(Interfaces.IOnSave):
             self.passwordo.destroy()
 
         #Display current cryptobalance
-        DropDownMenus()
+        self.DropDownMenus(parent)
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61.0, y = 10)
 
@@ -157,27 +117,27 @@ class GUI_Investment(Interfaces.IOnSave):
 
         try:
             self.balanceeth = Label(master = parent, text = self.CryptoBalance(2) ,font = ("", 20), bd =1, bg = 'seashell3')
-            self.balanceeth.place(anchor = "nw", x = 61.0 , y = 150)
+            self.balanceeth.place(anchor = "nw", x = 61.0 , y = 160)
             self.ethbal = Label(master = parent, text='ETH', font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.ethbal.place(anchor = 'nw', x = 300, y = 150)
+            self.ethbal.place(anchor = 'nw', x = 300, y = 160)
 
         except:
             self.addaccounteth = Label(master = parent, text='Account Unavailable', font = ("", 20), bg = Constants.mainWindowBgColor)
-            self.addaccounteth.place(anchor = "nw", x = 61.0, y = 150)
+            self.addaccounteth.place(anchor = "nw", x = 61.0, y = 160)
             self.addaccountbtneth = Button(master = parent , text='Create ETH Account', command = lambda : self.CreateAccount(2))
-            self.addaccountbtneth.place(anchor = "nw", x = 200 , y = 150)
+            self.addaccountbtneth.place(anchor = "nw", x = 200 , y = 160)
 
         try:
             self.balancexrp = Label(master = parent, text = self.CryptoBalance(3) ,font = ("", 20), bd =1, bg = 'seashell3')
-            self.balancexrp.place(anchor = "nw",x = 61.0 , y = 210)
+            self.balancexrp.place(anchor = "nw",x = 61.0 , y = 220)
             self.xrpbal = Label(master = parent, text='XRP', font = ("", 26), bg = Constants.mainWindowBgColor)
-            self.xrpbal.place(anchor = 'nw', x = 300, y = 210)
+            self.xrpbal.place(anchor = 'nw', x = 300, y = 220)
 
         except:
             self.addaccountxrp = Label(master = parent, text='Account Unavailable', font = ("", 20), bg = Constants.mainWindowBgColor)
-            self.addaccountxrp.place(anchor = "nw", x = 61.0, y = 210)
+            self.addaccountxrp.place(anchor = "nw", x = 61.0, y = 220)
             self.addaccountbtnxrp = Button(master = parent , text='Create XRP Account', command = lambda : self.CreateAccount(3))
-            self.addaccountbtnxrp.place(anchor = "nw", x = 200 , y = 210)
+            self.addaccountbtnxrp.place(anchor = "nw", x = 200 , y = 220)
 
         #Display current prices
         self.balancelabel = Label(master = parent, text="The current price is :", font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -204,6 +164,89 @@ class GUI_Investment(Interfaces.IOnSave):
         self.configtransc2.place(x = 700, y = 200, anchor = "nw")
         self.configtransc3 = Button(master = parent, text="See XRP Transactions", command = lambda: self.TransactionHistory(3))
         self.configtransc3.place(x = 700, y = 240, anchor = "nw")
+
+
+    def DropDownMenus(self, parent: Frame): #Choose Which account
+        
+        def AccountBalanceBTC(*args):
+            print(self.variablelolbtc.get())
+
+        def AccountBalanceETH(*args):
+            print(self.variableloleth.get())
+
+        def AccountBalanceXRP(*args):
+            print(self.variableloleth.get())
+
+        self.json_data = self.data.get_balances()
+        self.json_datalol = self.json_data['balance']
+
+        #Easy drop down access
+        xbtlist = []
+        ethlist = []
+        xrplist = []
+        xbtaccounts = []
+        ethaccounts = []
+        xrpaccounts = []
+
+        #Segregate cryptonames and account id from lists
+        for i in self.json_datalol:
+            n = 0
+            xbtaccounts.append(i['account_id'])
+
+            if i['asset'] == 'XBT':
+                try:
+                    xbtlist.append(i['name'])
+                except:
+                    n += 1
+                    xbtlist.append('noname {}'.format(n))
+            
+            
+        for j in self.json_datalol:
+            n = 0
+            ethaccounts.append(j['account_id'])
+            
+            if j['asset'] == 'ETH':
+                try:
+                    ethlist.append(j['name'])
+                except:
+                    n += 1
+                    ethlist.append('noname {}'.format(n))
+
+            
+        for k in self.json_datalol:
+            n = 0
+            xrpaccounts.append(k['account_id'])
+
+            if k['asset'] == 'XRP':
+                try:
+                    xrplist.append(k['name'])
+                except:
+                    n += 1
+                    xrplist.append('noname {}'.format(n))
+        
+        self.xbtdictionary = dict(zip(xbtlist, xbtaccounts))
+        self.ethdictionary = dict(zip(ethlist, ethaccounts))
+        self.xrpdictionary = dict(zip(xrplist, xrpaccounts))
+
+        self.variablelolbtc = StringVar(parent)
+        self.variablelolbtc.set(xbtlist[0])
+        self.variablelolbtc.trace("w", AccountBalanceBTC)
+
+        self.variableloleth = StringVar(parent)
+        self.variableloleth.set(ethlist[0])
+        self.variableloleth.trace("w", AccountBalanceETH)
+
+        self.variablelolxrp = StringVar(parent)
+        self.variablelolxrp.set(xrplist[0])
+        self.variablelolxrp.trace("w", AccountBalanceXRP)
+
+        optionbtc = OptionMenu(parent, self.variablelolbtc, *xbtlist)
+        optionbtc.place(anchor = "nw", x = 61.0 , y = 50)
+        optioneth = OptionMenu(parent, self.variableloleth, *ethlist)
+        optioneth.place(anchor = "nw", x = 61.0 , y = 130)
+        optionxrp = OptionMenu(parent, self.variablelolxrp, *xrplist)
+        optionxrp.place(anchor = "nw", x = 61.0 , y = 190)
+
 
     def CreateAccount(self, value): #Creates an account if user doesn't have one
 
@@ -250,24 +293,38 @@ class GUI_Investment(Interfaces.IOnSave):
                 tkinter.messagebox.showerror("Crypto Account Progress", message = "Action Failed")
                 self.createaccountwindow.quit()
 
+
     def TransactionHistory(self, value):       #Get transaction history
         self.json_data = self.data.get_balances()
         self.json_data = self.json_data['balance']
+        account_id = []
+
+        for k in range(0,12):
+            try:
+                potato = self.json_data[k]['account_id']
+                print(potato)
+                account_id.append(potato)
+
+            except:
+                account_id.append('noid')
 
         if value == 1:
-            self.id = self.CryptoBalance(1)
+            print(account_id)
+            idinfo = account_id[0]
+            print(idinfo)
 
         if value == 2:
-            self.id = self.CryptoBalance(2)
+            idinfo = self.CryptoBalance(2)
 
         elif value == 3:
-            self.id = self.CryptoBalance(3)
+            idinfo = self.CryptoBalance(3)
 
-        min_row = 0
-        max_row = 1000
-        transactionlist = self.data.list_transactions(self.id, max_row, min_row)
+        min_row = -100
+        max_row = 0
+        transactionlist = self.data.list_transactions(idinfo, max_row, min_row)
         print(transactionlist)
         
+
     def CryptoBalance(self, value):     #required to get data from Luno Site
         self.json_data = self.data.get_balances()
         self.json_data = self.json_data['balance']
@@ -289,6 +346,7 @@ class GUI_Investment(Interfaces.IOnSave):
                 if i['asset'] == 'XRP':
                     self.xrpbal = i['balance']
                     return self.xrpbal
+
 
     def ShowPrice(self, value):
         self.json_data = self.data.get_tickers()
@@ -325,6 +383,7 @@ class GUI_Investment(Interfaces.IOnSave):
         self.sell.place(anchor ='ne')
         self.buy.pack()
         self.sell.pack()
+
 
     def CryptoinRM(self, buysell, crypto, function):      #Display coin value in RM
  
@@ -416,6 +475,7 @@ class GUI_Investment(Interfaces.IOnSave):
         self.buybtcbtn.pack()
         self.buyethbtn.pack()
         self.buyxrpbtn.pack()
+
 
     def SellCoins(self):
 
