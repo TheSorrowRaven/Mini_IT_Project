@@ -98,7 +98,7 @@ class GUI_Investment(Interfaces.IOnSave):
             self.passwordo.destroy()
 
         #Display current cryptobalance
-        self.DropDownMenus(parent)
+        self.DropDownMenus(parent)            #problem for users with no acc    
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61.0, y = 10)
 
@@ -142,16 +142,16 @@ class GUI_Investment(Interfaces.IOnSave):
         #Display current prices
         self.balancelabel = Label(master = parent, text="The current price is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61, y = 420)
-        self.balancebtc = Label(master = parent, text = self.ShowPrice(1) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balancebtc.place(anchor = "nw", x = 200 , y = 480)
+        self.balancebtc1 = Label(master = parent, text = self.ShowPrice(1) ,font = ("", 20), bd =1, bg = 'seashell3')
+        self.balancebtc1.place(anchor = "nw", x = 200 , y = 480)
         self.btclabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
         self.btclabel.place(anchor = 'nw', x = 61, y = 480)
-        self.balanceeth = Label(master = parent, text = self.ShowPrice(2) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balanceeth.place(anchor = "nw", x = 200 , y = 540)
+        self.balanceeth1 = Label(master = parent, text = self.ShowPrice(2) ,font = ("", 20), bd =1, bg = 'seashell3')
+        self.balanceeth1.place(anchor = "nw", x = 200 , y = 540)
         self.ethlabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
         self.ethlabel.place(anchor = 'nw', x = 61, y = 540)
-        self.balancexrp = Label(master = parent, text = self.ShowPrice(3) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balancexrp.place(anchor = "nw", x = 200 , y = 600)
+        self.balancexrp1 = Label(master = parent, text = self.ShowPrice(3) ,font = ("", 20), bd =1, bg = 'seashell3')
+        self.balancexrp1.place(anchor = "nw", x = 200 , y = 600)
         self.xrplabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
         self.xrplabel.place(anchor = 'nw', x = 61, y = 600)
         
@@ -169,13 +169,34 @@ class GUI_Investment(Interfaces.IOnSave):
     def DropDownMenus(self, parent: Frame): #Choose Which account
         
         def AccountBalanceBTC(*args):
-            print(self.variablelolbtc.get())
+            playbtc = self.variablelolbtc.get()
+            self.balancebtc.destroy()
+            self.actualaccountbtc = self.xbtdictionary[playbtc]
+            for i in self.json_datalol:
+                if i['account_id'] == self.actualaccountbtc:
+                    abalancebtc = i['balance']
+                    self.balancebtc = Label(master = parent, text = abalancebtc ,font = ("", 20), bd =1, bg = 'seashell3')
+                    self.balancebtc.place(anchor = "nw", x = 61.0, y = 90)
 
         def AccountBalanceETH(*args):
-            print(self.variableloleth.get())
+            playeth = self.variableloleth.get()
+            self.balanceeth.destroy()
+            self.actualaccounteth = self.ethdictionary[playeth]
+            for i in self.json_datalol:
+                if i['account_id'] == self.actualaccounteth:
+                    abalanceeth = i['balance']
+                    self.balanceeth = Label(master = parent, text = abalanceeth ,font = ("", 20), bd =1, bg = 'seashell3')
+                    self.balanceeth.place(anchor = "nw", x = 61.0 , y = 160)
 
         def AccountBalanceXRP(*args):
-            print(self.variableloleth.get())
+            playxrp = self.variablelolxrp.get()
+            self.balancexrp.destroy()
+            self.actualaccountxrp = self.xrpdictionary[playxrp]
+            for i in self.json_datalol:
+                if i['account_id'] == self.actualaccountxrp:
+                    abalancexrp = i['balance']
+                    self.balancexrp = Label(master = parent, text = abalancexrp ,font = ("", 20), bd =1, bg = 'seashell3')
+                    self.balancexrp.place(anchor = "nw", x = 61.0 , y = 220)
 
         self.json_data = self.data.get_balances()
         self.json_datalol = self.json_data['balance']
@@ -188,12 +209,13 @@ class GUI_Investment(Interfaces.IOnSave):
         ethaccounts = []
         xrpaccounts = []
 
+        n = 0
         #Segregate cryptonames and account id from lists
         for i in self.json_datalol:
-            n = 0
-            xbtaccounts.append(i['account_id'])
 
             if i['asset'] == 'XBT':
+                xbtaccounts.append(i['account_id'])
+
                 try:
                     xbtlist.append(i['name'])
                 except:
@@ -202,10 +224,9 @@ class GUI_Investment(Interfaces.IOnSave):
             
             
         for j in self.json_datalol:
-            n = 0
-            ethaccounts.append(j['account_id'])
             
             if j['asset'] == 'ETH':
+                ethaccounts.append(j['account_id'])
                 try:
                     ethlist.append(j['name'])
                 except:
@@ -214,10 +235,9 @@ class GUI_Investment(Interfaces.IOnSave):
 
             
         for k in self.json_datalol:
-            n = 0
-            xrpaccounts.append(k['account_id'])
 
             if k['asset'] == 'XRP':
+                xrpaccounts.append(k['account_id'])
                 try:
                     xrplist.append(k['name'])
                 except:
@@ -227,6 +247,10 @@ class GUI_Investment(Interfaces.IOnSave):
         self.xbtdictionary = dict(zip(xbtlist, xbtaccounts))
         self.ethdictionary = dict(zip(ethlist, ethaccounts))
         self.xrpdictionary = dict(zip(xrplist, xrpaccounts))
+
+        print(self.xbtdictionary)
+        print(self.ethdictionary)
+        print(self.xrpdictionary)
 
         self.variablelolbtc = StringVar(parent)
         self.variablelolbtc.set(xbtlist[0])
@@ -297,31 +321,33 @@ class GUI_Investment(Interfaces.IOnSave):
     def TransactionHistory(self, value):       #Get transaction history
         self.json_data = self.data.get_balances()
         self.json_data = self.json_data['balance']
-        account_id = []
 
-        for k in range(0,12):
-            try:
-                potato = self.json_data[k]['account_id']
-                print(potato)
-                account_id.append(potato)
-
-            except:
-                account_id.append('noid')
+        self.transactionwindow = Toplevel()
 
         if value == 1:
-            print(account_id)
-            idinfo = account_id[0]
-            print(idinfo)
+            for i in self.json_data:
+                if i['asset'] == 'XBT':
+                    idinfo = i['account_id']
 
         if value == 2:
-            idinfo = self.CryptoBalance(2)
+            for i in self.json_data:
+                if i['asset'] == 'ETH':
+                        idinfo = i['account_id']
 
         elif value == 3:
-            idinfo = self.CryptoBalance(3)
+            for i in self.json_data:
+                if i['asset'] == 'XRP':
+                        idinfo = i['account_id']
 
         min_row = -100
         max_row = 0
         transactionlist = self.data.list_transactions(idinfo, max_row, min_row)
+        def TransactionIndex():
+            self.transactioninfo = Label(self.transactionwindow, text = "{} :".format(transactionlist['transactions'][0]['row_index']), font = ("",26), bg = Constants.mainWindowBgColor)
+            self.transactioninfo.grid(row=0)
+            self.transactioninfo1 = Label(self.transactionwindow, text = transactionlist['transactions'][0]['description'], font = ("",26), bg = Constants.mainWindowBgColor)
+            self.transactioninfo1.grid(row=0, column = 1)
+        TransactionIndex()
         print(transactionlist)
         
 
