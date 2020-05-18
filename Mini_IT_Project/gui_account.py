@@ -152,12 +152,15 @@ class GUI_Account(Interfaces.IOnSave):
             if (state == 0):
                 self.addCategoryEntry.configure(fg = "red")
                 self.addCategoryButton.grid_forget()
+                self.baseCategoryButton.grid_forget()
             elif (state == 1):
                 self.addCategoryEntry.configure(fg = "red")
                 self.addCategoryButton.grid_forget()
+                self.baseCategoryButton.grid_forget()
             else:
                 self.addCategoryEntry.configure(fg = "black")
                 self.addCategoryButton.grid(row = 2, column = 2)
+                self.baseCategoryButton.grid(row = 2, column = 1)
 
         def ButtonCreateCategory(): 
             if (self.CheckCreateCategory(self.addCategoryEntry.get(), self.displayCategoryTree.item(self.displayCategoryTree.focus())["text"])):
@@ -166,14 +169,20 @@ class GUI_Account(Interfaces.IOnSave):
                 print("Error Creating Category")
             self.entryStrVar.set("")
 
+        def ButtonSelectRoot():
+            if (self.CheckCreateCategory(self.addCategoryEntry.get(), "")):
+                self.RefreshCategory()
+            pass
+
         self.entryStrVar = StringVar()
         self.entryStrVar.trace("w", lambda name, index, mode, sv=self.entryStrVar: OnCategoryEntryChanged(sv))
 
         self.addCategoryEntry = Entry(master = self.categoryFrame, textvariable = self.entryStrVar, width = 30)
-        self.addCategoryEntry.grid(row = 2, column = 0, columnspan = 2)
+        self.addCategoryEntry.grid(row = 2, column = 0, columnspan = 1)
         self.addCategoryEntry.bind("<Return>", lambda e: ButtonCreateCategory())
 
         self.addCategoryButton = Button(master = self.categoryFrame, text = "+", command = ButtonCreateCategory)
+        self.baseCategoryButton = Button(master = self.categoryFrame, text = "_", command = ButtonSelectRoot)
 
         self.LAmount.grid           (row = 0, column = 0)
         self.transAmountEntry.grid  (row = 0, column = 1, padx = (0, 2))
@@ -332,6 +341,10 @@ class GUI_Account(Interfaces.IOnSave):
         except ValueError:
             conversion = None
             print("Conversion Error!!, Entered amount ain't a float")
+
+        if (conversion is None):
+            return
+
         trans = Account.Transaction()
         trans.amount = conversion
 
