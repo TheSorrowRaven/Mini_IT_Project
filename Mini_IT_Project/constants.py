@@ -12,7 +12,7 @@
 
 
 # Save File Location/Name
-saveFile = "PICKLE.RICKKK"
+saveFile = "data.sav"
 
 # Window Names
 mainWindow    = "Main"

@@ -434,7 +434,7 @@ class GUI_Account(Interfaces.IOnSave):
         if (selectedAccount is None):
             return
 
-        self.balanceDisplay.configure(text = selectedAccount.GetBalance())  # This is where we update the amount
+        self.RefreshAccountBalance()
 
         if isinstance(selectedAccount, Account.BankAccount):   # Here we check the type, if it's like Cash In Hand Account we WONT disply the text
             self.interestFrame.grid(row = 0, column = 4, rowspan = 2, padx = (40, 0))   #This should work, i also not sure for Python, that's why we test
@@ -448,7 +448,7 @@ class GUI_Account(Interfaces.IOnSave):
         self.RefreshTransHistory()
         
     def RefreshAccountBalance(self):
-        self.balanceDisplay.configure(text = self.selectedAccount.GetBalance())
+        self.balanceDisplay.configure(text = "{:.2f}".format(self.selectedAccount.GetBalance()))
 
     def NewUserCategories(self):
         self.categories = []

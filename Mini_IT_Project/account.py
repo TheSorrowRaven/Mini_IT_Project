@@ -98,7 +98,17 @@ class Category():
                 text = i.name + " - " + text
         return text
 
-    pass
+    def GetRootParent(self):
+        
+        loop = True
+        i = self
+        while loop:
+            if i.parent is None:
+                loop = False
+            else:
+                i = i.parent
+        return i
+                
 
 
 if __name__ == "__main__":

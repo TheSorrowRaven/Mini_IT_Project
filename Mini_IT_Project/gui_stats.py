@@ -10,6 +10,8 @@
 ###
 
 from tkinter import Frame, Tk, Label, ttk, Canvas
+from collections import Counter
+import datetime
 import gui_account as GUI_Account
 import account as Account
 import interfaces as Interfaces
@@ -52,7 +54,7 @@ class Statistics():
 
         self.root = Tk()
         self.root.title("Account Statistics")
-        self.root.geometry("800x800")
+        self.root.geometry("1400x800")
         self.root.resizable(False, False)
 
 
@@ -93,6 +95,214 @@ class Statistics():
         
         self.LTitle = Label(master = self.viewingFrame, text = "STATISTICS", font = ("", 18), bg = Constants.mainWindowBgColor)
         self.LTitle.grid(row = 0, column = 0, columnspan = 2)
+
+        allTransactions = []
+        for i in self.accounts:
+            for j in i.transactions:
+                allTransactions.append(j)
+
+        allTransDates = []
+        for i in allTransactions:
+            allTransDates.append(i.creationDateTime.date())
+
+        countDates = dict()
+        for i in allTransDates:
+            countDates[i] = countDates.get(i, 0) + 1
+
+        dates = []
+        for i in countDates.keys():
+            dates.append(i.strftime("%d-%m-%Y"))
+        values = list(countDates.values())
+
+        fig, axs = plt.subplots()
+        axs.plot(dates, values)
+        fig.suptitle('User Activity')
+
+        #plt.show()
+
+
+        canvas = FigureCanvasTkAgg(fig, self.viewingFrame)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row = 0, column = 0, columnspan = 2)
+
+
+
+        label = Label(self.viewingFrame, text = "Income", font = ("", 36), bg = Constants.mainWindowBgColor)
+        label.grid(row = 1, column = 0)
+
+        label = Label(self.viewingFrame, text = "Spending", font = ("", 36), bg = Constants.mainWindowBgColor)
+        label.grid(row =1 , column = 1)
+
+
+
+        parentCats = []
+        for i in self.guiAcc.categories:
+            parentCats.append(i.GetRootParent())
+        parentCats = list(dict.fromkeys(parentCats))
+
+        for i in range(len(parentCats)):
+            parentCats[i] = parentCats[i].name
+
+        rootIncome = dict()
+        rootSpending = dict()
+
+        for i in parentCats:
+            rootIncome[i] = 0
+            rootSpending[i] = 0
+
+        for i in allTransactions:
+            rootCat = i.category.GetRootParent().name
+            amount = i.amount
+            if (not i.isIncome):
+                rootSpending[rootCat] += amount
+            else:
+                rootIncome[rootCat] += amount
+
+        max = 0
+        index = 0
+        targetIndex = 0
+        rootIncomeX = rootIncome.copy()
+        for instance in rootIncome:
+            key = instance
+            value = rootIncome[key]
+            if value == 0:
+                del rootIncomeX[key]
+            if value > max:
+                max = value
+                targetIndex = index
+            index += 1
+        rootIncome = rootIncomeX
+
+        explode = []
+        for i in range(len(rootIncome)):
+            explode.append(0)
+        explode[targetIndex] = 0.1
+
+        labels = [i for i in rootIncome]
+        data = [rootIncome[i] for i in rootIncome]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(data, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=False, startangle=90)
+        ax1.axis('equal')
+
+        canvas = FigureCanvasTkAgg(fig1, self.viewingFrame)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row = 2, column = 0)
+
+
+        max = 0
+        index = 0
+        targetIndex = 0
+        rootSpendingX = rootSpending.copy()
+        for instance in rootSpending:
+            key = instance
+            value = rootSpending[key]
+            if value == 0:
+                del rootSpendingX[key]
+            if value > max:
+                max = value
+                targetIndex = index
+            index += 1
+        rootSpending = rootSpendingX
+
+        explode = []
+        for i in range(len(rootSpending)):
+            explode.append(0)
+        explode[targetIndex] = 0.1
+
+        labels = [i for i in rootSpending]
+        data = [rootSpending[i] for i in rootSpending]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(data, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=False, startangle=90)
+        ax1.axis('equal')
+
+        canvas = FigureCanvasTkAgg(fig1, self.viewingFrame)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row = 2, column = 1)
+
+
+        incomes = dict()
+        spendings = dict()
+
+        for i in self.guiAcc.categories:
+            incomes[i.name] = 0
+            spendings[i.name] = 0
+
+        for i in allTransactions:
+            if (i.isIncome):
+                incomes[i.category.name] += i.amount
+            else:
+                spendings[i.category.name] += i.amount
+
+        max = 0
+        index = 0
+        targetIndex = 0
+        incomesX = incomes.copy()
+        for instance in incomes:
+            key = instance
+            value = incomes[key]
+            if value == 0:
+                del incomesX[key]
+            if value > max:
+                max = value
+                targetIndex = index
+            index += 1
+        incomes = incomesX
+
+        explode = []
+        for i in range(len(incomes)):
+            explode.append(0)
+        explode[targetIndex] = 0.1
+
+        labels = [i for i in incomes]
+        data = [incomes[i] for i in incomes]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(data, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=False, startangle=90)
+        ax1.axis('equal')
+
+        canvas = FigureCanvasTkAgg(fig1, self.viewingFrame)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row = 3, column = 0)
+
+
+
+        max = 0
+        index = 0
+        targetIndex = 0
+        spendingsX = spendings.copy()
+        for instance in spendings:
+            key = instance
+            value = spendings[key]
+            if value == 0:
+                del spendingsX[key]
+            if value > max:
+                max = value
+                targetIndex = index
+            index += 1
+        spendings = spendingsX
+
+        explode = []
+        for i in range(len(spendings)):
+            explode.append(0)
+        explode[targetIndex] = 0.1
+
+        labels = [i for i in spendings]
+        data = [spendings[i] for i in spendings]
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(data, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=False, startangle=90)
+        ax1.axis('equal')
+
+        canvas = FigureCanvasTkAgg(fig1, self.viewingFrame)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row = 3, column = 1)
+
 
 
 
@@ -135,20 +345,19 @@ class Statistics():
         #Example 3
         
         # Pie chart, where the slices will be ordered and plotted counter-clockwise:
-        labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'
-        sizes = [15, 30, 45, 10]
-        explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+        #labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'
+        #sizes = [15, 30, 45, 10]
+        #explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
-        fig1, ax1 = plt.subplots()
-        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
-                shadow=True, startangle=90)
-        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        #fig1, ax1 = plt.subplots()
+        #ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+        #        shadow=True, startangle=90)
+        #ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
 
-        canvas = FigureCanvasTkAgg(fig1, self.viewingFrame)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row = 3, column = 0)
-
+        #canvas = FigureCanvasTkAgg(fig1, self.viewingFrame)
+        #canvas.draw()
+        #canvas.get_tk_widget().grid(row = 3, column = 0)
 
         # #transactionsSortedTemp = [None] * len(transactions)
         # for _ in range(len(transactions)):
