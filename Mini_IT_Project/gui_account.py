@@ -353,16 +353,17 @@ class GUI_Account(Interfaces.IOnSave):
             if (i.name == targetOtherSubject):
                 targetOtherSubject = i  # Target Account
 
-                transOther          = Account.Transaction()
+                transOther              = Account.Transaction()
                 transOther.amount       = conversion
-                transOther.isIncome     = not isIncome          # DIFFERENCE
-                transOther.otherSubject = self.selectedAccount  # DIFFERENCE
+                transOther.isIncome     = not isIncome               # DIFFERENCE
+                transOther.otherSubject = self.selectedAccount.name  # DIFFERENCE
                 transOther.title        = self.enteredTitle.get()
                 transOther.description  = self.enteredDesc.get()
                 transOther.date         = self.transCalendar.selection_get()
                 transOther.category     = self.GetCategoryByName(self.displayCategoryTree.item(self.displayCategoryTree.focus())["text"])
                 
                 targetOtherSubject.AddTransaction(transOther)
+                targetOtherSubject = targetOtherSubject.name
 
                 break
         
@@ -434,7 +435,6 @@ class GUI_Account(Interfaces.IOnSave):
         if (selectedAccount is None):
             return
 
-        self.RefreshAccountBalance()
 
         if isinstance(selectedAccount, Account.BankAccount):   # Here we check the type, if it's like Cash In Hand Account we WONT disply the text
             self.interestFrame.grid(row = 0, column = 4, rowspan = 2, padx = (40, 0))   #This should work, i also not sure for Python, that's why we test
@@ -445,6 +445,7 @@ class GUI_Account(Interfaces.IOnSave):
 
         self.selectedAccount = selectedAccount
         self.accountChoice.set(selectedAccount.name)
+        self.RefreshAccountBalance()
         self.RefreshTransHistory()
         
     def RefreshAccountBalance(self):

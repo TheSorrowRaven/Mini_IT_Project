@@ -12,6 +12,7 @@
 from tkinter import Frame, Tk, Label, ttk, Canvas
 from collections import Counter
 import datetime
+import calendar
 import gui_account as GUI_Account
 import account as Account
 import interfaces as Interfaces
@@ -167,11 +168,13 @@ class Statistics():
             value = rootIncome[key]
             if value == 0:
                 del rootIncomeX[key]
+        rootIncome = rootIncomeX
+        for i in rootIncome:
+            value = rootIncome[i]
             if value > max:
                 max = value
                 targetIndex = index
             index += 1
-        rootIncome = rootIncomeX
 
         explode = []
         for i in range(len(rootIncome)):
@@ -200,11 +203,13 @@ class Statistics():
             value = rootSpending[key]
             if value == 0:
                 del rootSpendingX[key]
+        rootSpending = rootSpendingX
+        for i in rootSpending:
+            value = rootSpending[i]
             if value > max:
                 max = value
                 targetIndex = index
             index += 1
-        rootSpending = rootSpendingX
 
         explode = []
         for i in range(len(rootSpending)):
@@ -246,11 +251,13 @@ class Statistics():
             value = incomes[key]
             if value == 0:
                 del incomesX[key]
+        incomes = incomesX
+        for i in incomes:
+            value = incomes[i]
             if value > max:
                 max = value
                 targetIndex = index
             index += 1
-        incomes = incomesX
 
         explode = []
         for i in range(len(incomes)):
@@ -280,11 +287,13 @@ class Statistics():
             value = spendings[key]
             if value == 0:
                 del spendingsX[key]
+        spendings = spendingsX
+        for i in spendings:
+            value = spendings[i]
             if value > max:
                 max = value
                 targetIndex = index
             index += 1
-        spendings = spendingsX
 
         explode = []
         for i in range(len(spendings)):
@@ -303,8 +312,72 @@ class Statistics():
         canvas.draw()
         canvas.get_tk_widget().grid(row = 3, column = 1)
 
+        years = []
+        for i in allTransactions:
+            years.append(i.date.year)
+        years = list(dict.fromkeys(years))
+
+        yearlyFrame = Frame(self.viewingFrame)
+        yearlyFrame.grid(row = 4, column = 0, columnspan = 2)
+        index = 0
+        for i in years:
+
+            incomeMonths = dict()
+            for j in range(1, 13):
+                incomeMonths[j] = 0
+            #Income
+            for j in incomeMonths:
+                for k in allTransactions:
+                    if (k.isIncome and i == k.date.year and j == k.date.month):
+                        incomeMonths[j] += k.amount
+
+            incomeMonthsX = incomeMonths.copy()
+            for j in incomeMonths:
+                if (incomeMonths[j] == 0):
+                    del incomeMonthsX[j]
+            incomeMonths = incomeMonthsX
+            incomeMonthsX = dict()
+            for j in incomeMonths:
+                incomeMonthsX[calendar.month_name[j]] = incomeMonths[j]
+            incomeMonths = incomeMonthsX
+
+            fig, axs = plt.subplots()
+            axs.plot(list(incomeMonths.keys()), list(incomeMonths.values()))
+            fig.suptitle(i)
+
+            canvas = FigureCanvasTkAgg(fig, yearlyFrame)
+            canvas.draw()
+            canvas.get_tk_widget().grid(row = index, column = 0)
+
+            #Spending
+            spendingMonths = dict()
+            for j in range(1, 13):
+                spendingMonths[j] = 0
+            for j in spendingMonths:
+                for k in allTransactions:
+                    if (not k.isIncome and i == k.date.year and j == k.date.month):
+                        spendingMonths[j] += k.amount        
+
+            spendingMonthsX = spendingMonths.copy()
+            for j in spendingMonths:
+                if (spendingMonths[j] == 0):
+                    del spendingMonthsX[j]
+            spendingMonths = spendingMonthsX
+            spendingMonthsX = dict()
+            for j in spendingMonths:
+                spendingMonthsX[calendar.month_name[j]] = spendingMonths[j]
+            spendingMonths = spendingMonthsX
+
+            fig, axs = plt.subplots()
+            axs.plot(list(spendingMonths.keys()), list(spendingMonths.values()))
+            fig.suptitle(i)
+
+            canvas = FigureCanvasTkAgg(fig, yearlyFrame)
+            canvas.draw()
+            canvas.get_tk_widget().grid(row = index, column = 1)
 
 
+            index += 1
 
 
 
