@@ -502,21 +502,21 @@ class GUI_Investment(Interfaces.IOnSave):
                 price = self.ShowPrice(1)
                 pricefloat = float(price)
                 print(pricefloat)
-                self.totalbtc = valuefloat / pricefloat
+                self.totalbtc = round(valuefloat / pricefloat, 6)
                 self.viewbuybtc = Label(self.optionwindow, text = "{} BTC".format(self.totalbtc), font=("", 20))
                 self.viewbuybtc.grid(row = 5, column = 1)
 
             elif crypto == 'ETH':
                 price = self.ShowPrice(2)
                 pricefloat = float(price)
-                self.totaleth = valuefloat / pricefloat
+                self.totaleth = round(valuefloat / pricefloat, 6)
                 self.viewbuyeth = Label(self.optionwindow, text = "{} ETH".format(self.totaleth), font=("", 20))
                 self.viewbuyeth.grid(row = 5, column = 1)
 
             elif crypto == 'XRP':
                 price = self.ShowPrice(3)
                 pricefloat = float(price)
-                self.totalxrp = valuefloat / pricefloat
+                self.totalxrp = round(valuefloat / pricefloat, 6)
                 self.viewbuyeth = Label(self.optionwindow, text = "{} XRP".format(self.totalxrp), font=("", 20))
                 self.viewbuyeth.grid(row = 5, column = 1)
         
@@ -725,11 +725,16 @@ class GUI_Investment(Interfaces.IOnSave):
                 msg = ActualMessageBox(value, crypto, 1)
                 if msg == 'yes':
                     if buysell == 1:
-                        infobuy = self.data.create_quote(value, 'XBTMYR', 'BUY')
+                        self.infobuy = self.data.create_quote(value, 'XBTMYR', 'BUY')
+                        self.infobuy = self.infobuy['id']
+                        print(self.infobuy)
+                        self.quoteexercise = self.data.exercise_quote(self.infobuy)
                         ActualMessageBox(value, crypto, 2)
                     elif buysell == 2:
-                        infosell = self.data.create_quote(value, 'XBTMYR', 'SELL')
-                        print(infosell)
+                        self.infosell = self.data.create_quote(value, 'MYRXBT', 'SELL')
+                        self.infosell = self.infosell['id']
+                        print(self.infosell)
+                        self.quoteexercise = self.data.exercise_quote(self.infosell)
                         ActualMessageBox(value, crypto, 2)
             
             except:
@@ -740,10 +745,16 @@ class GUI_Investment(Interfaces.IOnSave):
                 msg = ActualMessageBox(value, crypto, 1)
                 if msg == 'yes':
                     if buysell == 1:
-                        self.data.create_quote(value, 'ETHMYR', 'BUY')
+                        self.infobuy = self.data.create_quote(value, 'ETHMYR', 'BUY')
+                        self.infobuy = self.infobuy['id']
+                        print(self.infobuy)
+                        self.quoteexercise = self.data.exercise_quote(self.infobuy)
                         ActualMessageBox(value, crypto, 2)
                     elif buysell == 2:
-                        self.data.create_quote(value, 'ETHMYR', 'SELL')
+                        self.infosell = self.data.create_quote(value, 'ETHMYR', 'SELL')
+                        self.infosell = self.infosell['id']
+                        print(self.infosell)
+                        self.quoteexercise = self.data.exercise_quote(self.infosell)
                         ActualMessageBox(value, crypto, 2)
                 
             except:
@@ -753,16 +764,23 @@ class GUI_Investment(Interfaces.IOnSave):
             try:
                 msg = ActualMessageBox(value, crypto, 1)
                 if msg == 'yes':
+
                     if buysell == 1:
-                        self.data.create_quote(value, 'XRPMYR', 'BUY')
-                        print(infobuy)
-                        print(infobuy['quotes'][0]['id'])
+                        self.infobuy = self.data.create_quote(value, 'XRPMYR', 'BUY')
+                        self.infobuy = self.infobuy['id']
+                        print(self.infobuy)
+                        self.quoteexercise = self.data.exercise_quote(self.infobuy)
                         ActualMessageBox(value, crypto, 2)
+
                     elif buysell == 2:
-                        self.data.create_quote(value, 'XRPMYR', 'SELL')
+                        self.infosell = self.data.create_quote(value, 'XRPMYR', 'SELL')
+                        self.infosell = self.infosell['id']
+                        print(self.infosell)
+                        self.quoteexercise = self.data.exercise_quote(self.infosell)
                         ActualMessageBox(value, crypto, 2)
             
-            except:
+            except Exception as e:
+                print(e)
                 ActualMessageBox(value, crypto, 3)
 
 
