@@ -347,3 +347,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 Mini_IT_Project/idata.py
+Mini_IT_Project/data.sav

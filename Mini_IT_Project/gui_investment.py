@@ -26,10 +26,10 @@ class GUI_Investment(Interfaces.IOnSave):
         super().__init__(main)
         self.login = main.GetSavedData("API Key")
         self.password = main.GetSavedData("API Secret")
-        print(self.login)
-        print(self.password)
+        print('Retrieving existing login info if any')
 
         if (self.login is None):
+            print('No login info found')
             self.investmentDesc2 = Label(master = parent, text = "Please signup first from the Luno Website", font = ("", 24), bg = Constants.mainWindowBgColor)
             self.investmentDesc2.place(x = 660, y = 360, anchor = "center")
             self.proceedBtn = Button(master = parent, text="Proceed" , command = lambda : self.LoginMenu(parent)) #might change bg in a later date
@@ -60,7 +60,7 @@ class GUI_Investment(Interfaces.IOnSave):
                  
                 try:
                     trial = self.data.get_balances()
-                    print(trial)
+                    print('Logging in....')
                     self.login = self.logini
                     self.password = self.passwordi
                     self.MainScreen(status, parent)
@@ -82,6 +82,7 @@ class GUI_Investment(Interfaces.IOnSave):
             else:
                 status = 1
                 self.data = Client(api_key_id= self.login , api_key_secret= self.password)
+                print('Logging in...')
                 self.MainScreen(status, parent)
 
 
@@ -96,6 +97,7 @@ class GUI_Investment(Interfaces.IOnSave):
             self.passwordo.destroy()
 
         #Display current cryptobalance
+        print('Loading main screen')
         self.DropDownMenus(parent)            #problem for users with no acc    
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61.0, y = 10)
@@ -108,7 +110,7 @@ class GUI_Investment(Interfaces.IOnSave):
             self.btcbal.place(anchor = 'nw', x = 210, y = 87)
             self.btcbalrm = Label(master = parent, text='RM', font = ("", 20), bg = Constants.mainWindowBgColor)
             self.btcbalrm.place(anchor = 'nw', x = 61.0, y = 130)
-            self.btcbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.CryptoBalance(1),"BTC", 1, 1), font = ("", 20), bd=1, bg = 'seashell2')
+            self.btcbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.CryptoBalance(1),"BTC", 1), font = ("", 20), bd=1, bg = 'seashell2')
             self.btcbalrmvalue.place(anchor = 'nw', x = 120, y = 130)
 
         except:
@@ -124,7 +126,7 @@ class GUI_Investment(Interfaces.IOnSave):
             self.ethbal.place(anchor = 'nw', x = 210, y = 207)
             self.ethbalrm = Label(master = parent, text='RM', font = ("", 20), bg = Constants.mainWindowBgColor)
             self.ethbalrm.place(anchor = 'nw', x = 61.0, y = 250)
-            self.ethbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.CryptoBalance(2),"ETH", 1, 1), font = ("", 20), bd=1, bg = 'seashell2')
+            self.ethbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.CryptoBalance(2),"ETH", 1), font = ("", 20), bd=1, bg = 'seashell2')
             self.ethbalrmvalue.place(anchor = 'nw', x = 120, y = 250)
 
         except:
@@ -140,7 +142,7 @@ class GUI_Investment(Interfaces.IOnSave):
             self.xrpbal.place(anchor = 'nw', x = 210, y = 327)
             self.xrpbalrm = Label(master = parent, text='RM', font = ("", 20), bg = Constants.mainWindowBgColor)
             self.xrpbalrm.place(anchor = 'nw', x = 61.0, y = 370)
-            self.xrpbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.CryptoBalance(3),"XRP", 1, 1), font = ("", 20), bd=1, bg = 'seashell2')
+            self.xrpbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.CryptoBalance(3),"XRP", 1), font = ("", 20), bd=1, bg = 'seashell2')
             self.xrpbalrmvalue.place(anchor = 'nw', x = 120, y = 370)
 
         except:
@@ -154,21 +156,38 @@ class GUI_Investment(Interfaces.IOnSave):
         self.balancelabel = Label(master = parent, text="The current price is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61, y = 470)
 
-        self.balancebtc1 = Label(master = parent, text = self.ShowPrice(1) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balancebtc1.place(anchor = "nw", x = 150 , y = 530)
-        self.btclabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
-        self.btclabel.place(anchor = 'nw', x = 61, y = 530)
-
-        self.balanceeth1 = Label(master = parent, text = self.ShowPrice(2) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balanceeth1.place(anchor = "nw", x = 150 , y = 590)
-        self.ethlabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
-        self.ethlabel.place(anchor = 'nw', x = 61, y = 590)
-
-        self.balancexrp1 = Label(master = parent, text = self.ShowPrice(3) ,font = ("", 20), bd =1, bg = 'seashell3')
-        self.balancexrp1.place(anchor = "nw", x = 150 , y = 650)
-        self.xrplabel = Label(master = parent, text = 'RM', font = ("",26), bg = Constants.mainWindowBgColor)
-        self.xrplabel.place(anchor = 'nw', x = 61, y = 650)
+        try:
+            self.btclabel = Label(master = parent, text = 'BTC: RM', font = ("",26), bg = Constants.mainWindowBgColor)
+            self.btclabel.place(anchor = 'nw', x = 61, y = 530)
+            self.balancebtc1 = Label(master = parent, text = self.ShowPrice(1) ,font = ("", 20), bd =1, bg = 'seashell3')
+            self.balancebtc1.place(anchor = "nw", x = 250 , y = 530)
+            
         
+        except:
+            self.btcdisplayerror = Label(master = parent, text = 'Unable to retrieve prices', font = ("",26), bg = Constants.mainWindowBgColor)
+            self.btcdisplayerror.place(anchor = 'nw', x = 61, y = 530)
+
+        try:
+            self.ethlabel = Label(master = parent, text = 'ETH: RM', font = ("",26), bg = Constants.mainWindowBgColor)
+            self.ethlabel.place(anchor = 'nw', x = 61, y = 590)
+            self.balanceeth1 = Label(master = parent, text = self.ShowPrice(2) ,font = ("", 20), bd =1, bg = 'seashell3')
+            self.balanceeth1.place(anchor = "nw", x = 250 , y = 590)
+            
+        
+        except:
+            self.ethdisplayerror = Label(master = parent, text = 'Unable to retrieve prices', font = ("",26), bg = Constants.mainWindowBgColor)
+            self.ethdisplayerror.place(anchor = 'nw', x = 61, y = 590)
+
+        try:
+            self.xrplabel = Label(master = parent, text = 'XRP: RM', font = ("",26), bg = Constants.mainWindowBgColor)
+            self.xrplabel.place(anchor = 'nw', x = 61, y = 650)
+            self.balancexrp1 = Label(master = parent, text = self.ShowPrice(3) ,font = ("", 20), bd =1, bg = 'seashell3')
+            self.balancexrp1.place(anchor = "nw", x = 250 , y = 650)
+            
+        
+        except:
+            self.ethdisplayerror = Label(master = parent, text = 'Unable to retrieve prices', font = ("",26), bg = Constants.mainWindowBgColor)
+            self.ethdisplayerror.place(anchor = 'nw', x = 61, y = 650)
 
         #Config Buttons
         self.configbtn = Button(master = parent, text="Manage crypto", command = self.CoinOption)
@@ -186,32 +205,41 @@ class GUI_Investment(Interfaces.IOnSave):
         def AccountBalanceBTC(*args):
             playbtc = self.variablelolbtc.get()
             self.balancebtc.destroy()
+            self.btcbalrmvalue.destroy()
             self.actualaccountbtc = self.xbtdictionary[playbtc]
             for i in self.json_datalol:
                 if i['account_id'] == self.actualaccountbtc:
                     abalancebtc = i['balance']
                     self.balancebtc = Label(master = parent, text = abalancebtc ,font = ("", 20), bd =1, bg = 'seashell3')
                     self.balancebtc.place(anchor = "nw", x = 61.0, y = 90)
+                    self.btcbalrmvalue = Label(master = parent, text = self.CryptoinRM(abalancebtc,"BTC", 1), font = ("", 20), bd=1, bg = 'seashell2')
+                    self.btcbalrmvalue.place(anchor = 'nw', x = 120, y = 130)
 
         def AccountBalanceETH(*args):
             playeth = self.variableloleth.get()
             self.balanceeth.destroy()
+            self.ethbalrmvalue.destroy()
             self.actualaccounteth = self.ethdictionary[playeth]
             for i in self.json_datalol:
                 if i['account_id'] == self.actualaccounteth:
                     abalanceeth = i['balance']
                     self.balanceeth = Label(master = parent, text = abalanceeth ,font = ("", 20), bd =1, bg = 'seashell3')
-                    self.balanceeth.place(anchor = "nw", x = 61.0 , y = 160)
+                    self.balanceeth.place(anchor = "nw", x = 61.0 , y = 210)
+                    self.ethbalrmvalue = Label(master = parent, text = self.CryptoinRM(abalanceeth,"ETH", 1), font = ("", 20), bd=1, bg = 'seashell2')
+                    self.ethbalrmvalue.place(anchor = 'nw', x = 120, y = 250)
 
         def AccountBalanceXRP(*args):
             playxrp = self.variablelolxrp.get()
             self.balancexrp.destroy()
+            self.xrpbalrmvalue.destroy()
             self.actualaccountxrp = self.xrpdictionary[playxrp]
             for i in self.json_datalol:
                 if i['account_id'] == self.actualaccountxrp:
                     abalancexrp = i['balance']
                     self.balancexrp = Label(master = parent, text = abalancexrp ,font = ("", 20), bd =1, bg = 'seashell3')
-                    self.balancexrp.place(anchor = "nw", x = 61.0 , y = 220)
+                    self.balancexrp.place(anchor = "nw", x = 61.0 , y = 330)
+                    self.xrpbalrmvalue = Label(master = parent, text = self.CryptoinRM(abalancexrp, "XRP", 1), font=("", 20), bd =1, bg = 'seashell2')
+                    self.xrpbalrmvalue.place(anchor = 'nw', x = 120, y = 370)
 
         self.json_data = self.data.get_balances()
         self.json_datalol = self.json_data['balance']
@@ -428,7 +456,7 @@ class GUI_Investment(Interfaces.IOnSave):
         self.sell.pack()
 
 
-    def CryptoinRM(self, buysell, crypto, function, value):      #Display coin value in RM
+    def CryptoinRM(self, buysell, crypto, value):      #Display coin value in RM
  
         try:
 
@@ -445,13 +473,13 @@ class GUI_Investment(Interfaces.IOnSave):
                 thevalue = self.ShowPrice(3)
 
             thefloat = float(thevalue)
-            if function == 1:
-                self.currencycalc = actualbuy * thefloat
-            elif function == 2:
-                self.currencycalc = actualbuy / thefloat
-
+            self.currencycalc = actualbuy * thefloat
             self.currencycalc = round(self.currencycalc, 2)
-            if value == 2:
+            
+            if value == 1:
+                return self.currencycalc        #Return ringgit value  
+
+            elif value == 2:         #return
                 self.textdisplay = "RM {}" 
                 self.actualtextdisplay = self.textdisplay.format(self.currencycalc)
                 try:
@@ -460,12 +488,40 @@ class GUI_Investment(Interfaces.IOnSave):
                     pass
                 self.currencydisplay = Label(self.optionwindow, text = self.actualtextdisplay, font = ("", 26), bg = Constants.mainWindowBgColor)
                 self.currencydisplay.grid(row=1, column=1)
-            else:
-                return self.currencycalc          
+      
             
-        except Exception as e:
-            print(e)
-            tkinter.messagebox.showerror(title="Input Error", message="Invalid input")
+        except:
+            tkinter.messagebox.showerror("Crypto Manager", "Invalid input")
+
+
+    def RMinCrypto(self, value, crypto):                       #Display RM value in coin
+        try:
+            valuefloat = float(value)
+            print(valuefloat)
+            if crypto == 'BTC':
+                price = self.ShowPrice(1)
+                pricefloat = float(price)
+                print(pricefloat)
+                self.totalbtc = round(valuefloat / pricefloat, 6)
+                self.viewbuybtc = Label(self.optionwindow, text = "{} BTC".format(self.totalbtc), font=("", 20))
+                self.viewbuybtc.grid(row = 5, column = 1)
+
+            elif crypto == 'ETH':
+                price = self.ShowPrice(2)
+                pricefloat = float(price)
+                self.totaleth = round(valuefloat / pricefloat, 6)
+                self.viewbuyeth = Label(self.optionwindow, text = "{} ETH".format(self.totaleth), font=("", 20))
+                self.viewbuyeth.grid(row = 5, column = 1)
+
+            elif crypto == 'XRP':
+                price = self.ShowPrice(3)
+                pricefloat = float(price)
+                self.totalxrp = round(valuefloat / pricefloat, 6)
+                self.viewbuyeth = Label(self.optionwindow, text = "{} XRP".format(self.totalxrp), font=("", 20))
+                self.viewbuyeth.grid(row = 5, column = 1)
+        
+        except:
+            tkinter.messagebox.showerror("Crypto Manager", "Invalid input")
 
 
     def BuyCoins(self):
@@ -484,10 +540,23 @@ class GUI_Investment(Interfaces.IOnSave):
             self.buylabel.grid(row=0)
             self.btcbuy = Entry(self.optionwindow, textvariable ="Total BTC", font = ("", 24))
             self.btcbuy.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcbuy.get(), 'BTC', 1 , 2))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcbuy.get(), 'BTC', 2))
             self.viewbuy.grid(row=1)
             self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : self.ConfirmMsgBox(self.btcbuy.get(), "BTC", 1))
             self.confirmbuy.grid(row=2, column=1)
+            
+            self.oroption = Label(self.optionwindow, text='Or: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.oroption.grid(row=3) #Buy in ringgit instead
+
+            self.buylabelrm = Label(self.optionwindow, text='Enter RM to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.buylabelrm.grid(row=4)
+            self.btcbuyrm = Entry(self.optionwindow, textvariable ="Total RM", font = ("", 24))
+            self.btcbuyrm.grid(row=4, column=1)
+            self.viewbuyabtc = Button(self.optionwindow, text = 'Total BTC', command = lambda : self.RMinCrypto(self.btcbuyrm.get(), 'BTC'))
+            self.viewbuyabtc.grid(row=5)
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : self.ConfirmMsgBox(self.totalbtc, "BTC", 1))
+            self.confirmbuy.grid(row=6, column=1)
+
 
         def ETH():
             FunctionDestroyer()
@@ -495,10 +564,23 @@ class GUI_Investment(Interfaces.IOnSave):
             self.buylabel.grid(row=0)
             self.ethbuy = Entry(self.optionwindow, textvariable ="Total ETH", font = ("", 24))
             self.ethbuy.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethbuy.get(), 'ETH', 1, 2))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethbuy.get(), 'ETH', 2))
             self.viewbuy.grid(row=1)
-            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : self.ConfirmMsgBox(self.ethbuy, "ETH", 1))
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : self.ConfirmMsgBox(self.ethbuy.get(), "ETH", 1))
             self.confirmbuy.grid(row=2, column=1)
+            
+            self.oroption = Label(self.optionwindow, text='Or: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.oroption.grid(row=3)
+
+            self.buylabelrm = Label(self.optionwindow, text='Enter RM to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.buylabelrm.grid(row=4)
+            self.ethbuyrm = Entry(self.optionwindow, textvariable ="Total RM", font = ("", 24))
+            self.ethbuyrm.grid(row=4, column=1)
+            self.viewbuyaeth = Button(self.optionwindow, text = 'Total ETH', command = lambda : self.RMinCrypto(self.ethbuyrm.get(), 'ETH'))
+            self.viewbuyaeth.grid(row=5)
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : self.ConfirmMsgBox(self.totaleth, "ETH", 1))
+            self.confirmbuy.grid(row=6, column=1)
+
 
         def XRP():
             FunctionDestroyer()
@@ -506,10 +588,23 @@ class GUI_Investment(Interfaces.IOnSave):
             self.buylabel.grid(row=0)
             self.xrpbuy = Entry(self.optionwindow, textvariable ="Total XRP", font = ("", 24))
             self.xrpbuy.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpbuy.get(), 'XRP', 1, 2))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpbuy.get(), 'XRP', 2))
             self.viewbuy.grid(row=1)
-            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : self.ConfirmMsgBox(self.xrpbuy, "XRP", 1))
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : self.ConfirmMsgBox(self.xrpbuy.get(), "XRP", 1))
             self.confirmbuy.grid(row=2, column=1)
+
+            self.oroption = Label(self.optionwindow, text='Or: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.oroption.grid(row=3)
+
+            self.buylabelrm = Label(self.optionwindow, text='Enter RM to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.buylabelrm.grid(row=4)
+            self.xrpbuyrm = Entry(self.optionwindow, textvariable ="Total RM", font = ("", 24))
+            self.xrpbuyrm.grid(row=4, column=1)
+            self.viewbuyaxrp = Button(self.optionwindow, text = 'Total XRP', command = lambda : self.RMinCrypto(self.xrpbuyrm.get(), 'XRP'))
+            self.viewbuyaxrp.grid(row=5)
+            self.confirmbuy = Button(self.optionwindow, text="Confirm Purchase", command = lambda : self.ConfirmMsgBox(self.totalxrp, "XRP", 1))
+            self.confirmbuy.grid(row=6, column=1)
+
         
         self.buybtcbtn = Button(self.optionwindow, text="Buy BTC", command = BTC)
         self.buybtcbtn.place(anchor = 'nw')
@@ -538,10 +633,22 @@ class GUI_Investment(Interfaces.IOnSave):
             self.selllabel.grid(row=0)
             self.btcsell = Entry(self.optionwindow, textvariable ="Total BTC", font = ("", 24))
             self.btcsell.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcsell.get(),'BTC', 2, 1))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.btcsell.get(),'BTC', 2))
             self.viewbuy.grid(row=1)
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.btcsell, "BTC", 2))
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.btcsell.get(), "BTC", 2))
             self.confirmsell.grid(row=2)
+            
+            self.oroption = Label(self.optionwindow, text='Or: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.oroption.grid(row=3)
+
+            self.selllabelrm = Label(self.optionwindow, text='Enter RM of sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.selllabelrm.grid(row=4)
+            self.btcsellrm = Entry(self.optionwindow, textvariable ="Total RMsell", font = ("", 24))
+            self.btcsellrm.grid(row=4, column=1)
+            self.viewsellabtc = Button(self.optionwindow, text = 'Total BTC', command = lambda : self.RMinCrypto(self.btcsellrm.get(), 'BTC'))
+            self.viewsellabtc.grid(row=5)
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.totalbtc, "BTC", 2))
+            self.confirmsell.grid(row=6, column=1)
 
         def ETH():
             FunctionDestroyer()
@@ -549,10 +656,22 @@ class GUI_Investment(Interfaces.IOnSave):
             self.selllabel.grid(row=0)
             self.ethsell = Entry(self.optionwindow, textvariable ="Total ETH", font = ("", 24))
             self.ethsell.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethsell.get(),'ETH', 2, 1))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.ethsell.get(),'ETH', 2))
             self.viewbuy.grid(row=1)
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.ethsell, "ETH", 2))
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.ethsell.get(), "ETH", 2))
             self.confirmsell.grid(row=2, column=1)
+            
+            self.oroption = Label(self.optionwindow, text='Or: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.oroption.grid(row=3)
+
+            self.selllabelrm = Label(self.optionwindow, text='Enter RM of sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.selllabelrm.grid(row=4)
+            self.ethsellrm = Entry(self.optionwindow, textvariable ="Total RMsell", font = ("", 24))
+            self.ethsellrm.grid(row=4, column=1)
+            self.viewsellaeth = Button(self.optionwindow, text = 'Total ETH', command = lambda : self.RMinCrypto(self.ethsellrm.get(), 'ETH'))
+            self.viewsellaeth.grid(row=5)
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.totaleth, "ETH", 2))
+            self.confirmsell.grid(row=6, column=1)
 
         def XRP():
             FunctionDestroyer()
@@ -560,10 +679,22 @@ class GUI_Investment(Interfaces.IOnSave):
             self.selllabel.grid(row=0)
             self.xrpsell = Entry(self.optionwindow, textvariable ="Total XRP", font = ("", 24))
             self.xrpsell.grid(row=0, column=1)
-            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpsell.get(),'XRP', 2, 1))
+            self.viewbuy = Button(self.optionwindow, text="View Currency in RM: ", command = lambda : self.CryptoinRM(self.xrpsell.get(),'XRP', 2))
             self.viewbuy.grid(row=1)
-            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.xrpsell, "XRP", 2))
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.xrpsell.get(), "XRP", 2))
             self.confirmsell.grid(row=2, column=1)
+            
+            self.oroption = Label(self.optionwindow, text='Or: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.oroption.grid(row=3)
+
+            self.selllabelrm = Label(self.optionwindow, text='Enter RM of sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
+            self.selllabelrm.grid(row=4)
+            self.xrpsellrm = Entry(self.optionwindow, textvariable ="Total RMsell", font = ("", 24))
+            self.xrpsellrm.grid(row=4, column=1)
+            self.viewsellaxrp = Button(self.optionwindow, text = 'Total XRP', command = lambda : self.RMinCrypto(self.xrpsellrm.get(), 'XRP'))
+            self.viewsellaxrp.grid(row=5)
+            self.confirmsell = Button(self.optionwindow, text="Confirm Sell", command = lambda : self.ConfirmMsgBox(self.totalxrp, "XRP", 2))
+            self.confirmsell.grid(row=6, column=1)
 
         self.sellbtcbtn = Button(self.optionwindow, text="Sell BTC", command = BTC)
         self.sellbtcbtn.place(anchor = 'nw')
@@ -577,39 +708,81 @@ class GUI_Investment(Interfaces.IOnSave):
 
 
     def ConfirmMsgBox(self, value, crypto, buysell):
+
+        def ActualMessageBox(value, crypto, function):
+            if function == 1:
+                self.MsgBox = tkinter.messagebox.askquestion ('Crypto Coin Manager',"Would you like to proceed with transaction of {} {}?".format(value, crypto),icon = 'warning')
+                return self.MsgBox
+            
+            elif function == 2:
+                self.MsgBoxexit = tkinter.messagebox.showinfo('Crypto Coin Manager', "Transaction Succesful!")
+
+            elif function == 3:
+                self.MsgBoxError = tkinter.messagebox.showerror('Cryto Coin Manager', "Insufficient balance or permissions, please try again")
+
+        if crypto == 'BTC':
+            try:
+                msg = ActualMessageBox(value, crypto, 1)
+                if msg == 'yes':
+                    if buysell == 1:
+                        self.infobuy = self.data.create_quote(value, 'XBTMYR', 'BUY')
+                        self.infobuy = self.infobuy['id']
+                        print(self.infobuy)
+                        self.quoteexercise = self.data.exercise_quote(self.infobuy)
+                        ActualMessageBox(value, crypto, 2)
+                    elif buysell == 2:
+                        self.infosell = self.data.create_quote(value, 'MYRXBT', 'SELL')
+                        self.infosell = self.infosell['id']
+                        print(self.infosell)
+                        self.quoteexercise = self.data.exercise_quote(self.infosell)
+                        ActualMessageBox(value, crypto, 2)
+            
+            except:
+                ActualMessageBox(value, crypto, 3)
+
+        elif crypto == 'ETH':
+            try:
+                msg = ActualMessageBox(value, crypto, 1)
+                if msg == 'yes':
+                    if buysell == 1:
+                        self.infobuy = self.data.create_quote(value, 'ETHMYR', 'BUY')
+                        self.infobuy = self.infobuy['id']
+                        print(self.infobuy)
+                        self.quoteexercise = self.data.exercise_quote(self.infobuy)
+                        ActualMessageBox(value, crypto, 2)
+                    elif buysell == 2:
+                        self.infosell = self.data.create_quote(value, 'ETHMYR', 'SELL')
+                        self.infosell = self.infosell['id']
+                        print(self.infosell)
+                        self.quoteexercise = self.data.exercise_quote(self.infosell)
+                        ActualMessageBox(value, crypto, 2)
                 
-                MsgBox = tkinter.messagebox.askquestion ('Exit Application',"Would you like to proceed with transaction of {} {}?".format(value, crypto),icon = 'warning')
-                if MsgBox == 'yes':
+            except:
+                ActualMessageBox(value, crypto, 3)
 
-                    if crypto == 'BTC':
-                        try:
-                            if value == 1:
-                                self.data.create_quote(value, 'XBTMYR', 'BUY')
-                            elif value == 2:
-                                self.data.create_quote(value, 'XBTMYR', 'SELL')
-                        
-                        except:
-                            tkinter.messagebox.showerror("Error", "Insufficient funds")
+        elif crypto == 'XRP':
+            try:
+                msg = ActualMessageBox(value, crypto, 1)
+                if msg == 'yes':
 
-                    elif crypto == 'ETH':
-                        try:
-                            if value == 1:
-                                self.data.create_quote(value, 'ETHMYR', 'BUY')
-                            elif value == 2:
-                                self.data.create_quote(value, 'ETHMYR', 'SELL')
-                        
-                        except:
-                            tkinter.messagebox.showerror("Error", "Insufficient funds")
+                    if buysell == 1:
+                        self.infobuy = self.data.create_quote(value, 'XRPMYR', 'BUY')
+                        self.infobuy = self.infobuy['id']
+                        print(self.infobuy)
+                        self.quoteexercise = self.data.exercise_quote(self.infobuy)
+                        ActualMessageBox(value, crypto, 2)
 
-                    elif crypto == 'XRP':
-                        try:
-                            if value == 1:
-                                self.data.create_quote(value, 'XRPMYR', 'BUY')
-                            elif value == 2:
-                                self.data.create_quote(value, 'XRPMYR', 'SELL')
+                    elif buysell == 2:
+                        self.infosell = self.data.create_quote(value, 'XRPMYR', 'SELL')
+                        self.infosell = self.infosell['id']
+                        print(self.infosell)
+                        self.quoteexercise = self.data.exercise_quote(self.infosell)
+                        ActualMessageBox(value, crypto, 2)
+            
+            except Exception as e:
+                print(e)
+                ActualMessageBox(value, crypto, 3)
 
-                        except:
-                            tkinter.messagebox.showerror("Error", "Insufficient funds")
 
 
 if __name__ == "__main__":
