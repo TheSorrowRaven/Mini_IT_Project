@@ -303,7 +303,7 @@ class GUI_Account(Interfaces.IOnSave):
             self.RefreshTransHistory()
             self.RefreshAccountBalance()
 
-        self.GetRichButton = Button(master = self.parent, text = "Get Rich By Interests", command = GETRICH)
+        self.GetRichButton = Button(master = self.parent, text = "Calculate & Add Interest", command = GETRICH)
         self.GetRichButton.place(relx = 0.5, rely = 0.99, anchor = "s")
     
 
@@ -323,6 +323,9 @@ class GUI_Account(Interfaces.IOnSave):
         self.transHistorySBX = ttk.Scrollbar(master = self.transHistoryFrame, orient = "horizontal", command = self.transHistoryTree.xview)
         self.transHistorySBX.grid(row = 1, column = 0, sticky = "wes")
         self.transHistoryTree.bind("<Configure>", updateScroll)
+
+        self.deleteButton = Button(master = self.parent, text = "Delete", command = self.RemoveTransaction)
+        self.deleteButton.place(relx = 0.6, rely = 0.9, anchor = "nw")
 
 
     def RefreshAccountSelect(self):
@@ -375,6 +378,14 @@ class GUI_Account(Interfaces.IOnSave):
         trans.category      = self.GetCategoryByName(self.displayCategoryTree.item(self.displayCategoryTree.focus())["text"])
         self.selectedAccount.AddTransaction(trans)
         self.RefreshTransHistory()
+
+    def RemoveTransaction(self):
+        number = self.transHistoryTree.item(self.transHistoryTree.focus())["text"]
+        if number != "":
+            number = int(number) - 1
+            del self.selectedAccount.transactions[number]
+        self.RefreshTransHistory()
+        self.RefreshAccountBalance()
 
     def RefreshTransHistory(self):
 

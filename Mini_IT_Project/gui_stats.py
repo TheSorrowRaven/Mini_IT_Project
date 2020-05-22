@@ -152,12 +152,13 @@ class Statistics():
             rootSpending[i] = 0
 
         for i in allTransactions:
-            rootCat = i.category.GetRootParent().name
-            amount = i.amount
-            if (not i.isIncome):
-                rootSpending[rootCat] += amount
-            else:
-                rootIncome[rootCat] += amount
+            if (i.category != None):
+                rootCat = i.category.GetRootParent().name
+                amount = i.amount
+                if (not i.isIncome):
+                    rootSpending[rootCat] += amount
+                else:
+                    rootIncome[rootCat] += amount
 
         max = 0
         index = 0
@@ -237,10 +238,11 @@ class Statistics():
             spendings[i.name] = 0
 
         for i in allTransactions:
-            if (i.isIncome):
-                incomes[i.category.name] += i.amount
-            else:
-                spendings[i.category.name] += i.amount
+            if (i.category != None):
+                if (i.isIncome):
+                    incomes[i.category.name] += i.amount
+                else:
+                    spendings[i.category.name] += i.amount
 
         max = 0
         index = 0
