@@ -303,7 +303,7 @@ class GUI_Account(Interfaces.IOnSave):
             self.RefreshTransHistory()
             self.RefreshAccountBalance()
 
-        self.GetRichButton = Button(master = self.parent, text = "Get Rich By Interests", command = GETRICH)
+        self.GetRichButton = Button(master = self.parent, text = "Calculate & Add Interest", command = GETRICH)
         self.GetRichButton.place(relx = 0.5, rely = 0.99, anchor = "s")
     
 
@@ -323,6 +323,9 @@ class GUI_Account(Interfaces.IOnSave):
         self.transHistorySBX = ttk.Scrollbar(master = self.transHistoryFrame, orient = "horizontal", command = self.transHistoryTree.xview)
         self.transHistorySBX.grid(row = 1, column = 0, sticky = "wes")
         self.transHistoryTree.bind("<Configure>", updateScroll)
+
+        self.deleteButton = Button(master = self.parent, text = "Delete", command = self.RemoveTransaction)
+        self.deleteButton.place(relx = 0.6, rely = 0.9, anchor = "nw")
 
 
     def RefreshAccountSelect(self):
@@ -353,16 +356,17 @@ class GUI_Account(Interfaces.IOnSave):
             if (i.name == targetOtherSubject):
                 targetOtherSubject = i  # Target Account
 
-                transOther          = Account.Transaction()
+                transOther              = Account.Transaction()
                 transOther.amount       = conversion
-                transOther.isIncome     = not isIncome          # DIFFERENCE
-                transOther.otherSubject = self.selectedAccount  # DIFFERENCE
+                transOther.isIncome     = not isIncome               # DIFFERENCE
+                transOther.otherSubject = self.selectedAccount.name  # DIFFERENCE
                 transOther.title        = self.enteredTitle.get()
                 transOther.description  = self.enteredDesc.get()
                 transOther.date         = self.transCalendar.selection_get()
                 transOther.category     = self.GetCategoryByName(self.displayCategoryTree.item(self.displayCategoryTree.focus())["text"])
                 
                 targetOtherSubject.AddTransaction(transOther)
+                targetOtherSubject = targetOtherSubject.name
 
                 break
         
@@ -374,6 +378,14 @@ class GUI_Account(Interfaces.IOnSave):
         trans.category      = self.GetCategoryByName(self.displayCategoryTree.item(self.displayCategoryTree.focus())["text"])
         self.selectedAccount.AddTransaction(trans)
         self.RefreshTransHistory()
+
+    def RemoveTransaction(self):
+        number = self.transHistoryTree.item(self.transHistoryTree.focus())["text"]
+        if number != "":
+            number = int(number) - 1
+            del self.selectedAccount.transactions[number]
+        self.RefreshTransHistory()
+        self.RefreshAccountBalance()
 
     def RefreshTransHistory(self):
 
@@ -434,7 +446,6 @@ class GUI_Account(Interfaces.IOnSave):
         if (selectedAccount is None):
             return
 
-        self.RefreshAccountBalance()
 
         if isinstance(selectedAccount, Account.BankAccount):   # Here we check the type, if it's like Cash In Hand Account we WONT disply the text
             self.interestFrame.grid(row = 0, column = 4, rowspan = 2, padx = (40, 0))   #This should work, i also not sure for Python, that's why we test
@@ -445,6 +456,7 @@ class GUI_Account(Interfaces.IOnSave):
 
         self.selectedAccount = selectedAccount
         self.accountChoice.set(selectedAccount.name)
+        self.RefreshAccountBalance()
         self.RefreshTransHistory()
         
     def RefreshAccountBalance(self):
