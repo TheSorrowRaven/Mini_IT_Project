@@ -106,7 +106,7 @@ class GUI_Investment(Interfaces.IOnSave):
 
         #Display current cryptobalance
         print('Loading main screen')
-        self.DropDownMenus(parent)            #problem for users with no acc    
+        self.DropDownMenus(parent, 1)            #problem for users with no acc    
         self.balancelabel = Label(master = parent, text="The current balance is :", font = ("", 26), bg = Constants.mainWindowBgColor)
         self.balancelabel.place(anchor = "nw", x = 61.0, y = 10)
 
@@ -241,7 +241,7 @@ class GUI_Investment(Interfaces.IOnSave):
         self.configtransc3.place(x = 700, y = 240, anchor = "nw")
 
 
-    def DropDownMenus(self, parent: Frame): #Choose Which account
+    def DropDownMenus(self, parent: Frame, value): #Choose Which account
         
         def AccountBalanceBTC(*args):
             playbtc = self.variablelolbtc.get()
@@ -251,10 +251,14 @@ class GUI_Investment(Interfaces.IOnSave):
             for i in self.json_datalol:
                 if i['account_id'] == self.actualaccountbtc:
                     self.abalancebtc = i['balance']
-                    self.balancebtc = Label(master = parent, text = self.abalancebtc ,font = ("", 20), bd =1, bg = 'seashell3')
-                    self.balancebtc.place(anchor = "nw", x = 61.0, y = 90)
-                    self.btcbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.abalancebtc,"BTC", 1), font = ("", 20), bd=1, bg = 'seashell2')
-                    self.btcbalrmvalue.place(anchor = 'nw', x = 120, y = 130)
+                    if value == 1:
+                        self.balancebtc = Label(master = parent, text = self.abalancebtc ,font = ("", 20), bd =1, bg = 'seashell3')
+                        self.balancebtc.place(anchor = "nw", x = 61.0, y = 90)
+                        self.btcbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.abalancebtc,"BTC", 1), font = ("", 20), bd=1, bg = 'seashell2')
+                        self.btcbalrmvalue.place(anchor = 'nw', x = 120, y = 130)
+
+                    else:
+                        pass
 
         def AccountBalanceETH(*args):
             playeth = self.variableloleth.get()
@@ -264,10 +268,14 @@ class GUI_Investment(Interfaces.IOnSave):
             for i in self.json_datalol:
                 if i['account_id'] == self.actualaccounteth:
                     self.abalanceeth = i['balance']
-                    self.balanceeth = Label(master = parent, text = self.abalanceeth ,font = ("", 20), bd =1, bg = 'seashell3')
-                    self.balanceeth.place(anchor = "nw", x = 61.0 , y = 210)
-                    self.ethbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.abalanceeth,"ETH", 1), font = ("", 20), bd=1, bg = 'seashell2')
-                    self.ethbalrmvalue.place(anchor = 'nw', x = 120, y = 250)
+                    if value == 1:
+                        self.balanceeth = Label(master = parent, text = self.abalanceeth ,font = ("", 20), bd =1, bg = 'seashell3')
+                        self.balanceeth.place(anchor = "nw", x = 61.0 , y = 210)
+                        self.ethbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.abalanceeth,"ETH", 1), font = ("", 20), bd=1, bg = 'seashell2')
+                        self.ethbalrmvalue.place(anchor = 'nw', x = 120, y = 250)
+
+                    else:
+                        pass
 
         def AccountBalanceXRP(*args):
             playxrp = self.variablelolxrp.get()
@@ -277,10 +285,14 @@ class GUI_Investment(Interfaces.IOnSave):
             for i in self.json_datalol:
                 if i['account_id'] == self.actualaccountxrp:
                     self.abalancexrp = i['balance']
-                    self.balancexrp = Label(master = parent, text = self.abalancexrp ,font = ("", 20), bd =1, bg = 'seashell3')
-                    self.balancexrp.place(anchor = "nw", x = 61.0 , y = 330)
-                    self.xrpbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.abalancexrp, "XRP", 1), font=("", 20), bd =1, bg = 'seashell2')
-                    self.xrpbalrmvalue.place(anchor = 'nw', x = 120, y = 370)
+                    if value == 1:
+                        self.balancexrp = Label(master = parent, text = self.abalancexrp ,font = ("", 20), bd =1, bg = 'seashell3')
+                        self.balancexrp.place(anchor = "nw", x = 61.0 , y = 330)
+                        self.xrpbalrmvalue = Label(master = parent, text = self.CryptoinRM(self.abalancexrp, "XRP", 1), font=("", 20), bd =1, bg = 'seashell2')
+                        self.xrpbalrmvalue.place(anchor = 'nw', x = 120, y = 370)
+
+                    else:
+                        pass
 
         self.json_data = self.data.get_balances()
         self.json_datalol = self.json_data['balance']
@@ -336,24 +348,25 @@ class GUI_Investment(Interfaces.IOnSave):
         print(self.ethdictionary)
         print(self.xrpdictionary)
 
-        self.variablelolbtc = StringVar(parent)
-        self.variablelolbtc.set(self.xbtlist[0])
-        self.variablelolbtc.trace("w", AccountBalanceBTC)
+        if value == 1:
+            self.variablelolbtc = StringVar(parent)
+            self.variablelolbtc.set(self.xbtlist[0])
+            self.variablelolbtc.trace("w", AccountBalanceBTC)
 
-        self.variableloleth = StringVar(parent)
-        self.variableloleth.set(self.ethlist[0])
-        self.variableloleth.trace("w", AccountBalanceETH)
+            self.variableloleth = StringVar(parent)
+            self.variableloleth.set(self.ethlist[0])
+            self.variableloleth.trace("w", AccountBalanceETH)
 
-        self.variablelolxrp = StringVar(parent)
-        self.variablelolxrp.set(self.xrplist[0])
-        self.variablelolxrp.trace("w", AccountBalanceXRP)
+            self.variablelolxrp = StringVar(parent)
+            self.variablelolxrp.set(self.xrplist[0])
+            self.variablelolxrp.trace("w", AccountBalanceXRP)
 
-        optionbtc = OptionMenu(parent, self.variablelolbtc, *self.xbtlist)
-        optionbtc.place(anchor = "nw", x = 61.0 , y = 50)
-        optioneth = OptionMenu(parent, self.variableloleth, *self.ethlist)
-        optioneth.place(anchor = "nw", x = 61.0 , y = 170)
-        optionxrp = OptionMenu(parent, self.variablelolxrp, *self.xrplist)
-        optionxrp.place(anchor = "nw", x = 61.0 , y = 290)
+            optionbtc = OptionMenu(parent, self.variablelolbtc, *self.xbtlist)
+            optionbtc.place(anchor = "nw", x = 61.0 , y = 50)
+            optioneth = OptionMenu(parent, self.variableloleth, *self.ethlist)
+            optioneth.place(anchor = "nw", x = 61.0 , y = 170)
+            optionxrp = OptionMenu(parent, self.variablelolxrp, *self.xrplist)
+            optionxrp.place(anchor = "nw", x = 61.0 , y = 290)
 
 
     def CreateAccount(self, value): #Creates an account if user doesn't have one
@@ -574,11 +587,25 @@ class GUI_Investment(Interfaces.IOnSave):
             self.buybtcbtn.destroy()
             self.buyethbtn.destroy()
             self.buyxrpbtn.destroy()
-           
+
+        def TraceAccount(value):
+            if value == 1:
+                btcname = self.variable.get()
+                self.account_id1 = self.xbtdictionary[btcname]
+
+            elif value == 2:
+                ethname = self.variable.get()
+                self.account_id2 = self.ethdictionary[ethname]
+
+            elif value == 3:
+                xrpname = self.variable.get()
+                self.account_id3 = self.xrpdictionary[xrpname]
+
         def BTC():
             FunctionDestroyer()
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.xbtlist[0])
+            self.variable.trace("w", TraceAccount(1))
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.xbtlist)
             self.dropmedown.grid(row=0)
             self.buylabel = Label(self.optionwindow, text='Enter BTC to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -607,6 +634,7 @@ class GUI_Investment(Interfaces.IOnSave):
             FunctionDestroyer()
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.ethlist[0])
+            self.variable.trace("w", TraceAccount(2))
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.ethlist)
             self.dropmedown.grid(row=0)
             self.buylabel = Label(self.optionwindow, text='Enter ETH to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -635,6 +663,7 @@ class GUI_Investment(Interfaces.IOnSave):
             FunctionDestroyer()
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.xrplist[0])
+            self.variable.trace("w", TraceAccount(3))
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.xrplist)
             self.dropmedown.grid(row=0)
             self.buylabel = Label(self.optionwindow, text='Enter XRP to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -680,10 +709,25 @@ class GUI_Investment(Interfaces.IOnSave):
             self.sellethbtn.destroy()
             self.sellxrpbtn.destroy()
 
+        def TraceAccount(value):
+
+            if value == 1:
+                self.variable.get()
+                pass
+
+            elif value == 2:
+                self.variable.get()
+                pass
+
+            elif value == 3:
+                self.variable.get()
+                pass
+
         def BTC():
             FunctionDestroyer()
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.xbtlist[0])
+            self.variable.trace("w", TraceAccount(1))
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.xbtlist)
             self.dropmedown.grid(row=0)
             self.selllabel = Label(self.optionwindow, text='Enter BTC to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -711,6 +755,7 @@ class GUI_Investment(Interfaces.IOnSave):
             FunctionDestroyer()
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.ethlist[0])
+            self.variable.trace("w", TraceAccount(2))
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.ethlist)
             self.dropmedown.grid(row=0)
             self.selllabel = Label(self.optionwindow, text='Enter ETH to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -738,6 +783,7 @@ class GUI_Investment(Interfaces.IOnSave):
             FunctionDestroyer()
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.xrplist[0])
+            self.variable.trace("w", TraceAccount(3))
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.xrplist)
             self.dropmedown.grid(row=0)
             self.selllabel = Label(self.optionwindow, text='Enter XRP to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
@@ -790,13 +836,13 @@ class GUI_Investment(Interfaces.IOnSave):
                 msg = ActualMessageBox(value, crypto, 1)
                 if msg == 'yes':
                     if buysell == 1:
-                        self.infobuy = self.data.create_quote(value, 'XBTMYR', 'BUY')
+                        self.infobuy = self.data.create_quote(value, 'XBTMYR', 'BUY', self.account_id1)
                         self.infobuy = self.infobuy['id']
                         print(self.infobuy)
                         self.quoteexercise = self.data.exercise_quote(self.infobuy)
                         ActualMessageBox(value, crypto, 2)
                     elif buysell == 2:
-                        self.infosell = self.data.create_quote(value, 'MYRXBT', 'SELL')
+                        self.infosell = self.data.create_quote(value, 'MYRXBT', 'SELL', self.account_id1)
                         self.infosell = self.infosell['id']
                         print(self.infosell)
                         self.quoteexercise = self.data.exercise_quote(self.infosell)
@@ -810,13 +856,13 @@ class GUI_Investment(Interfaces.IOnSave):
                 msg = ActualMessageBox(value, crypto, 1)
                 if msg == 'yes':
                     if buysell == 1:
-                        self.infobuy = self.data.create_quote(value, 'ETHMYR', 'BUY')
+                        self.infobuy = self.data.create_quote(value, 'ETHMYR', 'BUY', self.account_id2)
                         self.infobuy = self.infobuy['id']
                         print(self.infobuy)
                         self.quoteexercise = self.data.exercise_quote(self.infobuy)
                         ActualMessageBox(value, crypto, 2)
                     elif buysell == 2:
-                        self.infosell = self.data.create_quote(value, 'ETHMYR', 'SELL')
+                        self.infosell = self.data.create_quote(value, 'ETHMYR', 'SELL', self.account_id2)
                         self.infosell = self.infosell['id']
                         print(self.infosell)
                         self.quoteexercise = self.data.exercise_quote(self.infosell)
@@ -831,14 +877,14 @@ class GUI_Investment(Interfaces.IOnSave):
                 if msg == 'yes':
 
                     if buysell == 1:
-                        self.infobuy = self.data.create_quote(value, 'XRPMYR', 'BUY')
+                        self.infobuy = self.data.create_quote(value, 'XRPMYR', 'BUY', self.account_id3)
                         self.infobuy = self.infobuy['id']
                         print(self.infobuy)
                         self.quoteexercise = self.data.exercise_quote(self.infobuy)
                         ActualMessageBox(value, crypto, 2)
 
                     elif buysell == 2:
-                        self.infosell = self.data.create_quote(value, 'XRPMYR', 'SELL')
+                        self.infosell = self.data.create_quote(value, 'XRPMYR', 'SELL', self.account_id3)
                         self.infosell = self.infosell['id']
                         print(self.infosell)
                         self.quoteexercise = self.data.exercise_quote(self.infosell)
