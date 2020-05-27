@@ -12,15 +12,14 @@ from luno_python.client import Client
 import constants as Constants
 import interfaces as Interfaces
 import tkinter.messagebox
+from matplotlib import pyplot as plt
+import numpy as np
 
 class GUI_Investment(Interfaces.IOnSave):
 
     def OnSave(self):
         self.Main.SaveData("API Key", self.login)
         self.Main.SaveData("API Secret", self.password)
-        self.Main.SaveData("BTC price", self.bitcoinprice)
-        self.Main.SaveData("ETH price", self.ethereumprice)
-        self.Main.SaveData("XRP Price", self.xrpprice)
 
     def __init__(self, parent: Frame, main): #Attempt getting saved data and main message
         self.Main = main
@@ -31,9 +30,6 @@ class GUI_Investment(Interfaces.IOnSave):
         self.balancebtcbefore = main.GetSavedData("BTC Price")
         self.balanceethbefore = main.GetSavedData("ETH Price")
         self.balancexrpbefore = main.GetSavedData("XRP Price")
-        print(self.balanceethbefore)
-        print(self.balancebtcbefore)
-        print(self.balancexrpbefore)
         print('Retrieving existing login info if any')
 
         if (self.login is None):
@@ -95,7 +91,7 @@ class GUI_Investment(Interfaces.IOnSave):
 
 
     def MainScreen(self, status, parent: Frame):   #Main menu items
-         
+
         #Post Login
         if status == 0:
             self.loginBtn.destroy()
@@ -239,7 +235,61 @@ class GUI_Investment(Interfaces.IOnSave):
         self.configtransc2.place(x = 700, y = 200, anchor = "nw")
         self.configtransc3 = Button(master = parent, text="See XRP Transactions", command = lambda: self.TransactionHistory(3))
         self.configtransc3.place(x = 700, y = 240, anchor = "nw")
+        self.piechartviewer = Button(master = parent, text="View Chart", command = self.CryptoPieChart)
+        self.piechartviewer.place(x = 700, y = 280, anchor = "nw")
 
+
+    def CryptoPieChart(self):
+        #Calculate item for chart
+        bitcoinrmtotal = 0
+        ethereumrmtotal = 0
+        ripplermtotal = 0
+        sliceandice = []
+
+        for i in self.xbtdictionary:
+            btctotalstats = self.xbtdictionary[i]
+            for l in self.json_datalol:
+                if l['account_id'] == btctotalstats:
+                    btctotalstats1 = l['balance']
+                    btctotalstatsrm = float(btctotalstats1) * float(self.bitcoinprice)
+                    print("BTCRM : {}".format(btctotalstatsrm))
+                    bitcoinrmtotal += btctotalstatsrm
+
+        for j in self.ethdictionary:
+            ethtotalstats = self.ethdictionary[j]
+            for m in self.json_datalol:
+                if m['account_id'] == ethtotalstats:
+                    ethtotalstats1 = m['balance']
+                    ethtotalstatsrm = float(ethtotalstats1) * float(self.ethereumprice)
+                    print("ETHRM : {}".format(ethtotalstatsrm))
+                    ethereumrmtotal += ethtotalstatsrm
+
+        for k in self.xrpdictionary:
+            xrptotalstats = self.xrpdictionary[k]
+            for n in self.json_datalol:
+                if n['account_id'] == xrptotalstats:
+                    xrptotalstats1 = n['balance']
+                    xrptotalstatsrm = float(xrptotalstats1) * float(self.xrpprice)
+                    print("XRPRM : {}".format(btctotalstatsrm))
+                    ripplermtotal += xrptotalstatsrm
+
+        #Input data in list in /100 form
+        total = bitcoinrmtotal + ethereumrmtotal + ripplermtotal
+        dice1 = round(bitcoinrmtotal / total, 2) * 100
+        dice2 = round(ethereumrmtotal / total, 2) * 100
+        dice3 = round(ripplermtotal / total, 2) * 100
+        sliceandice.append(dice1)
+        sliceandice.append(dice2)
+        sliceandice.append(dice3)
+
+        #prep pie chart
+        plt.pie(sliceandice, labels = ['Bitcoin(BTC)', 'Ethereum(ETH)', 'Ripple(XRP)'], wedgeprops = {'edgecolor': 'black'}, colors = ['#f2a900', '#14044d', '#383838'])
+        plt.style.use("fivethirtyeight")
+
+        plt.title("Crypto Owned by Percentage")
+        plt.tight_layout()
+        plt.show()
+         
 
     def DropDownMenus(self, parent: Frame, value): #Choose Which account
         
@@ -513,9 +563,8 @@ class GUI_Investment(Interfaces.IOnSave):
     def CryptoinRM(self, buysell, crypto, value):      #Display coin value in RM
  
         try:
-
             actualbuy = float(buysell)
-            print('ok1')
+            print(actualbuy)
 
             if crypto == 'BTC':
                 thevalue = self.ShowPrice(1)
@@ -527,11 +576,13 @@ class GUI_Investment(Interfaces.IOnSave):
                 thevalue = self.ShowPrice(3)
 
             thefloat = float(thevalue)
-            self.currencycalc = actualbuy * thefloat
-            self.currencycalc = round(self.currencycalc, 2)
+            currencycalc = actualbuy * thefloat
+            currencycalc = round(currencycalc, 2)
+            print(currencycalc)
             
-            if value == 1:
-                return self.currencycalc        #Return ringgit value  
+            if value == 1 or '1':
+                return currencycalc        #Return ringgit value
+
 
             elif value == 2:         #return
                 self.textdisplay = "RM {}" 
@@ -712,16 +763,16 @@ class GUI_Investment(Interfaces.IOnSave):
         def TraceAccount(value):
 
             if value == 1:
-                self.variable.get()
-                pass
+                btcname = self.variable.get()
+                self.account_id1 = self.xbtdictionary[btcname]
 
             elif value == 2:
-                self.variable.get()
-                pass
+                ethname = self.variable.get()
+                self.account_id2 = self.ethdictionary[ethname]
 
             elif value == 3:
-                self.variable.get()
-                pass
+                xrpname = self.variable.get()
+                self.account_id3 = self.xrpdictionary[xrpname]
 
         def BTC():
             FunctionDestroyer()
