@@ -238,6 +238,11 @@ class GUI_Investment(Interfaces.IOnSave):
         self.piechartviewer = Button(master = parent, text="View Chart", command = self.CryptoPieChart)
         self.piechartviewer.place(x = 700, y = 280, anchor = "nw")
 
+        self.myrspend = Label(master = parent, text="Money Available:", font=("", 26), bg= Constants.mainWindowBgColor)
+        self.myrspend.place(x = 600, y = 320, anchor = "nw")
+        self.myrspendtotal = Label(master = parent, text= self.CryptoBalance(4), bg="seashell3", font=("", 26))
+        self.myrspendtotal.place(x = 850, y= 320, anchor = "nw")
+
 
     def CryptoPieChart(self):
         #Calculate item for chart
@@ -466,37 +471,43 @@ class GUI_Investment(Interfaces.IOnSave):
 
         self.transactionwindow = Toplevel()
 
+        def TransactionIndex():
+
+            try:
+                for i in range(0,4):
+                    self.transactioninfo = Label(self.transactionwindow, text = "{} :".format(transactionlist['transactions'][i]['row_index']), font = ("",26), bg = Constants.mainWindowBgColor)
+                    self.transactioninfo.grid(row=i)
+                    self.transactioninfo1 = Label(self.transactionwindow, text = transactionlist['transactions'][i]['description'], font = ("",26), bg = Constants.mainWindowBgColor)
+                    self.transactioninfo1.grid(row=i, column = 1)
+                    m = 1
+
+            except:
+                if m != 1:
+                    tkinter.messagebox.showerror("Crpyto Transaction Manager", "No Transactions Found")
+
         if value == 1:
             for i in self.json_data:
                 if i['asset'] == 'XBT':
                     idinfo = i['account_id']
+                    transactionlist = self.data.list_transactions(idinfo, 0, -1000)
+                    TransactionIndex()
 
         if value == 2:
             for i in self.json_data:
                 if i['asset'] == 'ETH':
                         idinfo = i['account_id']
+                        transactionlist = self.data.list_transactions(idinfo, 0, -1000)
+                        TransactionIndex()
 
         elif value == 3:
             for i in self.json_data:
                 if i['asset'] == 'XRP':
                         idinfo = i['account_id']
+                        transactionlist = self.data.list_transactions(idinfo, 0, -1000)
+                        TransactionIndex()
 
-        min_row = -100
-        max_row = 0
-        transactionlist = self.data.list_transactions(idinfo, max_row, min_row)
         print(transactionlist)
-        def TransactionIndex():
-
-            try:
-                self.transactioninfo = Label(self.transactionwindow, text = "{} :".format(transactionlist['transactions'][0]['row_index']), font = ("",26), bg = Constants.mainWindowBgColor)
-                self.transactioninfo.grid(row=0)
-                self.transactioninfo1 = Label(self.transactionwindow, text = transactionlist['transactions'][0]['description'], font = ("",26), bg = Constants.mainWindowBgColor)
-                self.transactioninfo1.grid(row=0, column = 1)
-
-            except:
-                tkinter.messagebox.showerror("Transaction", "No transactions recorded")
-                self.transactionwindow.destroy()
-        TransactionIndex()
+        
         print(transactionlist)
         
 
@@ -521,6 +532,12 @@ class GUI_Investment(Interfaces.IOnSave):
                 if i['asset'] == 'XRP':
                     self.xrpbal = i['balance']
                     return self.xrpbal
+
+        elif value == 4:
+            for i in self.json_data:
+                if i['asset'] == 'MYR':
+                    self.myrbal = i['balance']
+                    return self.myrbal
 
 
     def ShowPrice(self, value):
