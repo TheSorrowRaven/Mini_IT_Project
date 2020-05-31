@@ -21,6 +21,7 @@ class GUI_Investment(Interfaces.IOnSave):
         self.Main.SaveData("API Key", self.login)
         self.Main.SaveData("API Secret", self.password)
 
+
     def __init__(self, parent: Frame, main): #Attempt getting saved data and main message
         self.Main = main
         self.parent = parent
@@ -258,7 +259,6 @@ class GUI_Investment(Interfaces.IOnSave):
                 if l['account_id'] == btctotalstats:
                     btctotalstats1 = l['balance']
                     btctotalstatsrm = float(btctotalstats1) * float(self.bitcoinprice)
-                    print("BTCRM : {}".format(btctotalstatsrm))
                     bitcoinrmtotal += btctotalstatsrm
 
         for j in self.ethdictionary:
@@ -267,7 +267,6 @@ class GUI_Investment(Interfaces.IOnSave):
                 if m['account_id'] == ethtotalstats:
                     ethtotalstats1 = m['balance']
                     ethtotalstatsrm = float(ethtotalstats1) * float(self.ethereumprice)
-                    print("ETHRM : {}".format(ethtotalstatsrm))
                     ethereumrmtotal += ethtotalstatsrm
 
         for k in self.xrpdictionary:
@@ -276,7 +275,6 @@ class GUI_Investment(Interfaces.IOnSave):
                 if n['account_id'] == xrptotalstats:
                     xrptotalstats1 = n['balance']
                     xrptotalstatsrm = float(xrptotalstats1) * float(self.xrpprice)
-                    print("XRPRM : {}".format(btctotalstatsrm))
                     ripplermtotal += xrptotalstatsrm
 
         #Input data in list in /100 form
@@ -289,7 +287,7 @@ class GUI_Investment(Interfaces.IOnSave):
         sliceandice.append(dice3)
 
         #prep pie chart
-        plt.pie(sliceandice, labels = ['Bitcoin(BTC)', 'Ethereum(ETH)', 'Ripple(XRP)'], wedgeprops = {'edgecolor': 'black'}, colors = ['#f2a900', '#14044d', '#383838'])
+        plt.pie(sliceandice, labels = ['Bitcoin(BTC)', 'Ethereum(ETH)', 'Ripple(XRP)'], wedgeprops = {'edgecolor': 'black'}, colors = ['#f2a900', '#8A0A8A', '#383838'], autopct= '%1.1f%%')
         plt.style.use("fivethirtyeight")
 
         plt.title("Crypto Owned by Percentage")
@@ -407,9 +405,7 @@ class GUI_Investment(Interfaces.IOnSave):
         self.ethdictionary = dict(zip(self.ethlist, ethaccounts))
         self.xrpdictionary = dict(zip(self.xrplist, xrpaccounts))
 
-        print(self.xbtdictionary)
-        print(self.ethdictionary)
-        print(self.xrpdictionary)
+        print('Loading main menu..')
 
         if value == 1:
             self.variablelolbtc = StringVar(parent)
@@ -593,7 +589,6 @@ class GUI_Investment(Interfaces.IOnSave):
  
         try:
             actualbuy = float(buysell)
-            print(actualbuy)
 
             if crypto == 'BTC':
                 thevalue = self.ShowPrice(1)
@@ -607,7 +602,6 @@ class GUI_Investment(Interfaces.IOnSave):
             thefloat = float(thevalue)
             currencycalc = actualbuy * thefloat
             currencycalc = round(currencycalc, 2)
-            print(currencycalc)
 
             if value == 1 or '1':
                 return currencycalc
@@ -709,7 +703,9 @@ class GUI_Investment(Interfaces.IOnSave):
             self.variablethebtc.set(self.xbtlist[0])
             self.variablethebtc.trace("w", TraceAccountBTC)
             self.dropmedown = OptionMenu(self.optionwindow, self.variablethebtc, *self.xbtlist)
-            self.dropmedown.grid(row=0)
+            self.dropmedown.grid(row=0, column = 1)
+            self.thoughtlabel = Label(self.optionwindow, text = "Select an account: ", font = ("", 24), bg = Constants.mainWindowBgColor)
+            self.thoughtlabel.grid(row=0)
             self.buylabel = Label(self.optionwindow, text='Enter BTC to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
             self.buylabel.grid(row=1)
             self.btcbuy = Entry(self.optionwindow, textvariable ="Total BTC", font = ("", 24))
@@ -737,8 +733,10 @@ class GUI_Investment(Interfaces.IOnSave):
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.ethlist[0])
             self.variable.trace("w", TraceAccountETH)
+            self.thoughtlabel = Label(self.optionwindow, text = "Select an account: ", font = ("", 24), bg = Constants.mainWindowBgColor)
+            self.thoughtlabel.grid(row=0)
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.ethlist)
-            self.dropmedown.grid(row=0)
+            self.dropmedown.grid(row=0, column = 1)
             self.buylabel = Label(self.optionwindow, text='Enter ETH to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
             self.buylabel.grid(row=1)
             self.ethbuy = Entry(self.optionwindow, textvariable ="Total ETH", font = ("", 24))
@@ -766,8 +764,10 @@ class GUI_Investment(Interfaces.IOnSave):
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.xrplist[0])
             self.variable.trace("w", TraceAccountXRP)
+            self.thoughtlabel = Label(self.optionwindow, text = "Select an account: ", font = ("", 24), bg = Constants.mainWindowBgColor)
+            self.thoughtlabel.grid(row=0)
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.xrplist)
-            self.dropmedown.grid(row=0)
+            self.dropmedown.grid(row=0, column = 1)
             self.buylabel = Label(self.optionwindow, text='Enter XRP to buy: ', font = ("", 26), bg = Constants.mainWindowBgColor)
             self.buylabel.grid(row=1)
             self.xrpbuy = Entry(self.optionwindow, textvariable ="Total XRP", font = ("", 24))
@@ -831,7 +831,9 @@ class GUI_Investment(Interfaces.IOnSave):
             self.variable.set(self.xbtlist[0])
             self.variable.trace("w", TraceAccount(1))
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.xbtlist)
-            self.dropmedown.grid(row=0)
+            self.dropmedown.grid(row=0, column = 1)
+            self.thoughtlabel = Label(self.optionwindow, text = "Select an account: ", font = ("", 24), bg = Constants.mainWindowBgColor)
+            self.thoughtlabel.grid(row=0)
             self.selllabel = Label(self.optionwindow, text='Enter BTC to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
             self.selllabel.grid(row=1)
             self.btcsell = Entry(self.optionwindow, textvariable ="Total BTC", font = ("", 24))
@@ -858,8 +860,10 @@ class GUI_Investment(Interfaces.IOnSave):
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.ethlist[0])
             self.variable.trace("w", TraceAccount(2))
+            self.thoughtlabel = Label(self.optionwindow, text = "Select an account: ", font = ("", 24), bg = Constants.mainWindowBgColor)
+            self.thoughtlabel.grid(row=0)
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.ethlist)
-            self.dropmedown.grid(row=0)
+            self.dropmedown.grid(row=0, column = 1)
             self.selllabel = Label(self.optionwindow, text='Enter ETH to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
             self.selllabel.grid(row=1)
             self.ethsell = Entry(self.optionwindow, textvariable ="Total ETH", font = ("", 24))
@@ -886,8 +890,10 @@ class GUI_Investment(Interfaces.IOnSave):
             self.variable = StringVar(self.optionwindow)
             self.variable.set(self.xrplist[0])
             self.variable.trace("w", TraceAccount(3))
+            self.thoughtlabel = Label(self.optionwindow, text = "Select an account: ", font = ("", 24), bg = Constants.mainWindowBgColor)
+            self.thoughtlabel.grid(row=0)
             self.dropmedown = OptionMenu(self.optionwindow, self.variable, *self.xrplist)
-            self.dropmedown.grid(row=0)
+            self.dropmedown.grid(row=0, column = 1)
             self.selllabel = Label(self.optionwindow, text='Enter XRP to sell: ', font = ("", 26), bg = Constants.mainWindowBgColor)
             self.selllabel.grid(row=1)
             self.xrpsell = Entry(self.optionwindow, textvariable ="Total XRP", font = ("", 24))
