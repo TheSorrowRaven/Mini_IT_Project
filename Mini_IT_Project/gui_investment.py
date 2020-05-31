@@ -1,13 +1,13 @@
 #/***************************************************
 #File Name: gui_investment.py
-#Version/Date: 0.9 (2020-05-13)
+#Version/Date: 1.0 (2020-05-13)
 #Programmer/ID: Nagaindran A/L Kanaseelanayagam (1191100776)
 #Project Name: Smart Finance Manager 
 #Teammates: Raven Lim Zhe Xuan, Raja Muhammad Darwisy bin Raja Ahmad, Fong Zheng Wei
 #Course/Term: PSP0201 Mini IT Project (2019/20 T3)
 #***************************************************/
 ###
-from tkinter import Button, Canvas, Entry, Frame, Label, StringVar,OptionMenu, Toplevel, ttk
+from tkinter import Button, Canvas, Entry, Frame, Label, OptionMenu, StringVar, Toplevel, ttk
 from luno_python.client import Client
 import constants as Constants
 import interfaces as Interfaces
@@ -62,8 +62,9 @@ class GUI_Investment(Interfaces.IOnSave):
                 self.passwordi = self.passwordo.get()           #Dudes saving Spartan 1337 from the dinasour maintaining his one heck of a mama reputation
                 self.data = Client(api_key_id= self.logini , api_key_secret= self.passwordi)
                  
+
                 try:
-                    trial = self.data.get_balances()
+                    self.triallol = self.data.get_balances() 
                     print('Logging in....')
                     self.login = self.logini
                     self.password = self.passwordi
@@ -71,7 +72,7 @@ class GUI_Investment(Interfaces.IOnSave):
 
                 except Exception as e:
                     print(e)
-                    tkinter.messagebox.showerror(title="Login Error", message="Invalid api key or api key secret, please try again")
+                    tkinter.messagebox.showerror(title="Login Error", message="ERROR : Invalid info or no internet connection, please try again")
 
             
             if (self.login is None):
@@ -348,8 +349,15 @@ class GUI_Investment(Interfaces.IOnSave):
 
                     else:
                         pass
+        
+        try:
+            self.json_data = self.data.get_balances()
+        
+        except:
+            tkinter.messagebox.showerror("GetMe Coin", "Internet is required for this feature, please try again")
 
-        self.json_data = self.data.get_balances()
+        
+
         self.json_datalol = self.json_data['balance']
 
         #Easy drop down access
@@ -511,8 +519,12 @@ class GUI_Investment(Interfaces.IOnSave):
         print(transactionlist)
         
 
-    def CryptoBalance(self, value):     #required to get data from Luno Site
-        self.json_data = self.data.get_balances()
+    def CryptoBalance(self, value):
+        try:     #required to get data from Luno Site
+            self.json_data = self.data.get_balances()
+        
+        except:
+            tkinter.messagebox.showerror("GetMe Coin Service", "Please connect to the internet for this work")
         self.json_data = self.json_data['balance']
 
         if value == 1:
@@ -595,8 +607,6 @@ class GUI_Investment(Interfaces.IOnSave):
             thefloat = float(thevalue)
             currencycalc = actualbuy * thefloat
             currencycalc = round(currencycalc, 2)
-            currencycalctax = currencycalc * 0.02
-            currencycalc = currencycalctax + currencycalc
             print(currencycalc)
 
             if value == 1 or '1':
@@ -912,60 +922,64 @@ class GUI_Investment(Interfaces.IOnSave):
 
     def ConfirmMsgBox(self, value, crypto, buysell):
 
-        def ActualMessageBox(value, crypto, function):
+        def ActualMessageBox(value, valuerm, crypto, function):
             if function == 1:
-                self.MsgBox = tkinter.messagebox.askquestion ('Crypto Coin Manager',"Would you like to proceed with transaction of {} {}?, your actual rm value may be 2% more".format(value, crypto),icon = 'warning')
+                
+                self.MsgBox = tkinter.messagebox.askquestion ('Crypto Coin Manager',"Would you like to proceed with transaction of {} {} for RM {}?, your actual rm value may be 2% more".format(value, crypto, valuerm),icon = 'warning')
                 return self.MsgBox
             
             elif function == 2:
-                self.MsgBoxexit = tkinter.messagebox.showinfo('Crypto Coin Manager', "Transaction Succesful!")
+                self.MsgBoxexit = tkinter.messagebox.showinfo('Crypto Coin Manager', "Transaction Succesful!, Restart app to see change.")
 
             elif function == 3:
                 self.MsgBoxError = tkinter.messagebox.showerror('Cryto Coin Manager', "Insufficient balance or permissions, please try again")
 
         if crypto == 'BTC':
+            valuerm = float(value) * self.bitcoinprice
             try:
-                msg = ActualMessageBox(value, crypto, 1)
+                msg = ActualMessageBox(value, valuerm, crypto, 1)
                 if msg == 'yes':
                     if buysell == 1:
                         self.infobuy = self.data.create_quote(value, 'XBTMYR', 'BUY', self.account_id1)
                         self.infobuy = self.infobuy['id']
                         print(self.infobuy)
                         self.quoteexercise = self.data.exercise_quote(self.infobuy)
-                        ActualMessageBox(value, crypto, 2)
+                        ActualMessageBox(value, valuerm, crypto, 2)
                     elif buysell == 2:
                         self.infosell = self.data.create_quote(value, 'MYRXBT', 'SELL', self.account_id1)
                         self.infosell = self.infosell['id']
                         print(self.infosell)
                         self.quoteexercise = self.data.exercise_quote(self.infosell)
-                        ActualMessageBox(value, crypto, 2)
+                        ActualMessageBox(value, valuerm, crypto, 2)
             
             except:
-                ActualMessageBox(value, crypto, 3)
+                ActualMessageBox(value, valuerm, crypto, 3)
 
         elif crypto == 'ETH':
+            valuerm = float(value) * self.ethereumprice
             try:
-                msg = ActualMessageBox(value, crypto, 1)
+                msg = ActualMessageBox(value, valuerm, crypto, 1)
                 if msg == 'yes':
                     if buysell == 1:
                         self.infobuy = self.data.create_quote(value, 'ETHMYR', 'BUY', self.account_id2)
                         self.infobuy = self.infobuy['id']
                         print(self.infobuy)
                         self.quoteexercise = self.data.exercise_quote(self.infobuy)
-                        ActualMessageBox(value, crypto, 2)
+                        ActualMessageBox(value, valuerm, crypto, 2)
                     elif buysell == 2:
                         self.infosell = self.data.create_quote(value, 'ETHMYR', 'SELL', self.account_id2)
                         self.infosell = self.infosell['id']
                         print(self.infosell)
                         self.quoteexercise = self.data.exercise_quote(self.infosell)
-                        ActualMessageBox(value, crypto, 2)
+                        ActualMessageBox(value,valuerm, crypto, 2)
                 
             except:
-                ActualMessageBox(value, crypto, 3)
+                ActualMessageBox(value, valuerm, crypto, 3)
 
         elif crypto == 'XRP':
+            valuerm = float(value) * self.xrpprice
             try:
-                msg = ActualMessageBox(value, crypto, 1)
+                msg = ActualMessageBox(value, valuerm, crypto, 1)
                 if msg == 'yes':
 
                     if buysell == 1:
@@ -973,18 +987,18 @@ class GUI_Investment(Interfaces.IOnSave):
                         self.infobuy = self.infobuy['id']
                         print(self.infobuy)
                         self.quoteexercise = self.data.exercise_quote(self.infobuy)
-                        ActualMessageBox(value, crypto, 2)
+                        ActualMessageBox(value, valuerm, crypto, 2)
 
                     elif buysell == 2:
                         self.infosell = self.data.create_quote(value, 'XRPMYR', 'SELL', self.account_id3)
                         self.infosell = self.infosell['id']
                         print(self.infosell)
                         self.quoteexercise = self.data.exercise_quote(self.infosell)
-                        ActualMessageBox(value, crypto, 2)
+                        ActualMessageBox(value, valuerm, crypto, 2)
             
             except Exception as e:
                 print(e)
-                ActualMessageBox(value, crypto, 3)
+                ActualMessageBox(value, valuerm, crypto, 3)
 
 
 
