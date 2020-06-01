@@ -941,7 +941,7 @@ class GUI_Investment(Interfaces.IOnSave):
                 self.MsgBoxError = tkinter.messagebox.showerror('Cryto Coin Manager', "Insufficient balance or permissions, please try again")
 
         if crypto == 'BTC':
-            valuerm = float(value) * self.bitcoinprice
+            valuerm = float(value) * float(self.bitcoinprice)
             try:
                 msg = ActualMessageBox(value, valuerm, crypto, 1)
                 if msg == 'yes':
@@ -962,7 +962,7 @@ class GUI_Investment(Interfaces.IOnSave):
                 ActualMessageBox(value, valuerm, crypto, 3)
 
         elif crypto == 'ETH':
-            valuerm = float(value) * self.ethereumprice
+            valuerm = float(value) * float(self.ethereumprice)
             try:
                 msg = ActualMessageBox(value, valuerm, crypto, 1)
                 if msg == 'yes':
@@ -983,7 +983,7 @@ class GUI_Investment(Interfaces.IOnSave):
                 ActualMessageBox(value, valuerm, crypto, 3)
 
         elif crypto == 'XRP':
-            valuerm = float(value) * self.xrpprice
+            valuerm = float(value) * float(self.xrpprice)
             try:
                 msg = ActualMessageBox(value, valuerm, crypto, 1)
                 if msg == 'yes':
