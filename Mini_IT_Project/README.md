@@ -1,20 +1,33 @@
-Raven: The main file to run is Master
+Description:
 
-Raven: Ya'll if wanna say something can edit this file, to keep things organized. Don't put what u wanna say generally in comments UNLESS the comment is SPECIFIC to the function of the line
+The following are the files that have been made so far by our group. However some of these files , stored away in the "Not in Program"
+folder is not been integrated to use with the main code as of now and tend to work as a temporary import module or independantly by itself.
 
-Naga : Self created Currency Conversion module is created so that one can import to convert the currencies quicker. Hopefully to be done in two weeks.
 
-CURRENCYCONVERSION.PY IMPORT GUIDELINES:
-Just import and multiply to get the value in foreign or divide to get ringgit :)
-NOTE: Not all currency change are actual to what the user gets , allow user to determine foreign value  
+Copy-Paste into Command Prompt / Python Shell / Windows Powershell install Required Modules to run via Programming Software ( ex. : VSCode ) :
 
-Raven: The above currencyconversion.py guideline is now outdated, use the public functions instead
+python -m pip install requests
+python -m pip install luno_python
+python -m pip install Pillow
+python -m pip install matplotlib
+python -m pip install tkcalendar
+pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
-Raven: GUYS! TRY RUNNING Main.py
 
-Darwisy: for piechart.py, need to install matplotlib
+Note to run : Run the whole program via Main.py
 
-RAVEN: MAJOR CHANGES
 
-FILE STARTING WITH F IS FLAGGED FOR NOT INCLUDED IN MAIN PROGRAM
+COMPILATION GUIDE:
+
+1. Shift + Right Click in this folder and click on the "Open Powershell window here" option.
+2. Run the following two commands:
+       
+       -> pip -m install pyinstaller  ( If pyinstaller is not installed )
+       -> pyinstaller --onefile -w main.py
+
+3. Move compiled Main.exe from the newly created "dist" folder to this main folder.
+
+NOTE THAT RUNNING MAIN.PY THROUGH PYTHON IDLE CAN'T RUN TKINTER PROPERLY
+
+FILE STARTING WITH F ( stored away in Not in Program folder ) IS FLAGGED FOR NOT INCLUDED IN MAIN PROGRAM
 ALL FILES HAS BEEN LOWER-CASED RENAMED
