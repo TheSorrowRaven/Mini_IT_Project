@@ -162,7 +162,7 @@ class Statistics():
 
         max = 0
         index = 0
-        targetIndex = 0
+        targetIndex = -1
         rootIncomeX = rootIncome.copy()
         for instance in rootIncome:
             key = instance
@@ -180,7 +180,9 @@ class Statistics():
         explode = []
         for i in range(len(rootIncome)):
             explode.append(0)
-        explode[targetIndex] = 0.1
+
+        if (targetIndex != -1):
+            explode[targetIndex] = 0.1
 
         labels = [i for i in rootIncome]
         data = [rootIncome[i] for i in rootIncome]
@@ -197,7 +199,7 @@ class Statistics():
 
         max = 0
         index = 0
-        targetIndex = 0
+        targetIndex = -1
         rootSpendingX = rootSpending.copy()
         for instance in rootSpending:
             key = instance
@@ -215,7 +217,9 @@ class Statistics():
         explode = []
         for i in range(len(rootSpending)):
             explode.append(0)
-        explode[targetIndex] = 0.1
+        
+        if (targetIndex != -1):
+            explode[targetIndex] = 0.1
 
         labels = [i for i in rootSpending]
         data = [rootSpending[i] for i in rootSpending]
@@ -246,7 +250,7 @@ class Statistics():
 
         max = 0
         index = 0
-        targetIndex = 0
+        targetIndex = -1
         incomesX = incomes.copy()
         for instance in incomes:
             key = instance
@@ -264,7 +268,9 @@ class Statistics():
         explode = []
         for i in range(len(incomes)):
             explode.append(0)
-        explode[targetIndex] = 0.1
+
+        if (targetIndex != -1):
+            explode[targetIndex] = 0.1
 
         labels = [i for i in incomes]
         data = [incomes[i] for i in incomes]
@@ -282,7 +288,7 @@ class Statistics():
 
         max = 0
         index = 0
-        targetIndex = 0
+        targetIndex = -1
         spendingsX = spendings.copy()
         for instance in spendings:
             key = instance
@@ -300,7 +306,9 @@ class Statistics():
         explode = []
         for i in range(len(spendings)):
             explode.append(0)
-        explode[targetIndex] = 0.1
+
+        if (targetIndex != -1):
+            explode[targetIndex] = 0.1
 
         labels = [i for i in spendings]
         data = [spendings[i] for i in spendings]
