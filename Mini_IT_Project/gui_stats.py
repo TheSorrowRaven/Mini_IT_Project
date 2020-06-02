@@ -40,6 +40,8 @@ class Statistics():
 
     def __init__(self, guiAcc, main):
 
+        main.SaveAll()
+
         self.guiAcc = guiAcc
         self.thisAccount = guiAcc.selectedAccount
         self.allAccounts = guiAcc.accounts
@@ -98,6 +100,10 @@ class Statistics():
         self.LTitle.grid(row = 0, column = 0, columnspan = 2)
 
         allTransactions = []
+
+        if (self.accounts is None):
+            return
+
         for i in self.accounts:
             for j in i.transactions:
                 allTransactions.append(j)
