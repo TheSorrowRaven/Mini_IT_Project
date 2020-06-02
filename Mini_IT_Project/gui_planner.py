@@ -18,18 +18,17 @@ import interfaces as Interfaces
 class GUI_Planner(Interfaces.IOnSave):
 
     def OnSave(self):
-        self.main.SaveData("plans", self.Plans)
+        self.main.SaveData("plans", self.Plans.plans)
 
     def __init__(self, parent: Frame, main):
         super().__init__(main)
         self.main = main
         self.parent = parent
 
+        self.Plans = Plans.Plans()
         plans = main.GetSavedData("plans")
-        if (plans is None):
-            self.Plans = Plans.Plans()
-        else:
-            self.Plans = plans
+        if (plans is not None):
+            self.Plans.plans = plans
 
         self.InputFrame = Frame(master = parent, bg = Constants.mainWindowAltColor)
         self.InputFrame.place(relx = 0.5, y = 75, anchor = "n")

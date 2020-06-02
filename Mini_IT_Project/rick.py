@@ -35,7 +35,6 @@ class Pickler():
         else:
             self.pickles = {}
 
-
 if __name__ == "__main__":
     print("Please run main.py instead")
     pass
